@@ -11,14 +11,14 @@ type Props = {
 
 const TimeTakenCard = ({ timeEnded, timeStarted }: Props) => {
   return (
-    <Card className='md:col-span-4'>
-      <CardHeader className='flex flex-row items-center justify-between pb-2 space-y-0'>
-        <CardTitle className='text-2xl font-bold'>Time Taken</CardTitle>
+    <Card className="md:col-span-4">
+      <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+        <CardTitle className="text-2xl font-bold">Time Taken</CardTitle>
         <Hourglass />
       </CardHeader>
       <CardContent>
-        <div className='text-sm font-medium'>
-          {formatTimeDelta(differenceInSeconds(timeEnded, timeStarted))}
+        <div className="text-sm font-medium">
+          {/* {formatTimeDelta(differenceInSeconds(timeEnded, timeStarted))} */}
         </div>
       </CardContent>
     </Card>

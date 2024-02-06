@@ -16,7 +16,7 @@ const Home = async () => {
   // }
 
   return (
-    <div className="p-12">
+    <div className="p-12 max-w-6xl mx-auto">
       <div className="flex items-center">
         <h2 className="mr-2 text-3xl font-semibold tracking-tight">
           Dashboard
