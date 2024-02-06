@@ -12,10 +12,10 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <div className='h-full max-w-7xl mx-auto px-8'>
+    <div className="h-full">
       <Navbar />
 
-      <main className='py-32 h-full'>{children}</main>
+      <main className="mt-[4rem]">{children}</main>
     </div>
   );
 };

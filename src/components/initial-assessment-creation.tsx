@@ -81,13 +81,13 @@ function InitialAssessmentCreationCard({
       console.error(error);
     }
     if (assessment_data && assessment_data.length > 0) {
-      router.push(`/initial-assessment/${assessment_data[0].id}`);
+      router.push(`/chat/${assessment_data[0].id}`);
     }
   };
   form.watch();
 
   return (
-    <Card className="w-full max-w-3xl mx-auto">
+    <Card className="w-full max-w-3xl mx-auto mt-24">
       <CardHeader>
         <CardTitle>Initial assessment</CardTitle>
         <CardDescription>

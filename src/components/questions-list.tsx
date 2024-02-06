@@ -10,46 +10,56 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Question } from "@prisma/client";
-type Props = {
-  questions: Question[];
-};
 
-const QuestionsList = ({ questions }: Props) => {
+const QuestionsList = ({ questions, submissions }: any) => {
   return (
-    <Table className='mt-4'>
+    <Table className="mt-4">
       <TableCaption>End of list.</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className='w-[10px]'>No.</TableHead>
+          <TableHead className="w-[10px]">No.</TableHead>
           <TableHead>Question & Correct Answer</TableHead>
           <TableHead>Your Answer</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         <>
-          {questions.map(
-            ({ answer, question, userAnswer, isCorrect }, index) => {
-              return (
-                <TableRow key={index}>
-                  <TableCell className='font-medium'>{index + 1}</TableCell>
-                  <TableCell>
-                    {question} <br />
-                    <br />
-                    <span className='font-semibold'>{answer}</span>
-                  </TableCell>
+          {questions.map((question: any, index: number) => {
+            return (
+              <TableRow key={index}>
+                <TableCell className="font-medium">{index + 1}</TableCell>
+                <TableCell>
+                  {question.question} <br />
+                  <br />
+                  <span className="font-semibold">
+                    {
+                      JSON.parse(question.options).find(
+                        (option: any) => option.correct == "true"
+                      )?.text
+                    }
+                  </span>
+                </TableCell>
 
-                  <TableCell
-                    className={`${
-                      isCorrect ? "text-green-600" : "text-red-600"
-                    } font-semibold`}
-                  >
-                    {userAnswer}
-                  </TableCell>
-                </TableRow>
-              );
-            }
-          )}
+                <TableCell
+                  className={`${
+                    submissions.find(
+                      (submission: any) =>
+                        submission.questionId === question.uuid
+                    )?.isCorrect
+                      ? "text-green-600"
+                      : "text-red-600"
+                  } font-semibold`}
+                >
+                  {
+                    submissions.find(
+                      (submission: any) =>
+                        submission.questionId === question.uuid
+                    )?.selected?.text
+                  }
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </>
       </TableBody>
     </Table>

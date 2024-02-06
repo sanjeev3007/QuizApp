@@ -121,18 +121,15 @@ export const getQuizById = async (id: any) => {
   }
 };
 
-// export const userAssessmentStatus = async () => {
-//   const supabase = createServerSupabaseClient();
-//   const {
-//     data: { session },
-//   } = await supabase.auth.getSession();
-//   const { data, error } = await supabase
-//     .from("profiles")
-//     .select("*")
-//     .eq("id", session?.user?.id)
-//     .single();
-//   if (error) {
-//     console.error(error);
-//   }
-//   return data;
-// };
+export const getQuizStats = async (quizId: string) => {
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase
+    .from("quiz")
+    .select("*")
+    .eq("id", quizId)
+    .single();
+  if (error) {
+    console.error(error);
+  }
+  return data;
+};
