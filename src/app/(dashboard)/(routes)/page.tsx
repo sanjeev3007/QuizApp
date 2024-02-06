@@ -16,18 +16,18 @@ const Home = async () => {
   // }
 
   return (
-    <div>
-      <div className='flex items-center'>
-        <h2 className='mr-2 text-3xl font-semibold tracking-tight'>
+    <div className="p-12">
+      <div className="flex items-center">
+        <h2 className="mr-2 text-3xl font-semibold tracking-tight">
           Dashboard
         </h2>
         <DetailsDialog />
       </div>
-      <div className='grid gap-4 mt-4 md:grid-cols-2'>
+      <div className="grid gap-4 mt-4 md:grid-cols-2">
         <InitialAssessmentCard />
         <HistoryCard />
       </div>
-      <div className='grid gap-4 mt-4 md:grid-cols-1'>
+      <div className="grid gap-4 mt-4 md:grid-cols-1">
         <QuizMeCard />
         {/* <HistoryCard /> */}
       </div>

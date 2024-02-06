@@ -8,17 +8,17 @@ export default function InitialAssessmentCard() {
 
   return (
     <Card
-      className='hover:cursor-pointer hover:opacity-75'
+      className="hover:cursor-pointer hover:opacity-75"
       onClick={() => {
-        router.push("/initial-assessment");
+        router.push("/chat");
       }}
     >
-      <CardHeader className='flex flex-row items-center justify-between pb-2 space-y-0'>
-        <CardTitle className='text-2xl font-bold'>Initial Assessment</CardTitle>
+      <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+        <CardTitle className="text-2xl font-bold">Initial Assessment</CardTitle>
         <Pen size={26} strokeWidth={2.5} />
       </CardHeader>
       <CardContent>
-        <p className='text-sm text-muted-foreground'>
+        <p className="text-sm text-muted-foreground">
           Challenge yourself to a quiz with a topic of your choice.
         </p>
       </CardContent>

@@ -10,7 +10,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Quizmify",
+  title: "Quizme",
   description: "AI powered quiz app",
 };
 
@@ -22,8 +22,10 @@ export default function RootLayout({
   return (
     <SupabaseProvider>
       <Providers>
-        <html lang='en'>
-          <body className={poppins.className}>{children}</body>
+        <html lang="en">
+          <body className={poppins.className}>
+            <main className="flex flex-col h-screen w-full">{children}</main>
+          </body>
         </html>
       </Providers>
     </SupabaseProvider>

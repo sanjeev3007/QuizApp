@@ -21,18 +21,18 @@ const page = async () => {
   }
 
   return (
-    <div className='p-8 mx-auto max-w-7xl'>
-      <div className='flex items-center justify-between space-y-2'>
-        <h2 className='text-3xl font-semibold tracking-tight'>Summary</h2>
-        <div className='flex items-center space-x-2'>
-          <Link href='/' className={buttonVariants()}>
-            <LucideLayoutDashboard className='mr-2' />
+    <div className="p-8 mx-auto max-w-7xl">
+      <div className="flex items-center justify-between space-y-2">
+        <h2 className="text-3xl font-semibold tracking-tight">Summary</h2>
+        <div className="flex items-center space-x-2">
+          <Link href="/" className={buttonVariants()}>
+            <LucideLayoutDashboard className="mr-2" />
             Back to Dashboard
           </Link>
         </div>
       </div>
 
-      <div className='grid gap-4 mt-4 md:grid-cols-7'>
+      <div className="grid gap-4 mt-4 md:grid-cols-7">
         <ResultsCard accuracy={accuracy} />
         <AccuracyCard accuracy={accuracy} />
         {/* <TimeTakenCard
