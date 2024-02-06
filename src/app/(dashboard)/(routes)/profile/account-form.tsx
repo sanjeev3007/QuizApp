@@ -109,15 +109,15 @@ export default function AccountForm({ user }: { user: User | null }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name='fullname'
+          name="fullname"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder='Your name' {...field} />
+                {/* <Input placeholder='Your name' {...field} /> */}
               </FormControl>
               <FormDescription>
                 This is the name that will be displayed on your profile and in
@@ -129,13 +129,11 @@ export default function AccountForm({ user }: { user: User | null }) {
         />
         <FormField
           control={form.control}
-          name='email'
+          name="email"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input {...field} disabled />
-              </FormControl>
+              <FormControl>{/* <Input {...field} disabled /> */}</FormControl>
               <FormDescription>
                 This is the email that will be displayed on your profile.
               </FormDescription>
@@ -143,7 +141,7 @@ export default function AccountForm({ user }: { user: User | null }) {
             </FormItem>
           )}
         />
-        <Button type='submit'>Update account</Button>
+        <Button type="submit">Update account</Button>
       </form>
     </Form>
   );
