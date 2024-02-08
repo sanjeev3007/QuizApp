@@ -19,8 +19,8 @@ export default function MCQBox({
 }) {
   return (
     <div className="max-w-lg my-2 flex items-start w-full gap-x-2">
-      <div className="bg-white w-10 h-10 rounded-full grid place-items-center">
-        <Bot size={20} />
+      <div className="bg-orange-300 w-10 h-10 rounded-full grid place-items-center">
+        <Bot size={20} className="stroke-white" />
       </div>
       <div className="flex-1">
         <QuestionBox

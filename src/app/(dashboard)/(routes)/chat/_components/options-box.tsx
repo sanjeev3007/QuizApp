@@ -40,7 +40,7 @@ export default function OptionsBox({
             key={i}
             onClick={() => handleOptionClick(i)}
             className={cn(
-              "flex items-center gap-2 p-2 rounded-lg bg-white hover:bg-slate-50 cursor-pointer transition-all",
+              "flex items-center gap-2 p-2 rounded-lg border border-orange-200 bg-white hover:bg-orange-50 cursor-pointer transition-all",
               completedQuestion?.selected.text === option.text &&
                 option.correct === "true"
                 ? "bg-emerald-200"

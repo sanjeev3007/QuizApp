@@ -9,8 +9,10 @@ import { cn } from "@/lib/utils";
 import SelectedAnswer from "./selected-answer";
 import Link from "next/link";
 import { BarChart } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Input } from "@/components/ui/input";
+import QuizScore from "./quiz-score-diloag";
 
 type Option = {
   text: string;
@@ -34,6 +36,7 @@ export default function Chat({
   const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
   const [submissions, setSubmissions] = useState([] as any[]);
   const [progress, setProgress] = useState(1);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const currentQuestion = useMemo(() => {
     return questionList[questionIndex];
@@ -124,42 +127,45 @@ export default function Chat({
   }, [submissions]);
 
   return (
-    <ScrollArea className="h-full w-full grid">
-      <div className="max-w-3xl mx-auto h-full w-full pb-4">
-        <Toaster />
-        {questionList.slice(0, questionIndex + 1).map((question, i) => (
-          <div className="grid" key={i}>
-            <MCQBox
-              currentQuestion={question}
-              handleNext={handleNext}
-              setSelectedChoice={setSelectedChoice}
-              submissions={submissions}
-              questionIndex={i + 1}
-            />
-            <SelectedAnswer submissions={submissions} index={i} />
-          </div>
-        ))}
+    <ScrollArea className="h-full w-full flex flex-col">
+      <div className="flex-1 px-8">
+        <div className="pb-4 max-w-4xl mx-auto h-full w-full">
+          <Toaster />
+          {questionList.slice(0, questionIndex + 1).map((question, i) => (
+            <div className="grid" key={i}>
+              <MCQBox
+                currentQuestion={question}
+                handleNext={handleNext}
+                setSelectedChoice={setSelectedChoice}
+                submissions={submissions}
+                questionIndex={i + 1}
+              />
+              <SelectedAnswer submissions={submissions} index={i} />
+            </div>
+          ))}
+        </div>
+        <div className="" ref={bottom}></div>
+        <div className="bg-white h-[4rem] flex items-center justify-center gap-x-2 fixed left-0 bottom-0 w-full shadow-md z-10">
+          <Input
+            type="text"
+            placeholder="Enter here..."
+            className="max-w-3xl focus-visible:outline-none focus-visible:ring-0"
+          />
+          {hasEnded ? (
+            <Button onClick={() => setDialogOpen(true)}>
+              View Score
+              <BarChart className="w-4 h-4 ml-2" />
+            </Button>
+          ) : (
+            <div className="flex items-center justify-center">
+              <span className="text-sm font-medium">
+                {progress}/{questionList.length}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
-      <div className="pb-[4rem]" ref={bottom}></div>
-      <div className="bg-white h-[4rem] flex items-center justify-center fixed bottom-0 w-full shadow-md z-10">
-        {/* percentage of progress of the test */}
-        {hasEnded ? (
-          <Link
-            // href={`/statistics/${game.id}`}
-            href={`/statistics/${quizId}`}
-            className={cn(buttonVariants({ size: "lg" }), "mt-2")}
-          >
-            View Score
-            <BarChart className="w-4 h-4 ml-2" />
-          </Link>
-        ) : (
-          <div className="flex items-center justify-center">
-            <span className="text-sm font-medium">
-              {progress}/{questionList.length}
-            </span>
-          </div>
-        )}
-      </div>
+      <QuizScore quizId={quizId} open={dialogOpen} setOpen={setDialogOpen} />
     </ScrollArea>
   );
 }
