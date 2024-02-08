@@ -7,9 +7,9 @@ import { redirect } from "next/navigation";
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   const session = await getSession();
   const user = session?.user;
-  if (!user) {
-    return redirect("/i");
-  }
+  // if (!user) {
+  //   return redirect("/i");
+  // }
 
   return (
     <div className="h-full">

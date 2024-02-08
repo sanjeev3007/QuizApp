@@ -6,9 +6,9 @@ import UserAccountNav from "@/components/user-account-nav";
 const Navbar = async () => {
   const session = await getSession();
   const user = session?.user;
-  if (!user) {
-    return redirect("/i");
-  }
+  // if (!user) {
+  //   return redirect("/i");
+  // }
   return (
     <div className="fixed inset-0 top-0 bg-white h-[4rem] z-10 border-b border-zinc-300 px-8 flex items-center">
       <div className="flex items-center justify-between w-full max-w-6xl mx-auto">

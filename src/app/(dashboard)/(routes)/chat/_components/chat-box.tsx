@@ -53,6 +53,9 @@ export default function Chat({
   }, [bottom.current, currentQuestion, submissions]);
 
   const endGame = async () => {
+    const user = sessionStorage.getItem("quiz_user");
+    const userId = JSON.parse(user!).id;
+    if (!userId) return;
     const supabase = createClientComponentClient();
     const { data: assessment_data, error } = await supabase
       .from("quiz")
@@ -60,6 +63,7 @@ export default function Chat({
         submissions,
       })
       .eq("id", quizId)
+      .eq("random_user_id", userId)
       .select();
 
     if (error) {
@@ -119,7 +123,6 @@ export default function Chat({
   useEffect(() => {
     // Check if all questions have been answered
     if (allQuestionsAnswered) {
-      console.log("complete");
       setHasEnded(true);
       endGame();
       return;
@@ -128,7 +131,7 @@ export default function Chat({
 
   return (
     <ScrollArea className="h-full w-full flex flex-col">
-      <div className="flex-1 px-8">
+      <div className="flex-1 px-2 md:px-8">
         <div className="pb-4 max-w-4xl mx-auto h-full w-full">
           <Toaster />
           {questionList.slice(0, questionIndex + 1).map((question, i) => (
@@ -145,7 +148,7 @@ export default function Chat({
           ))}
         </div>
         <div className="" ref={bottom}></div>
-        <div className="bg-white h-[4rem] flex items-center justify-center gap-x-2 fixed left-0 bottom-0 w-full shadow-md z-10">
+        <div className="bg-white h-[4rem] px-4 flex items-center justify-center gap-x-2 fixed left-0 bottom-0 w-full shadow-md z-10">
           <Input
             type="text"
             placeholder="Enter here..."

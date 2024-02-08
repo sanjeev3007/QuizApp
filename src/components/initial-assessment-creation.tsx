@@ -43,6 +43,8 @@ export const quizCreationSchema = z.object({
       message: "Topic must be at most 50 characters long",
     }),
   amount: z.number().min(1).max(10),
+  name: z.string().min(2).max(50),
+  age: z.string(),
 });
 
 type Input = z.infer<typeof quizCreationSchema>;
@@ -60,10 +62,19 @@ function InitialAssessmentCreationCard({
     defaultValues: {
       topic: "Integers",
       amount: 10,
+      name: "",
+      age: "",
     },
   });
 
   const onSubmit = async (data: Input) => {
+    const userId = Math.random().toString(36).substring(7);
+    const user = {
+      name: data.name,
+      age: data.age,
+      id: userId,
+    };
+    sessionStorage.setItem("quiz_user", JSON.stringify(user));
     const supabase = createClientComponentClient();
     const {
       data: { session },
@@ -71,7 +82,7 @@ function InitialAssessmentCreationCard({
     const { data: assessment_data, error } = await supabase
       .from("quiz")
       .insert({
-        userId: session?.user?.id,
+        random_user_id: userId,
         topic: QuestionList?.[0].metadata.topic,
         questions: QuestionList,
       })
@@ -87,7 +98,7 @@ function InitialAssessmentCreationCard({
   form.watch();
 
   return (
-    <Card className="w-full max-w-3xl mx-auto mt-24">
+    <Card className="w-full max-w-2xl mx-auto mt-12">
       <CardHeader>
         <CardTitle>Initial assessment</CardTitle>
         <CardDescription>
@@ -96,7 +107,39 @@ function InitialAssessmentCreationCard({
       </CardHeader>
       <CardContent className="grid gap-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+            <div className="flex gap-x-2 w-full">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Full name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Your name"
+                        {...field}
+                        className="w-full"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="age"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Age</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Your age" type="text" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="topic"

@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { getQuizStats } from "@/app/supabase-client-provider";
+import { useRouter } from "next/navigation";
 
 export default function QuizScore({
   quizId,
@@ -26,13 +27,13 @@ export default function QuizScore({
 
   useEffect(() => {
     fetchQuizStats();
-  }, []);
+  }, [open]);
 
   const fetchQuizStats = async () => {
     const quiz_stats = await getQuizStats(quizId);
     let accuracy: number = 0;
 
-    let totalCorrect = quiz_stats.submissions.reduce(
+    let totalCorrect = quiz_stats.submissions?.reduce(
       (acc: any, question: any) => {
         if (question.isCorrect) {
           return acc + 1;

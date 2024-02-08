@@ -12,24 +12,24 @@ const QuizMeCard = () => {
   const state = useDialog();
 
   useEffect(() => {
-    (async () => {
-      const supabase = createClientComponentClient();
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", session?.user?.id)
-        .single();
-      if (error) {
-        console.error(error);
-      }
-      if (!data?.initial_assessment_status) {
-        state.setOpen();
-        console.log("User not found");
-      }
-    })();
+    // (async () => {
+    //   const supabase = createClientComponentClient();
+    //   const {
+    //     data: { session },
+    //   } = await supabase.auth.getSession();
+    //   const { data, error } = await supabase
+    //     .from("profiles")
+    //     .select("*")
+    //     .eq("id", session?.user?.id)
+    //     .single();
+    //   if (error) {
+    //     console.error(error);
+    //   }
+    //   if (!data?.initial_assessment_status) {
+    //     state.setOpen();
+    //     console.log("User not found");
+    //   }
+    // })();
   }, []);
   return (
     <Card
