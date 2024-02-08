@@ -61,7 +61,7 @@ function InitialAssessmentCreationCard({
     resolver: zodResolver(quizCreationSchema),
     defaultValues: {
       topic: "Integers",
-      amount: 10,
+      amount: 7,
       name: "",
       age: "",
     },
