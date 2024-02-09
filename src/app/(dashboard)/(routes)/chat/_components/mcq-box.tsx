@@ -7,13 +7,11 @@ import QuestionBox from "./question-box";
 export default function MCQBox({
   currentQuestion,
   handleNext,
-  setSelectedChoice,
   submissions,
   questionIndex,
 }: {
   currentQuestion: any;
   handleNext: any;
-  setSelectedChoice: any;
   submissions: any;
   questionIndex: number;
 }) {
@@ -30,7 +28,6 @@ export default function MCQBox({
         <OptionsBox
           options={currentQuestion?.options}
           handleNext={handleNext}
-          setSelectedChoice={setSelectedChoice}
           submissions={submissions}
           questionId={currentQuestion?.uuid}
         />

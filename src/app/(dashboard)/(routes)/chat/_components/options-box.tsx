@@ -6,13 +6,11 @@ import { cn } from "@/lib/utils";
 export default function OptionsBox({
   options,
   handleNext,
-  setSelectedChoice,
   submissions,
   questionId,
 }: {
   options: any;
   handleNext: any;
-  setSelectedChoice: any;
   submissions: any;
   questionId: string;
 }) {
@@ -24,7 +22,6 @@ export default function OptionsBox({
     if (completedQuestion) {
       return;
     }
-    setSelectedChoice(index);
     handleNext(index);
   };
 

@@ -2,17 +2,14 @@
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import MCQBox from "./mcq-box";
-import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
-import { cn } from "@/lib/utils";
 import SelectedAnswer from "./selected-answer";
-import Link from "next/link";
-import { BarChart, Bot } from "lucide-react";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Input } from "@/components/ui/input";
 import QuizScore from "./quiz-score-diloag";
+import { EndChatMessage, InitialChatMessage } from "./chat-messages";
+import { updateQuizStats } from "@/app/supabase-client-provider";
 
 type Option = {
   text: string;
@@ -33,10 +30,10 @@ export default function Chat({
     correct_answers: 0,
     wrong_answers: 0,
   });
-  const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
   const [submissions, setSubmissions] = useState([] as any[]);
   const [progress, setProgress] = useState(1);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [quizScore, showQuizScore] = useState(false);
+  const [start, setStart] = useState(false);
 
   const currentQuestion = useMemo(() => {
     return questionList[questionIndex];
@@ -50,35 +47,20 @@ export default function Chat({
 
   useEffect(() => {
     bottom.current?.scrollIntoView({ behavior: "smooth" });
-  }, [bottom.current, currentQuestion, submissions]);
+  }, [bottom.current, currentQuestion, submissions, hasEnded]);
 
   const endGame = async () => {
     const user = sessionStorage.getItem("quiz_user");
     const userId = JSON.parse(user!).id;
     if (!userId) return;
-    const supabase = createClientComponentClient();
-    const { data: assessment_data, error } = await supabase
-      .from("quiz")
-      .update({
-        submissions,
-      })
-      .eq("id", quizId)
-      .eq("random_user_id", userId)
-      .select();
-
-    if (error) {
-      toast({
-        title: "Error",
-        description: "An error occurred while ending the game",
-        variant: "destructive",
-      });
-      console.error(error);
+    const { success } = await updateQuizStats(quizId, submissions, userId);
+    if (!success) {
+      toast({ title: "Something went wrong!", duration: 3000 });
     }
   };
 
   const checkAnswer = (index: number) => {
     const isCorrect = options[index!].correct === "true";
-    setSelectedChoice(null);
     return isCorrect;
   };
 
@@ -134,30 +116,20 @@ export default function Chat({
       <div className="flex-1 px-2 md:px-8">
         <div className="pb-4 max-w-4xl mx-auto h-full w-full">
           <Toaster />
-          <div className="max-w-lg my-2 flex items-start w-full gap-x-2">
-            <div className="bg-orange-300 w-10 h-10 rounded-full grid place-items-center">
-              <Bot size={20} className="stroke-white" />
-            </div>
-            <div className="flex-1">
-              <div className="flex gap-x-2 border border-orange-200 bg-white p-4 rounded-lg rounded-ss-none">
-                <p className="text-sm py-0.5">
-                  Get ready for the quiz battle!!!✊🏻
-                </p>
+          <InitialChatMessage setStart={setStart} />
+          {start &&
+            questionList.slice(0, questionIndex + 1).map((question, i) => (
+              <div className="grid" key={i}>
+                <MCQBox
+                  currentQuestion={question}
+                  handleNext={handleNext}
+                  submissions={submissions}
+                  questionIndex={i + 1}
+                />
+                <SelectedAnswer submissions={submissions} index={i} />
               </div>
-            </div>
-          </div>
-          {questionList.slice(0, questionIndex + 1).map((question, i) => (
-            <div className="grid" key={i}>
-              <MCQBox
-                currentQuestion={question}
-                handleNext={handleNext}
-                setSelectedChoice={setSelectedChoice}
-                submissions={submissions}
-                questionIndex={i + 1}
-              />
-              <SelectedAnswer submissions={submissions} index={i} />
-            </div>
-          ))}
+            ))}
+          {hasEnded && <EndChatMessage showQuizScore={showQuizScore} />}
         </div>
         <div className="" ref={bottom}></div>
         <div className="bg-white h-[4rem] px-4 flex items-center justify-center gap-x-2 fixed left-0 bottom-0 w-full shadow-md z-10">
@@ -166,21 +138,14 @@ export default function Chat({
             placeholder="Enter here..."
             className="max-w-3xl focus-visible:outline-none focus-visible:ring-0"
           />
-          {hasEnded ? (
-            <Button onClick={() => setDialogOpen(true)}>
-              View Score
-              <BarChart className="w-4 h-4 ml-2" />
-            </Button>
-          ) : (
-            <div className="flex items-center justify-center">
-              <span className="text-sm font-medium">
-                {progress}/{questionList.length}
-              </span>
-            </div>
-          )}
+          <div className="flex items-center justify-center">
+            <span className="text-sm font-medium">
+              {questionIndex}/{questionList.length}
+            </span>
+          </div>
         </div>
       </div>
-      <QuizScore quizId={quizId} open={dialogOpen} setOpen={setDialogOpen} />
+      <QuizScore quizId={quizId} open={quizScore} setOpen={showQuizScore} />
     </ScrollArea>
   );
 }
