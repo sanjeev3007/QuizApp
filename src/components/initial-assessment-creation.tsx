@@ -98,7 +98,7 @@ function InitialAssessmentCreationCard({
   form.watch();
 
   return (
-    <Card className="w-full max-w-2xl mx-auto mt-12">
+    <Card className="w-full max-w-2xl mx-auto mt-12 z-20">
       <CardHeader>
         <CardTitle>Initial assessment</CardTitle>
         <CardDescription>

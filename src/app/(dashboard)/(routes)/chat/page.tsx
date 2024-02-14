@@ -7,7 +7,8 @@ const page = async () => {
   const data = await getQuestions();
   return (
     <div className="h-[calc(100vh-4rem)] pb-[4rem] bg-slate-50 bg-dot-black/[0.2] fixed top-[4rem] left-0 w-full">
-      <div className="max-w-4xl mx-auto">
+      <div className="absolute top-0 left-0 w-full h-full -z-10 bg-black bg-opacity-5"></div>
+      <div className="max-w-4xl mx-auto z-0">
         <div className="max-w-lg my-2 flex items-start w-full gap-x-2 fixed -z-10">
           <div className="bg-orange-300 w-10 h-10 rounded-full grid place-items-center">
             <Bot size={20} className="stroke-white" />

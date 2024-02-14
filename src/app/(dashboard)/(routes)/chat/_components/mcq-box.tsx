@@ -34,7 +34,6 @@ export default function MCQBox({
           submissions={submissions}
           questionId={currentQuestion?.uuid}
         />
-
         <ExplainationPopover
           question={currentQuestion?.question}
           answer={correctAnswer}
