@@ -2,14 +2,25 @@
 
 import { Button } from "@/components/ui/button";
 import { BarChart, Bot } from "lucide-react";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+
+if (typeof window !== "undefined") {
+}
 
 export function InitialChatMessage({
   setStart,
 }: {
   setStart: Dispatch<SetStateAction<boolean>>;
 }) {
-  const user = JSON.parse(sessionStorage.getItem("quiz_user")!);
+  const [user, setUser] = useState<{ name: string; age: string } | null>(null);
+
+  useEffect(() => {
+    if (sessionStorage && !sessionStorage.getItem("quiz_user")) return;
+    const storedUser = JSON.parse(sessionStorage.getItem("quiz_user")!);
+    setUser(storedUser);
+  }, []);
+
+  if (!user) return null;
   return (
     <div className="max-w-lg my-2 flex items-start w-full gap-x-2">
       <div className="bg-orange-300 w-10 h-10 rounded-full grid place-items-center">

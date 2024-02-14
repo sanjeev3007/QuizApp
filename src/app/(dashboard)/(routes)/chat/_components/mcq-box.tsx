@@ -4,6 +4,7 @@ import { Bot } from "lucide-react";
 import OptionsBox from "./options-box";
 import QuestionBox from "./question-box";
 import ExplainationPopover from "./explaination-popover";
+import FeedBackForm from "./feedback-form";
 export default function MCQBox({
   currentQuestion,
   handleNext,
@@ -18,6 +19,10 @@ export default function MCQBox({
   const correctAnswer = JSON.parse(currentQuestion?.options).find(
     (option: any) => option.correct == "true"
   )?.text;
+
+  const completedQuestion = submissions.find(
+    (option: any) => option.questionId === currentQuestion?.uuid
+  );
   return (
     <div className="max-w-lg my-2 flex items-start w-full gap-x-2">
       <div className="bg-orange-300 w-10 h-10 rounded-full grid place-items-center">
@@ -31,9 +36,11 @@ export default function MCQBox({
         <OptionsBox
           options={currentQuestion?.options}
           handleNext={handleNext}
-          submissions={submissions}
-          questionId={currentQuestion?.uuid}
+          completedQuestion={completedQuestion}
         />
+        {!completedQuestion && (
+          <FeedBackForm questionId={currentQuestion?.uuid} />
+        )}
         <ExplainationPopover
           question={currentQuestion?.question}
           answer={correctAnswer}

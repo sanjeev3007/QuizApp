@@ -37,7 +37,7 @@ export default function Chat({
   const [hasEnded, setHasEnded] = useState(false);
   const [submissions, setSubmissions] = useState([] as any[]);
   const [quizScore, showQuizScore] = useState(false);
-  const [start, setStart] = useState(false);
+  const [start, setStart] = useState(true);
   const [userInput, setUserInput] = useState("");
 
   // Get the current question
@@ -189,3 +189,14 @@ export default function Chat({
     </ScrollArea>
   );
 }
+
+/*
+{
+  id: feedbackId,
+  questionId: abc,
+  userId: 123,
+  response: good | bad,
+  reasons: "I didn't understand the question",
+  createdAt: timestamp,
+}
+*/

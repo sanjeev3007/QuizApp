@@ -6,18 +6,12 @@ import { cn } from "@/lib/utils";
 export default function OptionsBox({
   options,
   handleNext,
-  submissions,
-  questionId,
+  completedQuestion,
 }: {
   options: any;
   handleNext: any;
-  submissions: any;
-  questionId: string;
+  completedQuestion: any;
 }) {
-  const completedQuestion = submissions.find(
-    (option: any) => option.questionId === questionId
-  );
-
   const handleOptionClick = (index: number) => {
     if (completedQuestion) {
       return;

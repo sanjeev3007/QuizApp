@@ -33,3 +33,30 @@ export const updateQuizStats = async (
   }
   return { success: true };
 };
+
+export const feedbackQuiz = async ({
+  questionId,
+  userId,
+  response,
+  reason,
+}: {
+  questionId: string;
+  userId: string;
+  response: string;
+  reason: string | null;
+}) => {
+  const supabase = createClientComponentClient();
+  const { data, error } = await supabase
+    .from("quiz_feedback")
+    .insert({
+      questionId: questionId,
+      userId: userId,
+      response: response,
+      reason: reason,
+    })
+    .select();
+
+  if (error) console.log(error);
+  else console.log(data);
+  return;
+};
