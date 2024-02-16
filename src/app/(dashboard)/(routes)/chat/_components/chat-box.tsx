@@ -4,7 +4,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import MCQBox from "./mcq-box";
 import {
   FormEvent,
-  SetStateAction,
   useCallback,
   useEffect,
   useMemo,
