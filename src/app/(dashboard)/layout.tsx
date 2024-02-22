@@ -1,8 +1,6 @@
 import React from "react";
-import Navbar from "./_components/navbar";
 
 import { getSession } from "../supabase-server";
-import { redirect } from "next/navigation";
 
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   const session = await getSession();
@@ -12,10 +10,8 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   // }
 
   return (
-    <div className="h-full">
-      <Navbar />
-
-      <main className="mt-[4rem]">{children}</main>
+    <div className="h-full w-full bg-[#FFF]">
+      <main className="mt-[2rem] bg-[#FFF]">{children}</main>
     </div>
   );
 };

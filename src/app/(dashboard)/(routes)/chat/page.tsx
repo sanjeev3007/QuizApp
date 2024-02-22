@@ -22,7 +22,6 @@ const page = async () => {
           </div>
         </div>
       </div>
-      <InitialAssessmentCreationCard QuestionList={data} />
     </div>
   );
 };
