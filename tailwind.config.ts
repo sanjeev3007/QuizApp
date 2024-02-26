@@ -22,6 +22,11 @@ const config = {
         "2xl": "1400px",
       },
     },
+    fontFamily: {
+      sans: ['Graphik', 'sans-serif'],
+      serif: ['Merriweather', 'serif'],
+      inter:['Inter']
+    },
     extend: {
       colors: {
         border: "hsl(var(--border))",

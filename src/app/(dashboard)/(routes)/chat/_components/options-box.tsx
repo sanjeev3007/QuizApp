@@ -2,6 +2,8 @@
 
 import { toast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
+import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 
 export default function OptionsBox({
   options,
@@ -31,18 +33,37 @@ export default function OptionsBox({
             key={i}
             onClick={() => handleOptionClick(i)}
             className={cn(
-              "flex items-center gap-2 p-2 rounded-lg border border-orange-200 bg-white hover:bg-orange-50 cursor-pointer transition-all",
+              "flex items-center gap-2 p-2 rounded-lg border-2 font-medium text-sm leading-5 border-[#DAE7E7] text-[#5B8989] bg-[#F9FBFB] cursor-pointer transition-all",
               completedQuestion?.selected.text === option.text &&
                 option.correct === "true"
-                ? "bg-emerald-200"
+                ? "bg-[#70C29C] text-[#FFF]"
                 : completedQuestion?.selected.text === option.text &&
                   option.correct === "false"
-                ? "bg-red-200"
+                ? "bg-[#E88272] text-[#FFF]"
                 : ""
             )}
           >
-            <div className="rounded-full bg-slate-100 w-6 h-6 flex items-center justify-center text-sm font-semibold">
-              {alphabet[i]}
+            <div
+              className={cn(
+                "rounded-full bg-[#E6EFEF] w-6 h-6 flex items-center justify-center text-sm font-semibold",
+                completedQuestion?.selected.text === option.text &&
+                  option.correct === "true"
+                  ? "bg-[#9BD4B6] text-[#FFF]"
+                  : completedQuestion?.selected.text === option.text &&
+                    option.correct === "false"
+                  ? "bg-[#F1B1A7] text-[#FFF]"
+                  : ""
+              )}
+            >
+              {option.correct === "true" &&
+              completedQuestion?.selected.text === option.text ? (
+                <DoneOutlinedIcon fontSize="small" />
+              ) : option.correct === "false" &&
+                completedQuestion?.selected.text === option.text ? (
+                <CloseOutlinedIcon fontSize="small" />
+              ) : (
+                alphabet[i]
+              )}
             </div>
             <p className="text-sm">{option.text}</p>
           </button>

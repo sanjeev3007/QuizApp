@@ -41,7 +41,7 @@ type Input = z.infer<typeof quizCreationSchema>;
 
 const HomePage = ({ QuestionList }: { QuestionList: any }) => {
   const router = useRouter();
-  const [isActive, setIsActive] = useState<boolean>(false);
+  const [isActive, setIsActive] = useState<boolean>(true);
   const onSubmit = async (data: Input) => {
     console.log("QuestionList", QuestionList);
     const userId = Math.random().toString(36).substring(7);
@@ -105,14 +105,14 @@ const HomePage = ({ QuestionList }: { QuestionList: any }) => {
           )}
           <div className="grid gap-2 md:grid-cols-2">
             <Button
-              className="w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-bold text-[#FFF] hover:bg-[#E98451]"
+              className="w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-semibold text-[#FFF] hover:bg-[#E98451]"
               onClick={onSubmit}
             >
               Get Started{" "}
               <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
             </Button>
             <Button
-              className="w-max px-11 mt-[2rem] py-6 bg-[#B59585] text-lg font-bold text-[#FFFFFF] hover:bg-[#B59585]"
+              className="w-max px-11 mt-[2rem] py-6 bg-[#B59585] text-lg font-semibold text-[#FFFFFF] hover:bg-[#B59585]"
               // onClick={onSubmit}
             >
               View Insights{" "}
