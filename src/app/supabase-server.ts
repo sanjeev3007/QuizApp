@@ -133,3 +133,19 @@ export const getQuizStats = async (quizId: string) => {
   }
   return data;
 };
+
+export const getNumberOfCompletedExercise = async (userid: string) => {
+  const supabase = createServerSupabaseClient();
+  const { data: allQuizes, error } = await supabase
+    .from("quiz")
+    .select("questions", "submissions")
+    .eq("userid", userid)
+  let numberOfCompletedExercise = 0;
+  allQuizes?.map(({ questions, submissions }) => {
+    if (questions.length == submissions.length) numberOfCompletedExercise += 1
+  })
+  if (error) {
+    console.error(error);
+  }
+  return numberOfCompletedExercise;
+};
