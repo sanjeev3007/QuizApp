@@ -133,3 +133,18 @@ export const getQuizStats = async (quizId: string) => {
   }
   return data;
 };
+
+export async function getInCompletedQuiz(userId: string) {
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase
+    .from("quiz")
+    .select("*")
+    .eq("random_user_id", userId)
+    .eq("start", true)
+    .eq("complete", false);
+
+  if (error) {
+    console.error("incomplete quiz error", error);
+  }
+  return data;
+}

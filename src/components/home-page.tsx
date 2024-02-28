@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 // import { BrainCircuit, Pen } from "lucide-react";
 // import { useRouter } from "next/navigation";
@@ -37,20 +37,29 @@ export const quizCreationSchema = z.object({
 
 type Input = z.infer<typeof quizCreationSchema>;
 
-// type Props = {};
+type Props = {
+  QuestionList: any[];
+  inCompleteQuiz: any;
+};
 
-const HomePage = ({ QuestionList }: { QuestionList: any }) => {
+const HomePage = ({ QuestionList, inCompleteQuiz }: Props) => {
   const router = useRouter();
-  const [isActive, setIsActive] = useState<boolean>(true);
-  const onSubmit = async (data: Input) => {
-    console.log("QuestionList", QuestionList);
-    const userId = Math.random().toString(36).substring(7);
+  const [isActive, setIsActive] = useState<boolean>(
+    inCompleteQuiz?.start && !inCompleteQuiz?.complete
+  ); // check if the quiz is active
+  const [submissions, setSubmissions] = useState<any[]>([]);
+
+  const onSubmit = async (data?: Input) => {
+    // const userId = Math.random().toString(36).substring(7);
+    const userId = "user123";
     const user = {
-      name: data.name || "satvik",
-      age: data.age || 15,
+      name: data?.name || "satvik",
+      age: data?.age || 15,
       id: userId,
     };
-    sessionStorage.setItem("quiz_user", JSON.stringify(user));
+
+    // localStorage.setItem("quiz_user", JSON.stringify(user));
+
     const supabase = createClientComponentClient();
     const {
       data: { session },
@@ -61,6 +70,7 @@ const HomePage = ({ QuestionList }: { QuestionList: any }) => {
         random_user_id: userId,
         topic: QuestionList?.[0].metadata.topic,
         questions: QuestionList,
+        start: true,
       })
       .select();
 
@@ -71,6 +81,7 @@ const HomePage = ({ QuestionList }: { QuestionList: any }) => {
       router.push(`/chat/${assessment_data[0].id}`);
     }
   };
+
   const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
     height: 15,
     borderRadius: 10,
@@ -83,6 +94,15 @@ const HomePage = ({ QuestionList }: { QuestionList: any }) => {
       backgroundColor: theme.palette.mode === "light" ? "#1a90ff" : "#E0EAFF",
     },
   }));
+
+  useEffect(() => {
+    // getting the user submissions
+    const user_submissions = localStorage.getItem("cyquiz");
+    if (user_submissions) {
+      setSubmissions(JSON.parse(user_submissions).submissions);
+    }
+  }, []);
+
   return (
     <div>
       <div className="grid gap-4 mt-4 md:grid-cols-2">
@@ -95,7 +115,9 @@ const HomePage = ({ QuestionList }: { QuestionList: any }) => {
           {isActive ? (
             <div className="w-[100%] pr-20 mt-[2rem] text-[#5B8989] font-inter font-medium text-wrap text-lg">
               <BorderLinearProgress variant="determinate" value={50} />
-              <div className="mt-[10px]">Completed 4 out of 10 quizzes</div>
+              <div className="mt-[10px]">
+                Completed {submissions.length || 0} out of 10 quizzes
+              </div>
             </div>
           ) : (
             <div className="mt-[2rem] text-[#5B8989] font-inter font-medium text-wrap text-lg">
@@ -104,13 +126,23 @@ const HomePage = ({ QuestionList }: { QuestionList: any }) => {
             </div>
           )}
           <div className="grid gap-2 md:grid-cols-2">
-            <Button
-              className="w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-semibold text-[#FFF] hover:bg-[#E98451]"
-              onClick={onSubmit}
-            >
-              Get Started{" "}
-              <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
-            </Button>
+            {isActive ? (
+              <Button
+                className="w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-semibold text-[#FFF] hover:bg-[#E98451]"
+                onClick={() => router.push(`/chat/${inCompleteQuiz.id}`)}
+              >
+                Continue{" "}
+                <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
+              </Button>
+            ) : (
+              <Button
+                className="w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-semibold text-[#FFF] hover:bg-[#E98451]"
+                onClick={() => onSubmit()}
+              >
+                Get Started{" "}
+                <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
+              </Button>
+            )}
             <Button
               className="w-max px-11 mt-[2rem] py-6 bg-[#B59585] text-lg font-semibold text-[#FFFFFF] hover:bg-[#B59585]"
               // onClick={onSubmit}

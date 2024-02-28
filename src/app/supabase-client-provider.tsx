@@ -23,6 +23,7 @@ export const updateQuizStats = async (
     .from("quiz")
     .update({
       submissions,
+      complete: true,
     })
     .eq("id", quizId)
     .eq("random_user_id", userId)
@@ -60,3 +61,18 @@ export const feedbackQuiz = async ({
   else console.log(data);
   return;
 };
+
+export async function getInCompletedQuiz(userId: string) {
+  const supabase = createClientComponentClient();
+  const { data, error } = await supabase
+    .from("quiz")
+    .select("*")
+    .eq("random_user_id", userId)
+    .eq("start", true)
+    .eq("complete", false);
+
+  if (error) {
+    console.error("incomplete quiz error", error);
+  }
+  return data;
+}

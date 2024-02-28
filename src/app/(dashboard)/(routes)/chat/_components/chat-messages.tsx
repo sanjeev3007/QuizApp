@@ -18,8 +18,8 @@ export function InitialChatMessage({
   const [user, setUser] = useState<{ name: string; age: string } | null>(null);
 
   useEffect(() => {
-    if (sessionStorage && !sessionStorage.getItem("quiz_user")) return;
-    const storedUser = JSON.parse(sessionStorage.getItem("quiz_user")!);
+    if (localStorage && !localStorage.getItem("quiz_user")) return;
+    const storedUser = JSON.parse(localStorage.getItem("quiz_user")!);
     setUser(storedUser);
   }, []);
 
@@ -27,7 +27,7 @@ export function InitialChatMessage({
   return (
     <div className="max-w-3xl my-2 flex items-start w-full gap-x-2">
       <div className="bg-orange-300 w-10 h-10 rounded-full grid place-items-center">
-        <Image src={botIcon} alt="bot" size={20} className="stroke-white" />
+        <Image src={botIcon} alt="bot" className="stroke-white" />
       </div>
       <div className="flex-1 ">
         <div className="border-2 font-medium text-sm leading-5 border-[#DAE7E7] text-[#5B8989] bg-[#F9FBFB] p-4 rounded-lg rounded-ss-none">
@@ -54,11 +54,11 @@ export function EndChatMessage({
 }: {
   showQuizScore: Dispatch<SetStateAction<boolean>>;
 }) {
-  const user = JSON.parse(sessionStorage.getItem("quiz_user")!);
+  const user = JSON.parse(localStorage.getItem("quiz_user")!);
   return (
     <div className="max-w-lg my-2 flex items-start w-full gap-x-2">
       <div className="bg-orange-300 w-10 h-10 rounded-full grid place-items-center">
-      <Image src={botIcon} alt="bot" size={20} className="stroke-white" />
+        <Image src={botIcon} alt="bot" className="stroke-white" />
       </div>
       <div className="flex-1">
         <div className="flex gap-x-2 justify-between border-2 font-medium text-sm leading-5 border-[#DAE7E7] text-[#5B8989] bg-[#F9FBFB] p-4 rounded-lg rounded-ss-none">
