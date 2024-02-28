@@ -20,6 +20,7 @@ import quizIcon from "../assets/Images/quizIcon.svg";
 import quizCupIcon from "../assets/Images/quizCupIcon.svg";
 import quizTopicIcon from "../assets/Images/quizTopicIcon.svg";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export const quizCreationSchema = z.object({
   topic: z
@@ -48,8 +49,10 @@ const HomePage = ({ QuestionList, inCompleteQuiz }: Props) => {
     inCompleteQuiz?.start && !inCompleteQuiz?.complete
   ); // check if the quiz is active
   const [submissions, setSubmissions] = useState<any[]>([]);
+  const [loader, setLoader] = useState<boolean>(false);
 
   const onSubmit = async (data?: Input) => {
+    setLoader(true);
     // const userId = Math.random().toString(36).substring(7);
     const userId = "user123";
     const user = {
@@ -77,6 +80,7 @@ const HomePage = ({ QuestionList, inCompleteQuiz }: Props) => {
     if (error) {
       console.error(error);
     }
+    setLoader(false);
     if (assessment_data && assessment_data.length > 0) {
       router.push(`/chat/${assessment_data[0].id}`);
     }
@@ -140,7 +144,11 @@ const HomePage = ({ QuestionList, inCompleteQuiz }: Props) => {
                 onClick={() => onSubmit()}
               >
                 Get Started{" "}
-                <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
+                {loader ? (
+                  <CircularProgress color="inherit" size={25} />
+                ) : (
+                  <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
+                )}
               </Button>
             )}
             <Button
