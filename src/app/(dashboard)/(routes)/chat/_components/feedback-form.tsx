@@ -64,7 +64,7 @@ export default function FeedBackForm({ questionId }: { questionId: string }) {
   };
 
   const submitFeedback = async (res: string | null, reason: string | null) => {
-    const user = sessionStorage.getItem("quiz_user");
+    const user = localStorage.getItem("quiz_user");
     const userId = JSON.parse(user!).id;
     if (!userId) return;
     setLoader(true);

@@ -149,3 +149,19 @@ export const getNumberOfCompletedExercise = async (userid: string) => {
   }
   return numberOfCompletedExercise;
 };
+export async function getInCompletedQuiz(userId: string) {
+  const supabase = createServerSupabaseClient();
+  const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000); // Calculate the timestamp for 2 hours ago
+  const { data, error } = await supabase
+    .from("quiz")
+    .select("*")
+    .eq("random_user_id", userId)
+    .eq("start", true)
+    .eq("complete", false)
+    .gte("created_at", twoHoursAgo.toISOString()); // Filter quizzes created within the last 2 hours
+
+  if (error) {
+    console.error("incomplete quiz error", error);
+  }
+  return data;
+}

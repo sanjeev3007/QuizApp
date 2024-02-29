@@ -18,26 +18,28 @@ import QuizScore from "./quiz-score-diloag";
 import { EndChatMessage, InitialChatMessage } from "./chat-messages";
 import { updateQuizStats } from "@/app/supabase-client-provider";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 type Option = {
   text: string;
   correct: string;
 };
 
-export default function Chat({
-  questionList,
-  quizId,
-}: {
+type ChatProps = {
   questionList: any[];
   quizId: string;
-}) {
+  isComplete: boolean;
+};
+
+export default function Chat({ questionList, quizId, isComplete }: ChatProps) {
   const bottom = useRef<HTMLDivElement>(null);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [hasEnded, setHasEnded] = useState(false);
   const [submissions, setSubmissions] = useState([] as any[]);
   const [quizScore, showQuizScore] = useState(false);
-  const [start, setStart] = useState(true);
+  const [start, setStart] = useState(false);
   const [userInput, setUserInput] = useState("");
+  const router = useRouter();
 
   // Get the current question
   const currentQuestion = useMemo(() => {
@@ -58,7 +60,7 @@ export default function Chat({
 
   // End the quiz
   const endGame = async () => {
-    const user = sessionStorage.getItem("quiz_user");
+    const user = localStorage.getItem("quiz_user");
     const userId = JSON.parse(user!).id;
     if (!userId) return;
     // Update the quiz stats
@@ -66,6 +68,7 @@ export default function Chat({
     if (!success) {
       toast({ title: "Something went wrong!", duration: 3000 });
     }
+    localStorage.removeItem("cyquiz");
   };
 
   // Check if the selected answer is correct
@@ -91,6 +94,22 @@ export default function Chat({
           isCorrect,
         },
       ]);
+
+      localStorage.setItem(
+        "cyquiz",
+        JSON.stringify({
+          quizId,
+          submissions: [
+            ...submissions,
+            {
+              questionId: currentQuestion?.uuid,
+              selected: options[index!],
+              isCorrect,
+            },
+          ],
+        })
+      );
+
       if (allQuestionsAnswered) {
         console.log(submissions, submissions.length, questionList.length);
         return;
@@ -143,6 +162,26 @@ export default function Chat({
       setUserInput("");
     }
   };
+
+  useEffect(() => {
+    const data = localStorage.getItem("cyquiz");
+    if (data) {
+      // Get the submissions from the local storage
+      const { submissions } = JSON.parse(data);
+      setSubmissions(submissions);
+      setQuestionIndex(submissions.length);
+
+      // Check if the user has already started the quiz
+      if (submissions.length) {
+        setStart(true);
+      }
+    }
+
+    // If the quiz is complete, redirect to the home page
+    if (isComplete) {
+      router.push("/");
+    }
+  }, []);
 
   return (
     <ScrollArea className="h-full w-full flex flex-col">

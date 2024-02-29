@@ -23,6 +23,7 @@ export const updateQuizStats = async (
     .from("quiz")
     .update({
       submissions,
+      complete: true,
     })
     .eq("id", quizId)
     .eq("random_user_id", userId)
@@ -60,3 +61,21 @@ export const feedbackQuiz = async ({
   else console.log(data);
   return;
 };
+
+export async function getInCompletedQuiz(userId: string) {
+  const supabase = createClientComponentClient();
+  const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000); // Calculate the timestamp for 2 hours ago
+  console.log(twoHoursAgo.toISOString());
+  const { data, error } = await supabase
+    .from("quiz")
+    .select("*")
+    .eq("random_user_id", userId)
+    .eq("start", true)
+    .eq("complete", false)
+    .gte("created_at", twoHoursAgo.toISOString()); // Filter quizzes created within the last 2 hours
+
+  if (error) {
+    console.error("incomplete quiz error", error);
+  }
+  return data;
+}
