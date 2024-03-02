@@ -61,7 +61,7 @@ export default function Chat({ questionList, quizId, isComplete }: ChatProps) {
   // End the quiz
   const endGame = async () => {
     const user = localStorage.getItem("quiz_user");
-    const userId = JSON.parse(user!).id;
+    const userId = JSON.parse(user!)?.id;
     if (!userId) return;
     // Update the quiz stats
     const { success } = await updateQuizStats(quizId, submissions, userId);

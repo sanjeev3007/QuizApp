@@ -1,0 +1,15 @@
+.gradient-text {
+    background: -webkit-linear-gradient(70.37deg, #4186B4 21.81%, #FFD452 76.7%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .level-text{
+    background: -webkit-linear-gradient(95.66deg, #EDC008 0%, #E6AD0F 98.41%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .red-level-text{
+    background: -webkit-linear-gradient(116.27deg, #F8874F 16.52%, #F75931 83.34%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }

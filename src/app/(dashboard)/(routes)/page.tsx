@@ -10,10 +10,8 @@ const Home = async () => {
   const data = await getQuestions();
   const inCompleteQuiz = await getInCompletedQuiz("user123"); // get the incompleted quiz
   return (
-    <div className="p-12 max-w-7xl mx-auto">
-      <div className="bg-[#FFF]">
-        <HomePage QuestionList={data} inCompleteQuiz={inCompleteQuiz![0]} />
-      </div>
+    <div className="p-5 md:p-12 w-full md:max-w-7xl mx-auto bg-[#FFF] !important">
+      <HomePage QuestionList={data} inCompleteQuiz={inCompleteQuiz![0]} />
     </div>
   );
 };

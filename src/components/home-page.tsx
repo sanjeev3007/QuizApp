@@ -6,21 +6,25 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import EastOutlinedIcon from "@mui/icons-material/EastOutlined";
 import { styled } from "@mui/material/styles";
-
+import { cn } from "@/lib/utils";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import LinearProgress, {
   linearProgressClasses,
 } from "@mui/material/LinearProgress";
-
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
-import quizIcon from "../assets/Images/quizIcon.svg";
-import quizCupIcon from "../assets/Images/quizCupIcon.svg";
-import quizTopicIcon from "../assets/Images/quizTopicIcon.svg";
+import quizIcon from "@/assets/Images/quizIcon.svg";
+import calculator from "@/assets/Images/calculator.png";
+import levelCup from "@/assets/Images/levelCup.png";
+import levelCupStraight from "@/assets/Images/levelCupStraight.png";
+import podium from "@/assets/Images/podium.png";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import CircularProgress from "@mui/material/CircularProgress";
+import "@/components/home-page.css";
 
 export const quizCreationSchema = z.object({
   topic: z
@@ -45,11 +49,14 @@ type Props = {
 
 const HomePage = ({ QuestionList, inCompleteQuiz }: Props) => {
   const router = useRouter();
+  const theme = useTheme();
+  const mobileScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [isActive, setIsActive] = useState<boolean>(
     inCompleteQuiz?.start && !inCompleteQuiz?.complete
   ); // check if the quiz is active
   const [submissions, setSubmissions] = useState<any[]>([]);
   const [loader, setLoader] = useState<boolean>(false);
+  const level = 1;
 
   const onSubmit = async (data?: Input) => {
     setLoader(true);
@@ -95,7 +102,7 @@ const HomePage = ({ QuestionList, inCompleteQuiz }: Props) => {
     },
     [`& .${linearProgressClasses.bar}`]: {
       borderRadius: 10,
-      backgroundColor: theme.palette.mode === "light" ? "#1a90ff" : "#E0EAFF",
+      background: "linear-gradient(90deg, #749AFF 0%, #5C7CFF 103.09%)"
     },
   }));
 
@@ -109,30 +116,67 @@ const HomePage = ({ QuestionList, inCompleteQuiz }: Props) => {
 
   return (
     <div>
-      <div className="grid gap-4 mt-4 md:grid-cols-2">
-        <div className="justify-self-center self-center grid gap-2 mt-2 md:grid-cols-1">
-          <div className="text-[#2F4F4F] font-extrabold text-wrap text-3xl font-inter">
-            {isActive
-              ? "Resume your progress to identify your strength & weakness"
-              : "Introducing the AI quiz bot"}
+      <div className="flex flex-col-reverse mt-2 md:grid md:grid-cols-2 gap-4 md:mt-4">
+        <div className="md:justify-self-center md:self-center grid gap-2 mt-2 md:grid-cols-1">
+          <div className="tracking-normal text-xl font-extrabold text-wrap md:text-4xl md:leading-10">
+            {isActive ? (
+              <div className="flex flex-col">
+                <span className="text-[#2F4F4F]">Continue your journey</span>
+                <span className="gradient-text mt-2"> with Noah</span>
+              </div>
+            ) : (
+              <div>
+                <span className="text-[#2F4F4F]">Introducing</span>
+                <span className="gradient-text mt-2 ml-1">Noah</span>
+              </div>
+            )}
           </div>
           {isActive ? (
-            <div className="w-[100%] pr-20 mt-[2rem] text-[#5B8989] font-inter font-medium text-wrap text-lg">
+            <div className="relative justify-center w-full mt-[2rem] text-[#5B8989] font-medium leading-6 text-lg">
               <BorderLinearProgress variant="determinate" value={50} />
-              <div className="mt-[10px]">
-                Completed {submissions.length || 0} out of 10 quizzes
+              <div className="flex justify-between mt-[10px]">
+                <span>
+                  Completed {submissions.length || 0} out of 10 quizzes
+                </span>
+                {level > 0 && (
+                  <span className="level-text font-extrabold text-sm">
+                    Level {level}
+                  </span>
+                )}
+                {level > 0 && (
+                  <div className="absolute top-0 mt-5 -translate-y-full right-0 mr-7 translate-x-full">
+                    <Image src={levelCup} alt="cup" />
+                  </div>
+                )}
               </div>
+              {level > 0 && (
+                <div className="flex justify-between max-w-fit p-4 bg-[#FDF2ED] mt-4">
+                  <div className="justify-self-center	self-center	">
+                    <Image src={levelCupStraight} alt="cup" />
+                  </div>
+                  <div className="justify-self-center self-center ml-2">
+                    <div className="flex">
+                      <span className="text-sm font-bold text-[#5B8989]">You are on</span>
+                      <span className="text-sm font-bold red-level-text ml-1">"Level 6"</span>
+                    </div>
+                    <div className="text-sm font-bold text-[#5B8989]">Answer 8 more quizzes to level up!</div>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
-            <div className="mt-[2rem] text-[#5B8989] font-inter font-medium text-wrap text-lg">
+            <div className="mt-[2rem] text-[#5B8989] font-medium text-wrap text-lg leading-6">
               Your personalised AI which curates quizzes to keep you engaged and
               learning
             </div>
           )}
-          <div className="grid gap-2 md:grid-cols-2">
+          <div className="flex justify-between gap-2 md:grid md:gap-2 md:grid-cols-2">
             {isActive ? (
               <Button
-                className="w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-semibold text-[#FFF] hover:bg-[#E98451]"
+                className={cn(
+                  "w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-semibold text-[#FFF] hover:bg-[#E98451]",
+                  mobileScreen && "px-5 py-6 w-[50%]"
+                )}
                 onClick={() => router.push(`/chat/${inCompleteQuiz.id}`)}
               >
                 Continue{" "}
@@ -140,7 +184,10 @@ const HomePage = ({ QuestionList, inCompleteQuiz }: Props) => {
               </Button>
             ) : (
               <Button
-                className="w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-semibold text-[#FFF] hover:bg-[#E98451]"
+                className={cn(
+                  "w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-semibold text-[#FFF] hover:bg-[#E98451]",
+                  mobileScreen && "fixed bottom-0 w-[90%]" // Conditionally apply 'fixed bottom-0' for mobile screens
+                )}
                 onClick={() => onSubmit()}
               >
                 Get Started{" "}
@@ -152,7 +199,10 @@ const HomePage = ({ QuestionList, inCompleteQuiz }: Props) => {
               </Button>
             )}
             <Button
-              className="w-max px-11 mt-[2rem] py-6 bg-[#B59585] text-lg font-semibold text-[#FFFFFF] hover:bg-[#B59585]"
+              className={cn(
+                "w-max px-11 mt-[2rem] py-6 bg-[#B59585] text-lg font-semibold text-[#FFFFFF] hover:bg-[#B59585]",
+                mobileScreen && "px-5 py-6 w-[50%]"
+              )}
               // onClick={onSubmit}
             >
               View Insights{" "}
@@ -164,22 +214,23 @@ const HomePage = ({ QuestionList, inCompleteQuiz }: Props) => {
           <Image src={quizIcon} alt="quiz" style={{ height: "350px" }} />
         </div>
       </div>
-      <div className="mt-[5rem] grid gap-8 md:grid-cols-2">
-        <Card className="flex p-4 bg-[#F3F7F7]">
+      <div className="mt-[2rem] md:mt-[5rem] grid gap-8 md:grid-cols-2">
+        <Card className="flex p-4 bg-[#F0F6FA]">
           <div className="justify-self-center	self-center	">
-            <Image src={quizTopicIcon} alt="topics" />
+            <Image src={calculator} alt="topics" />
           </div>
-          <div className="ml-[1.5rem] justify-self-center	self-center	">
-            Answer quizzes based on topics which you are learning
+          <div className=" ml-[1.5rem] text-sm font-medium md:text-lg leading-6 justify-self-center	self-center	text-[#5B8989]">
+            Noah specializes in Math quizzes which are adaptive to your learning
           </div>
         </Card>
-        <Card className="flex p-4 bg-[#F3F7F7]">
+        <Card className="flex p-4 bg-[#F0F6FA]">
           <div className="justify-self-center self-center	">
-            <Image src={quizCupIcon} alt="cup" />
+            <Image src={podium} alt="cup" />
           </div>
-          <div className="ml-[1.5rem] justify-self-center	self-center	">
-            Complete at least 10 quizzes to get detailed analysis on your
-            strengths and weaknesses
+          <div className="ml-[1.5rem] text-sm font-medium  md:text-lg leading-6 justify-self-center	self-center	text-[#5B8989]">
+            {level < 2
+              ? "Complete at least 10 quizzes so Noah can share insights on your knowledge"
+              : "Keep leveling up with more quizzes to help Noah assist you better"}
           </div>
         </Card>
       </div>
