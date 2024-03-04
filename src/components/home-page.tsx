@@ -46,9 +46,10 @@ type Input = z.infer<typeof quizCreationSchema>;
 type Props = {
   QuestionList: any[];
   inCompleteQuiz: any;
+  userId: String
 };
 
-const HomePage = ({ QuestionList, inCompleteQuiz }: Props) => {
+const HomePage = ({ QuestionList, inCompleteQuiz , userId }: Props) => {
   const router = useRouter();
   const theme = useTheme();
   const mobileScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -62,7 +63,6 @@ const HomePage = ({ QuestionList, inCompleteQuiz }: Props) => {
   const onSubmit = async (data?: Input) => {
     setLoader(true);
     // const userId = Math.random().toString(36).substring(7);
-    const userId = "user123";
     const user = {
       name: data?.name || "satvik",
       age: data?.age || 15,
@@ -79,6 +79,7 @@ const HomePage = ({ QuestionList, inCompleteQuiz }: Props) => {
       .from("quiz")
       .insert({
         random_user_id: userId,
+        userid:userId,
         topic: QuestionList?.[0].metadata.topic,
         questions: QuestionList,
         start: true,
