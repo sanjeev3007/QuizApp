@@ -7,6 +7,8 @@ import botIcon from "@/assets/Images/botIcon.svg";
 import Image from "next/image";
 import EastOutlinedIcon from "@mui/icons-material/EastOutlined";
 
+import { useRouter } from "next/navigation";
+
 if (typeof window !== "undefined") {
 }
 
@@ -54,6 +56,7 @@ export function EndChatMessage({
 }: {
   showQuizScore: Dispatch<SetStateAction<boolean>>;
 }) {
+  const router = useRouter();
   const user = JSON.parse(localStorage.getItem("quiz_user")!);
   return (
     <div className="max-w-lg my-2 flex items-start w-full gap-x-2">
@@ -70,7 +73,7 @@ export function EndChatMessage({
           <Button
             variant={"secondary"}
             className="w-fit"
-            onClick={() => showQuizScore(true)}
+            onClick={() => router.push(`/yourScore`)}
           >
             View Score
             <BarChart className="w-4 h-4 ml-2" />

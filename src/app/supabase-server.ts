@@ -139,7 +139,7 @@ export const getNumberOfCompletedQuiz = async (userid: string) => {
   const { data: allQuizes, error } = await supabase
     .from("quiz")
     .select("questions", "submissions")
-    .eq("random_user_id", userid)
+    .eq("userid", userid)
     .eq("complete","True")
   
     if (error) {
@@ -249,7 +249,7 @@ export async function getInCompletedQuiz(userId: string) {
   const { data, error } = await supabase
     .from("quiz")
     .select("*")
-    .eq("random_user_id", userId)
+    .eq("userid", userId)
     .eq("start", true)
     .eq("complete", false)
     .gte("created_at", twoHoursAgo.toISOString()); // Filter quizzes created within the last 2 hours

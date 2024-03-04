@@ -1,0 +1,20 @@
+.custom-bar-graph {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    height: 180px; 
+  }
+  
+  .bar {
+    width: 30px; 
+    background-color: #FFA85D; 
+    position: relative;
+    border-radius: 4px;
+  }
+  
+  .bar-value {
+    position: absolute;
+    top: 1px; 
+    left: 50%;
+    transform: translateX(-50%);
+  }

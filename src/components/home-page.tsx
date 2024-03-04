@@ -13,7 +13,7 @@ import LinearProgress, {
 } from "@mui/material/LinearProgress";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
@@ -46,10 +46,20 @@ type Input = z.infer<typeof quizCreationSchema>;
 type Props = {
   QuestionList: any[];
   inCompleteQuiz: any;
-  userId: String
+  userId: string;
+  userName: string;
+  grade: any;
+  quizData: any;
 };
 
-const HomePage = ({ QuestionList, inCompleteQuiz , userId }: Props) => {
+const HomePage = ({
+  QuestionList,
+  inCompleteQuiz,
+  userId,
+  userName,
+  grade,
+  quizData,
+}: Props) => {
   const router = useRouter();
   const theme = useTheme();
   const mobileScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -58,7 +68,9 @@ const HomePage = ({ QuestionList, inCompleteQuiz , userId }: Props) => {
   ); // check if the quiz is active
   const [submissions, setSubmissions] = useState<any[]>([]);
   const [loader, setLoader] = useState<boolean>(false);
-  const level = 1;
+  const level = quizData?.level;
+  const levelPercent =
+    (quizData?.numberOfCompletedQuiz / quizData?.totalQuiz) * 100;
 
   const onSubmit = async (data?: Input) => {
     setLoader(true);
@@ -78,8 +90,8 @@ const HomePage = ({ QuestionList, inCompleteQuiz , userId }: Props) => {
     const { data: assessment_data, error } = await supabase
       .from("quiz")
       .insert({
-        random_user_id: userId,
-        userid:userId,
+        // random_user_id: userId,
+        userid: userId,
         topic: QuestionList?.[0].metadata.topic,
         questions: QuestionList,
         start: true,
@@ -104,9 +116,15 @@ const HomePage = ({ QuestionList, inCompleteQuiz , userId }: Props) => {
     },
     [`& .${linearProgressClasses.bar}`]: {
       borderRadius: 10,
-      background: "linear-gradient(90deg, #749AFF 0%, #5C7CFF 103.09%)"
+      background: "linear-gradient(90deg, #749AFF 0%, #5C7CFF 103.09%)",
     },
   }));
+
+  const viewScore = () => {
+    if (level > 0) {
+      router.push(`/yourScore`);
+    }
+  };
 
   useEffect(() => {
     // getting the user submissions
@@ -135,10 +153,14 @@ const HomePage = ({ QuestionList, inCompleteQuiz , userId }: Props) => {
           </div>
           {isActive ? (
             <div className="relative justify-center w-full mt-[2rem] text-[#5B8989] font-medium leading-6 text-lg">
-              <BorderLinearProgress variant="determinate" value={50} />
+              <BorderLinearProgress
+                variant="determinate"
+                value={levelPercent}
+              />
               <div className="flex justify-between mt-[10px]">
                 <span>
-                  Completed {submissions.length || 0} out of 10 quizzes
+                  Completed {quizData?.numberOfCompletedQuiz || 0} out of{" "}
+                  {quizData?.totalQuiz} quizzes
                 </span>
                 {level > 0 && (
                   <span className="level-text font-extrabold text-sm">
@@ -158,10 +180,16 @@ const HomePage = ({ QuestionList, inCompleteQuiz , userId }: Props) => {
                   </div>
                   <div className="justify-self-center self-center ml-2">
                     <div className="flex">
-                      <span className="text-sm font-bold text-[#5B8989]">You are on</span>
-                      <span className="text-sm font-bold red-level-text ml-1">"Level 6"</span>
+                      <span className="text-sm font-bold text-[#5B8989]">
+                        You are on
+                      </span>
+                      <span className="text-sm font-bold red-level-text ml-1">
+                        "Level {level}"
+                      </span>
                     </div>
-                    <div className="text-sm font-bold text-[#5B8989]">Answer 8 more quizzes to level up!</div>
+                    <div className="text-sm font-bold text-[#5B8989]">
+                      Answer 8 more quizzes to level up!
+                    </div>
                   </div>
                 </div>
               )}
@@ -188,7 +216,7 @@ const HomePage = ({ QuestionList, inCompleteQuiz , userId }: Props) => {
               <Button
                 className={cn(
                   "w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-semibold text-[#FFF] hover:bg-[#E98451]",
-                  mobileScreen && level < 2 && "fixed bottom-0 w-[90%]" // Conditionally apply 'fixed bottom-0' for mobile screens
+                  mobileScreen && "fixed bottom-0 w-[90%]" // Conditionally apply 'fixed bottom-0' for mobile screens
                 )}
                 onClick={() => onSubmit()}
               >
@@ -203,15 +231,17 @@ const HomePage = ({ QuestionList, inCompleteQuiz , userId }: Props) => {
             <Button
               className={cn(
                 "w-max px-11 mt-[2rem] py-6 bg-[#B59585] text-lg font-semibold text-[#FFFFFF] hover:bg-[#B59585]",
-                level > 1 && "text-[#E98451] border-2 border-[#E98451] bg-[#FFF]",
+                level > 1 &&
+                  "text-[#E98451] border-2 border-[#E98451] bg-[#FFF]",
                 mobileScreen && "px-5 py-6 w-[50%]"
               )}
-              // onClick={onSubmit}
+              onClick={viewScore}
+              disabled={level < 1}
             >
               View Insights{" "}
-              {level > 1 ? (
+              {level > 0 ? (
                 <Image src={redirect_arrow} alt="redirect" className="ml-3" />
-              ):(
+              ) : (
                 <LockOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
               )}
             </Button>
@@ -235,7 +265,7 @@ const HomePage = ({ QuestionList, inCompleteQuiz , userId }: Props) => {
             <Image src={podium} alt="cup" />
           </div>
           <div className="ml-[1.5rem] text-sm font-medium  md:text-lg leading-6 justify-self-center	self-center	text-[#5B8989]">
-            {level < 2
+            {level < 1
               ? "Complete at least 10 quizzes so Noah can share insights on your knowledge"
               : "Keep leveling up with more quizzes to help Noah assist you better"}
           </div>
