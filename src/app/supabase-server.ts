@@ -140,15 +140,109 @@ export const getNumberOfCompletedExercise = async (userid: string) => {
     .from("quiz")
     .select("questions", "submissions")
     .eq("userid", userid)
+    .eq("complete","True")
+  
+    if (error) {
+      console.error(error);
+    }
+  let numberOfCompletedExercise = allQuizes?.length;
+  const totalExercise = numberOfCompletedExercise <= 10 ? 10 : (numberOfCompletedExercise - (numberOfCompletedExercise % 10)) + 10
+  const level = totalExercise / 10
+  return {
+    numberOfCompletedExercise,
+    level,
+    totalExercise
+  };
+};
+
+
+
+const compareScoreDescending = (a, b) => subtopics[b].totalScore - subtopics[a].totalScore;
+
+
+export const getInsight = async (userid: string) => {
+  const supabase = createServerSupabaseClient();
+  const { data: allQuizes, error } = await supabase
+    .from("quiz")
+    .select("questions", "submissions")
+    .eq("userid", userid)
   let numberOfCompletedExercise = 0;
-  allQuizes?.map(({ questions, submissions }) => {
-    if (questions.length == submissions.length) numberOfCompletedExercise += 1
+  const subtopics = {}
+  const quiredQuestion = {}
+  allQuizes?.map(async({ submissions }) => {
+    if(submissions){
+      submissions.map(async({questionId,isCorrected})=>{
+       const response =  await supabase
+        .from("grade7_math_data")
+        .select("difficulty_level","metadata")
+        .eq("uuid",questionId)
+      })
+      if(subtopics[response.metadata.subtopic]){
+        subtopics[response.metadata.subtopic].totalQuestion+=1
+        if(isCorrected) subtopics[response.metadata.subtopic].totalCorrectQuestion+=1
+        switch(response.difficulty_level) {
+          case "easy":
+            // code block
+            subtopics[response.metadata.subtopic].easy +=1
+            break;
+          case "medium":
+            // code block
+            subtopics[response.metadata.subtopic].medium +=1
+
+            break;
+          default:
+            // code block
+            subtopics[response.metadata.subtopic].hard +=1
+
+        }
+      }
+      else{
+        subtopics[response.metadata.subtopic] = {
+          totalQuestion:1,
+          totalCorrectQuestion:isCorrected ? 1:0,
+          easy : response.difficulty_level == "easy" ? 1:0,
+          medium : response.difficulty_level == "medium"? 1:0,
+          hard : response.difficulty_level == "hard"? 1:0
+        }
+      }
+    }
   })
+  Object.keys(subtopics).map((subTopic)=>{
+    const {easy,medium,hard} = subtopics[subTopic]
+   if(!(easy && medium && hard)) delete subtopics[subTopic]
+  })
+  subtopics.map(({easy,medium,hard})=>{
+    subtopics.totalScore = easy*1 + medium*2 + hard*4
+  })
+const scoreGreaterThanOrEqualTo4 = [];
+const scoreLessThanOrEqualTo3 = [];
+
+// Function to compare ages in descending order
+
+// Categorize students into arrays
+for (const topic in subtopics) {
+  if (subtopics.hasOwnProperty(topic)) {
+    const score = subtopics[topic].totalScore;
+
+    if (score >= 4) {
+      scoreGreaterThanOrEqualTo4.push(topic);
+    } else {
+      scoreLessThanOrEqualTo3.push(topic);
+    }
+  }
+}
+
+// Sort arrays by age in descending order
+scoreGreaterThanOrEqualTo4.sort(compareScoreDescending);
+scoreLessThanOrEqualTo3.sort(compareScoreDescending);
   if (error) {
     console.error(error);
   }
   return numberOfCompletedExercise;
 };
+
+
+
 export async function getInCompletedQuiz(userId: string) {
   const supabase = createServerSupabaseClient();
   const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000); // Calculate the timestamp for 2 hours ago
