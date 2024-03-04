@@ -134,24 +134,24 @@ export const getQuizStats = async (quizId: string) => {
   return data;
 };
 
-export const getNumberOfCompletedExercise = async (userid: string) => {
+export const getNumberOfCompletedQuiz = async (userid: string) => {
   const supabase = createServerSupabaseClient();
   const { data: allQuizes, error } = await supabase
     .from("quiz")
     .select("questions", "submissions")
-    .eq("userid", userid)
+    .eq("random_user_id", userid)
     .eq("complete","True")
   
     if (error) {
       console.error(error);
     }
-  let numberOfCompletedExercise = allQuizes?.length;
-  const totalExercise = numberOfCompletedExercise <= 10 ? 10 : (numberOfCompletedExercise - (numberOfCompletedExercise % 10)) + 10
-  const level = totalExercise / 10
+  let numberOfCompletedQuiz = allQuizes?.length;
+  const totalQuiz = numberOfCompletedQuiz <= 10 ? 10 : (numberOfCompletedQuiz - (numberOfCompletedQuiz % 10)) + 10
+  const level = totalQuiz / 10
   return {
-    numberOfCompletedExercise,
+    numberOfCompletedQuiz,
     level,
-    totalExercise
+    totalQuiz
   };
 };
 

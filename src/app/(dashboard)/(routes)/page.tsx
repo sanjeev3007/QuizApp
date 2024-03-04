@@ -1,4 +1,4 @@
-import { getInCompletedQuiz, getQuestions } from "@/app/supabase-server";
+import { getInCompletedQuiz, getQuestions, getNumberOfCompletedQuiz } from "@/app/supabase-server";
 import DetailsDialog from "@/components/details-dialog";
 import HistoryCard from "@/components/history-card";
 import HomePage from "@/components/home-page";
@@ -8,6 +8,8 @@ import QuizMeCard from "@/components/quiz";
 
 const Home = async () => {
   const data = await getQuestions();
+  const data1 = await getNumberOfCompletedQuiz("user123")
+  console.log(data1)
   const inCompleteQuiz = await getInCompletedQuiz("user123"); // get the incompleted quiz
   return (
     <div className="p-5 md:p-12 w-full md:max-w-7xl mx-auto bg-[#FFF] !important">
