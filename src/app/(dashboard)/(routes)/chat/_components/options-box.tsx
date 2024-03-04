@@ -4,17 +4,23 @@ import { toast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import ExplainationPopover from "./explaination-popover";
 
 export default function OptionsBox({
   options,
   handleNext,
   completedQuestion,
+  question,
+  answer,
 }: {
   options: any;
   handleNext: any;
   completedQuestion: any;
+  question: string;
+  answer: string;
 }) {
   const handleOptionClick = (index: number) => {
+    console.log("index: ", index);
     if (completedQuestion) {
       return;
     }
@@ -33,7 +39,7 @@ export default function OptionsBox({
             key={i}
             onClick={() => handleOptionClick(i)}
             className={cn(
-              "flex items-center gap-2 p-2 rounded-lg border-2 font-medium text-sm leading-5 border-[#DAE7E7] text-[#5B8989] bg-[#F9FBFB] cursor-pointer transition-all",
+              "flex relative items-center gap-2 p-2 rounded-lg border-2 font-medium text-sm leading-5 border-[#DAE7E7] text-[#5B8989] bg-[#F9FBFB] cursor-pointer transition-all",
               completedQuestion?.selected.text === option.text &&
                 option.correct === "true"
                 ? "bg-[#70C29C] text-[#FFF]"
@@ -66,6 +72,10 @@ export default function OptionsBox({
               )}
             </div>
             <p className="text-sm">{option.text}</p>
+            {completedQuestion?.selected.text === option.text &&
+              option.correct === "false" && (
+                <ExplainationPopover question={question} answer={answer} />
+              )}
           </button>
         ))}
       </div>

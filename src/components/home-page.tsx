@@ -19,6 +19,7 @@ import { z } from "zod";
 import { useRouter } from "next/navigation";
 import quizIcon from "@/assets/Images/quizIcon.svg";
 import calculator from "@/assets/Images/calculator.png";
+import redirect_arrow from "@/assets/Images/redirect_arrow.png";
 import levelCup from "@/assets/Images/levelCup.png";
 import levelCupStraight from "@/assets/Images/levelCupStraight.png";
 import podium from "@/assets/Images/podium.png";
@@ -115,7 +116,7 @@ const HomePage = ({ QuestionList, inCompleteQuiz }: Props) => {
   }, []);
 
   return (
-    <div>
+    <div className="mb-[2.5rem]">
       <div className="flex flex-col-reverse mt-2 md:grid md:grid-cols-2 gap-4 md:mt-4">
         <div className="md:justify-self-center md:self-center grid gap-2 mt-2 md:grid-cols-1">
           <div className="tracking-normal text-xl font-extrabold text-wrap md:text-4xl md:leading-10">
@@ -177,7 +178,7 @@ const HomePage = ({ QuestionList, inCompleteQuiz }: Props) => {
                   "w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-semibold text-[#FFF] hover:bg-[#E98451]",
                   mobileScreen && "px-5 py-6 w-[50%]"
                 )}
-                onClick={() => router.push(`/chat/${inCompleteQuiz.id}`)}
+                onClick={() => router.push(`/chat/${inCompleteQuiz?.id}`)}
               >
                 Continue{" "}
                 <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
@@ -186,7 +187,7 @@ const HomePage = ({ QuestionList, inCompleteQuiz }: Props) => {
               <Button
                 className={cn(
                   "w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-semibold text-[#FFF] hover:bg-[#E98451]",
-                  mobileScreen && "fixed bottom-0 w-[90%]" // Conditionally apply 'fixed bottom-0' for mobile screens
+                  mobileScreen && level < 2 && "fixed bottom-0 w-[90%]" // Conditionally apply 'fixed bottom-0' for mobile screens
                 )}
                 onClick={() => onSubmit()}
               >
@@ -201,12 +202,17 @@ const HomePage = ({ QuestionList, inCompleteQuiz }: Props) => {
             <Button
               className={cn(
                 "w-max px-11 mt-[2rem] py-6 bg-[#B59585] text-lg font-semibold text-[#FFFFFF] hover:bg-[#B59585]",
+                level > 1 && "text-[#E98451] border-2 border-[#E98451] bg-[#FFF]",
                 mobileScreen && "px-5 py-6 w-[50%]"
               )}
               // onClick={onSubmit}
             >
               View Insights{" "}
-              <LockOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
+              {level > 1 ? (
+                <Image src={redirect_arrow} alt="redirect" className="ml-3" />
+              ):(
+                <LockOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
+              )}
             </Button>
           </div>
         </div>

@@ -39,14 +39,12 @@ export default function MCQBox({
           options={currentQuestion?.options}
           handleNext={handleNext}
           completedQuestion={completedQuestion}
+          question={currentQuestion?.question}
+          answer={correctAnswer}
         />
         {!completedQuestion && (
           <FeedBackForm questionId={currentQuestion?.uuid} />
         )}
-        <ExplainationPopover
-          question={currentQuestion?.question}
-          answer={correctAnswer}
-        />
       </div>
     </div>
   );
