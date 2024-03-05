@@ -73,7 +73,7 @@ export function EndChatMessage({
           <Button
             variant={"secondary"}
             className="w-fit"
-            onClick={() => router.push(`/yourScore`)}
+            onClick={() => showQuizScore(true)}
           >
             View Score
             <BarChart className="w-4 h-4 ml-2" />

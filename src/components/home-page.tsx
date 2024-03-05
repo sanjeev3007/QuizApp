@@ -188,7 +188,9 @@ const HomePage = ({
                       </span>
                     </div>
                     <div className="text-sm font-bold text-[#5B8989]">
-                      Answer 8 more quizzes to level up!
+                      Answer{" "}
+                      {quizData?.totalQuiz - quizData?.numberOfCompletedQuiz}{" "}
+                      more quizzes to level up!
                     </div>
                   </div>
                 </div>
@@ -231,12 +233,12 @@ const HomePage = ({
             <Button
               className={cn(
                 "w-max px-11 mt-[2rem] py-6 bg-[#B59585] text-lg font-semibold text-[#FFFFFF] hover:bg-[#B59585]",
-                level > 1 &&
+                level > 0 &&
                   "text-[#E98451] border-2 border-[#E98451] bg-[#FFF]",
                 mobileScreen && "px-5 py-6 w-[50%]"
               )}
               onClick={viewScore}
-              disabled={level < 1}
+              disabled={true}
             >
               View Insights{" "}
               {level > 0 ? (
