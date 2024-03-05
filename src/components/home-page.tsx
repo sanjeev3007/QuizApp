@@ -63,10 +63,9 @@ const HomePage = ({
   const router = useRouter();
   const theme = useTheme();
   const mobileScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const [isActive, setIsActive] = useState<boolean>(
-    inCompleteQuiz?.start && !inCompleteQuiz?.complete
-  ); // check if the quiz is active
-  const [submissions, setSubmissions] = useState<any[]>([]);
+  const [isActive] = useState<boolean>(
+    inCompleteQuiz ? inCompleteQuiz?.start && !inCompleteQuiz?.complete : false
+  );
   const [loader, setLoader] = useState<boolean>(false);
   const level = quizData?.level;
   const levelPercent =
@@ -74,23 +73,11 @@ const HomePage = ({
 
   const onSubmit = async (data?: Input) => {
     setLoader(true);
-    // const userId = Math.random().toString(36).substring(7);
-    const user = {
-      name: data?.name || "satvik",
-      age: data?.age || 15,
-      id: userId,
-    };
-
-    // localStorage.setItem("quiz_user", JSON.stringify(user));
 
     const supabase = createClientComponentClient();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
     const { data: assessment_data, error } = await supabase
       .from("quiz")
       .insert({
-        // random_user_id: userId,
         userid: userId,
         topic: QuestionList?.[0].metadata.topic,
         questions: QuestionList,
@@ -125,14 +112,6 @@ const HomePage = ({
       router.push(`/yourScore`);
     }
   };
-
-  useEffect(() => {
-    // getting the user submissions
-    const user_submissions = localStorage.getItem("cyquiz");
-    if (user_submissions) {
-      setSubmissions(JSON.parse(user_submissions).submissions);
-    }
-  }, []);
 
   return (
     <div className="mb-[2.5rem]">

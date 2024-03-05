@@ -64,8 +64,7 @@ export const feedbackQuiz = async ({
 
 export async function getInCompletedQuiz(userId: string) {
   const supabase = createClientComponentClient();
-  const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000); // Calculate the timestamp for 2 hours ago
-  console.log(twoHoursAgo.toISOString());
+  const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
   const { data, error } = await supabase
     .from("quiz")
     .select("*")
@@ -78,4 +77,42 @@ export async function getInCompletedQuiz(userId: string) {
     console.error("incomplete quiz error", error);
   }
   return data;
+}
+
+export async function storeUserSubmission(
+  quizId: string,
+  userId: string,
+  submission: any
+) {
+  const supabase = createClientComponentClient();
+  const { data, error } = await supabase
+    .from("quiz")
+    .select("submissions")
+    .eq("id", quizId)
+    .eq("userid", userId)
+    .single();
+
+  if (error) {
+    console.error("store user submission error", error);
+    return { success: false };
+  }
+
+  const previousSubmissions = data?.submissions || [];
+  const updatedSubmissions = [...previousSubmissions, submission];
+
+  const { error: updateError } = await supabase
+    .from("quiz")
+    .update({
+      submissions: updatedSubmissions,
+    })
+    .eq("id", quizId)
+    .eq("userid", userId)
+    .select();
+
+  if (updateError) {
+    console.error("store user submission error", updateError);
+    return { success: false };
+  }
+
+  return { success: true, data };
 }

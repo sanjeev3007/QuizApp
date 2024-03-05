@@ -16,9 +16,13 @@ import SelectedAnswer from "./selected-answer";
 import { Input } from "@/components/ui/input";
 import QuizScore from "./quiz-score-diloag";
 import { EndChatMessage, InitialChatMessage } from "./chat-messages";
-import { updateQuizStats } from "@/app/supabase-client-provider";
+import {
+  storeUserSubmission,
+  updateQuizStats,
+} from "@/app/supabase-client-provider";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { QuizDataType } from "@/types/quiz.types";
 
 type Option = {
   text: string;
@@ -26,20 +30,24 @@ type Option = {
 };
 
 type ChatProps = {
-  questionList: any[];
+  quizData: QuizDataType;
   quizId: string;
-  isComplete: boolean;
 };
 
-export default function Chat({ questionList, quizId, isComplete }: ChatProps) {
+export default function Chat({ quizData, quizId }: ChatProps) {
   const bottom = useRef<HTMLDivElement>(null);
-  const [questionIndex, setQuestionIndex] = useState(0);
+  const [questionIndex, setQuestionIndex] = useState(
+    quizData.submissions.length || 0
+  );
   const [hasEnded, setHasEnded] = useState(false);
-  const [submissions, setSubmissions] = useState([] as any[]);
+  const [submissions, setSubmissions] = useState(quizData.submissions || []);
   const [quizScore, showQuizScore] = useState(false);
-  const [start, setStart] = useState(false);
+  const [start, setStart] = useState(quizData.start);
   const [userInput, setUserInput] = useState("");
+  const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
+
+  const { questions: questionList, complete: isComplete } = quizData;
 
   // Get the current question
   const currentQuestion = useMemo(() => {
@@ -77,16 +85,22 @@ export default function Chat({ questionList, quizId, isComplete }: ChatProps) {
     return isCorrect;
   };
 
+  // store user submission to db
+  const storeUserSubmissionToDB = async (answerData: any) => {
+    await storeUserSubmission(quizId, "demo_user_id", answerData);
+  };
+
   // Handle the next button click
   const handleNext = useCallback(
     (index: number) => {
+      console.log(index);
       if (!options[index]) {
         toast({ title: "Invalid answer", duration: 3000 });
         return;
       }
       const isCorrect = checkAnswer(index);
 
-      setSubmissions((submissions) => [
+      setSubmissions((submissions: any) => [
         ...submissions,
         {
           questionId: currentQuestion?.uuid,
@@ -94,21 +108,6 @@ export default function Chat({ questionList, quizId, isComplete }: ChatProps) {
           isCorrect,
         },
       ]);
-
-      localStorage.setItem(
-        "cyquiz",
-        JSON.stringify({
-          quizId,
-          submissions: [
-            ...submissions,
-            {
-              questionId: currentQuestion?.uuid,
-              selected: options[index!],
-              isCorrect,
-            },
-          ],
-        })
-      );
 
       if (allQuestionsAnswered) {
         console.log(submissions, submissions.length, questionList.length);
@@ -119,6 +118,32 @@ export default function Chat({ questionList, quizId, isComplete }: ChatProps) {
     },
     [checkAnswer, questionIndex, questionList]
   );
+
+  const handleNextAsync = async (index: number) => {
+    console.log(index);
+    if (!options[index]) {
+      toast({ title: "Invalid answer", duration: 3000 });
+      return;
+    }
+    const isCorrect = checkAnswer(index);
+
+    const selectedSubmission = {
+      questionId: currentQuestion?.uuid,
+      selected: options[index!],
+      isCorrect,
+    };
+
+    await storeUserSubmissionToDB(selectedSubmission);
+
+    setSubmissions((submissions: any) => [...submissions, selectedSubmission]);
+
+    if (allQuestionsAnswered) {
+      console.log(submissions, submissions.length, questionList.length);
+      return;
+    }
+    // Move to the next question
+    setQuestionIndex((questionIndex) => questionIndex + 1);
+  };
 
   // Check if all questions have been answered
   const allQuestionsAnswered = useMemo(() => {
@@ -164,24 +189,14 @@ export default function Chat({ questionList, quizId, isComplete }: ChatProps) {
   };
 
   useEffect(() => {
-    const data = localStorage.getItem("cyquiz");
-    if (data) {
-      // Get the submissions from the local storage
-      const { submissions } = JSON.parse(data);
-      setSubmissions(submissions);
-      setQuestionIndex(submissions.length);
-
-      // Check if the user has already started the quiz
-      if (submissions.length) {
-        setStart(true);
-      }
-    }
-
     // If the quiz is complete, redirect to the home page
     if (isComplete) {
       router.push("/");
     }
+    setIsMounted(true);
   }, []);
+
+  if (!isMounted) return null;
 
   return (
     <ScrollArea className="h-full w-full flex flex-col">
@@ -194,7 +209,7 @@ export default function Chat({ questionList, quizId, isComplete }: ChatProps) {
               <div className="grid" key={i}>
                 <MCQBox
                   currentQuestion={question}
-                  handleNext={handleNext}
+                  handleNext={handleNextAsync}
                   submissions={submissions}
                   questionIndex={i + 1}
                 />
