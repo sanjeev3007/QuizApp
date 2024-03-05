@@ -13,20 +13,15 @@ export const getQuizStats = async (quizId: string) => {
   return data;
 };
 
-export const updateQuizStats = async (
-  quizId: string,
-  submissions: any[],
-  userId: string
-) => {
+export const updateQuizStats = async (quizId: string, userId: string) => {
   const supabase = createClientComponentClient();
   const { error } = await supabase
     .from("quiz")
     .update({
-      submissions,
       complete: true,
     })
     .eq("id", quizId)
-    .eq("random_user_id", userId)
+    .eq("userid", userId)
     .select();
   if (error) {
     console.error(error);
@@ -85,34 +80,15 @@ export async function storeUserSubmission(
   submission: any
 ) {
   const supabase = createClientComponentClient();
-  const { data, error } = await supabase
-    .from("quiz")
-    .select("submissions")
-    .eq("id", quizId)
-    .eq("userid", userId)
-    .single();
 
-  if (error) {
-    console.error("store user submission error", error);
-    return { success: false };
-  }
-
-  const previousSubmissions = data?.submissions || [];
-  const updatedSubmissions = [...previousSubmissions, submission];
-
-  const { error: updateError } = await supabase
+  const { data } = await supabase
     .from("quiz")
     .update({
-      submissions: updatedSubmissions,
+      submissions: submission,
     })
     .eq("id", quizId)
     .eq("userid", userId)
     .select();
-
-  if (updateError) {
-    console.error("store user submission error", updateError);
-    return { success: false };
-  }
 
   return { success: true, data };
 }

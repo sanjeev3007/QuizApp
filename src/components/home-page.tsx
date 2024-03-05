@@ -62,9 +62,12 @@ const HomePage = ({
 }: Props) => {
   const router = useRouter();
   const theme = useTheme();
+
   const mobileScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [isActive] = useState<boolean>(
-    inCompleteQuiz ? inCompleteQuiz?.start && !inCompleteQuiz?.complete : false
+    quizData?.numberOfCompletedQuiz == 0
+      ? false
+      : quizData?.numberOfCompletedQuiz < quizData?.totalQuiz
   );
   const [loader, setLoader] = useState<boolean>(false);
   const level = quizData?.level;
@@ -201,9 +204,13 @@ const HomePage = ({
                 )}
                 onClick={() => onSubmit()}
               >
-                Get Started{" "}
+                Get Started
                 {loader ? (
-                  <CircularProgress color="inherit" size={25} />
+                  <CircularProgress
+                    color="inherit"
+                    size={25}
+                    className="ml-2"
+                  />
                 ) : (
                   <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
                 )}

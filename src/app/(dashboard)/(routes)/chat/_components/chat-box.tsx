@@ -37,7 +37,7 @@ type ChatProps = {
 export default function Chat({ quizData, quizId }: ChatProps) {
   const bottom = useRef<HTMLDivElement>(null);
   const [questionIndex, setQuestionIndex] = useState(
-    quizData.submissions.length || 0
+    quizData.submissions?.length || 0
   );
   const [hasEnded, setHasEnded] = useState(false);
   const [submissions, setSubmissions] = useState(quizData.submissions || []);
@@ -68,15 +68,11 @@ export default function Chat({ quizData, quizId }: ChatProps) {
 
   // End the quiz
   const endGame = async () => {
-    const user = localStorage.getItem("quiz_user");
-    const userId = JSON.parse(user!)?.id;
-    if (!userId) return;
     // Update the quiz stats
-    const { success } = await updateQuizStats(quizId, submissions, userId);
+    const { success } = await updateQuizStats(quizId, "demo_user_id");
     if (!success) {
       toast({ title: "Something went wrong!", duration: 3000 });
     }
-    localStorage.removeItem("cyquiz");
   };
 
   // Check if the selected answer is correct
@@ -85,15 +81,16 @@ export default function Chat({ quizData, quizId }: ChatProps) {
     return isCorrect;
   };
 
-  // store user submission to db
-  const storeUserSubmissionToDB = async (answerData: any) => {
-    await storeUserSubmission(quizId, "demo_user_id", answerData);
-  };
+  useEffect(() => {
+    // Store the user submission to the db
+    (async () => {
+      await storeUserSubmission(quizId, "demo_user_id", submissions);
+    })();
+  }, [submissions]);
 
   // Handle the next button click
   const handleNext = useCallback(
     (index: number) => {
-      console.log(index);
       if (!options[index]) {
         toast({ title: "Invalid answer", duration: 3000 });
         return;
@@ -109,41 +106,12 @@ export default function Chat({ quizData, quizId }: ChatProps) {
         },
       ]);
 
-      if (allQuestionsAnswered) {
-        console.log(submissions, submissions.length, questionList.length);
-        return;
-      }
+      if (allQuestionsAnswered) return;
       // Move to the next question
       setQuestionIndex((questionIndex) => questionIndex + 1);
     },
     [checkAnswer, questionIndex, questionList]
   );
-
-  const handleNextAsync = async (index: number) => {
-    console.log(index);
-    if (!options[index]) {
-      toast({ title: "Invalid answer", duration: 3000 });
-      return;
-    }
-    const isCorrect = checkAnswer(index);
-
-    const selectedSubmission = {
-      questionId: currentQuestion?.uuid,
-      selected: options[index!],
-      isCorrect,
-    };
-
-    await storeUserSubmissionToDB(selectedSubmission);
-
-    setSubmissions((submissions: any) => [...submissions, selectedSubmission]);
-
-    if (allQuestionsAnswered) {
-      console.log(submissions, submissions.length, questionList.length);
-      return;
-    }
-    // Move to the next question
-    setQuestionIndex((questionIndex) => questionIndex + 1);
-  };
 
   // Check if all questions have been answered
   const allQuestionsAnswered = useMemo(() => {
@@ -209,7 +177,7 @@ export default function Chat({ quizData, quizId }: ChatProps) {
               <div className="grid" key={i}>
                 <MCQBox
                   currentQuestion={question}
-                  handleNext={handleNextAsync}
+                  handleNext={handleNext}
                   submissions={submissions}
                   questionIndex={i + 1}
                 />
@@ -242,14 +210,3 @@ export default function Chat({ quizData, quizId }: ChatProps) {
     </ScrollArea>
   );
 }
-
-/*
-{
-  id: feedbackId,
-  questionId: abc,
-  userId: 123,
-  response: good | bad,
-  reasons: "I didn't understand the question",
-  createdAt: timestamp,
-}
-*/
