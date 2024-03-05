@@ -36,19 +36,19 @@ export async function getSession() {
 export const getQuestions = async () => {
   const supabase = createServerSupabaseClient();
   let { data: level1, error: level1Error } = await supabase
-    .from("grade7_math_data")
+    .from("db_grade7_math")
     .select("*")
     .in("blooms_level", ["Knowing", "Understanding"])
     .limit(4);
 
   let { data: level2, error: level2Error } = await supabase
-    .from("grade7_math_data")
+    .from("db_grade7_math")
     .select("*")
     .in("blooms_level", ["Analyzing", "Applying"])
     .limit(3);
 
   let { data: level3, error: level3Error } = await supabase
-    .from("grade7_math_data")
+    .from("db_grade7_math")
     .select("*")
     .in("blooms_level", ["Evaluating", "Creating"])
     .limit(3);
@@ -173,7 +173,7 @@ export const getInsight = async (userid: string) => {
     if(submissions){
       submissions.map(async({questionId,isCorrected})=>{
        const response =  await supabase
-        .from("grade7_math_data")
+        .from("db_grade7_math")
         .select("difficulty_level","metadata")
         .eq("uuid",questionId)
       })
