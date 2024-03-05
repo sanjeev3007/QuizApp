@@ -14,18 +14,11 @@ if (typeof window !== "undefined") {
 
 export function InitialChatMessage({
   setStart,
+  user,
 }: {
   setStart: Dispatch<SetStateAction<boolean>>;
+  user: { name: string; grade: string; id: string };
 }) {
-  const [user, setUser] = useState<{ name: string; age: string } | null>(null);
-
-  useEffect(() => {
-    if (localStorage && !localStorage.getItem("quiz_user")) return;
-    const storedUser = JSON.parse(localStorage.getItem("quiz_user")!);
-    setUser(storedUser);
-  }, []);
-
-  if (!user) return null;
   return (
     <div className="max-w-3xl my-2 flex items-start w-full gap-x-2">
       <div className="bg-orange-300 w-10 h-10 rounded-full grid place-items-center">
@@ -53,11 +46,11 @@ export function InitialChatMessage({
 
 export function EndChatMessage({
   showQuizScore,
+  user,
 }: {
   showQuizScore: Dispatch<SetStateAction<boolean>>;
+  user: { name: string; grade: string; id: string };
 }) {
-  const router = useRouter();
-  const user = JSON.parse(localStorage.getItem("quiz_user")!);
   return (
     <div className="max-w-lg my-2 flex items-start w-full gap-x-2">
       <div className="bg-orange-300 w-10 h-10 rounded-full grid place-items-center">

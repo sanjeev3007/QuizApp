@@ -32,9 +32,14 @@ type Option = {
 type ChatProps = {
   quizData: QuizDataType;
   quizId: string;
+  user: {
+    name: string;
+    grade: string;
+    id: string;
+  };
 };
 
-export default function Chat({ quizData, quizId }: ChatProps) {
+export default function Chat({ quizData, quizId, user }: ChatProps) {
   const bottom = useRef<HTMLDivElement>(null);
   const [questionIndex, setQuestionIndex] = useState(
     quizData.submissions?.length || 0
@@ -42,7 +47,7 @@ export default function Chat({ quizData, quizId }: ChatProps) {
   const [hasEnded, setHasEnded] = useState(false);
   const [submissions, setSubmissions] = useState(quizData.submissions || []);
   const [quizScore, showQuizScore] = useState(false);
-  const [start, setStart] = useState(quizData.start);
+  const [start, setStart] = useState(!!quizData.submissions?.length);
   const [userInput, setUserInput] = useState("");
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
@@ -69,7 +74,7 @@ export default function Chat({ quizData, quizId }: ChatProps) {
   // End the quiz
   const endGame = async () => {
     // Update the quiz stats
-    const { success } = await updateQuizStats(quizId, "demo_user_id");
+    const { success } = await updateQuizStats(quizId, user.id);
     if (!success) {
       toast({ title: "Something went wrong!", duration: 3000 });
     }
@@ -84,7 +89,7 @@ export default function Chat({ quizData, quizId }: ChatProps) {
   useEffect(() => {
     // Store the user submission to the db
     (async () => {
-      await storeUserSubmission(quizId, "demo_user_id", submissions);
+      await storeUserSubmission(quizId, user.id, submissions);
     })();
   }, [submissions]);
 
@@ -171,7 +176,7 @@ export default function Chat({ quizData, quizId }: ChatProps) {
       <div className="flex-1 px-2 md:px-8">
         <div className="pb-4 max-w-4xl mx-auto h-full w-full">
           <Toaster />
-          <InitialChatMessage setStart={setStart} />
+          <InitialChatMessage setStart={setStart} user={user} />
           {start &&
             questionList.slice(0, questionIndex + 1).map((question, i) => (
               <div className="grid" key={i}>
@@ -184,7 +189,9 @@ export default function Chat({ quizData, quizId }: ChatProps) {
                 <SelectedAnswer submissions={submissions} index={i} />
               </div>
             ))}
-          {hasEnded && <EndChatMessage showQuizScore={showQuizScore} />}
+          {hasEnded && (
+            <EndChatMessage showQuizScore={showQuizScore} user={user} />
+          )}
         </div>
         <div className="" ref={bottom}></div>
         <form

@@ -63,12 +63,10 @@ const HomePage = ({
   const router = useRouter();
   const theme = useTheme();
 
+  const isActiveJourney = quizData?.numberOfCompletedQuiz == 0 ? false : true;
+
   const mobileScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const [isActive] = useState<boolean>(
-    quizData?.numberOfCompletedQuiz == 0
-      ? false
-      : quizData?.numberOfCompletedQuiz < quizData?.totalQuiz
-  );
+  const [isActive] = useState<boolean>(isActiveJourney);
   const [loader, setLoader] = useState<boolean>(false);
   const level = quizData?.level;
   const levelPercent =
@@ -76,6 +74,11 @@ const HomePage = ({
 
   const onSubmit = async (data?: Input) => {
     setLoader(true);
+
+    if (!!inCompleteQuiz) {
+      router.push(`/chat/${inCompleteQuiz.id}`);
+      return;
+    }
 
     const supabase = createClientComponentClient();
     const { data: assessment_data, error } = await supabase
@@ -191,7 +194,7 @@ const HomePage = ({
                   "w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-semibold text-[#FFF] hover:bg-[#E98451]",
                   mobileScreen && "px-5 py-6 w-[50%]"
                 )}
-                onClick={() => router.push(`/chat/${inCompleteQuiz?.id}`)}
+                onClick={() => onSubmit()}
               >
                 Continue{" "}
                 <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
