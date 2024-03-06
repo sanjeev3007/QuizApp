@@ -9,9 +9,9 @@ export default async function Page({
   params: { quizId: string };
 }) {
   const quizData = await getQuizById(quizId);
-  const userName = getCookie("userName", { cookies });
-  const user_Id = getCookie("userId", { cookies });
-  const grade = getCookie("grade", { cookies });
+  const userName = getCookie("userName", { cookies }) || "demo_user_id_2";
+  const user_Id = getCookie("userId", { cookies }) || "demo_user_id_2";
+  const grade = getCookie("grade", { cookies }) || "demo_user_id_2";
   if (!quizData?.length)
     return <div className="mt-44 text-center">Not found.</div>;
   return (

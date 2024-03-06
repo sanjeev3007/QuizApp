@@ -20,7 +20,6 @@ export default function OptionsBox({
   answer: string;
 }) {
   const handleOptionClick = (index: number) => {
-    console.log("index: ", index);
     if (completedQuestion) {
       return;
     }
@@ -35,7 +34,6 @@ export default function OptionsBox({
         {JSON.parse(options).map((option: any, i: number) => (
           <button
             type="button"
-            disabled={completedQuestion}
             key={i}
             onClick={() => handleOptionClick(i)}
             className={cn(

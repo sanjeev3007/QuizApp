@@ -45,7 +45,9 @@ export default function Chat({ quizData, quizId, user }: ChatProps) {
     quizData.submissions?.length || 0
   );
   const [hasEnded, setHasEnded] = useState(false);
-  const [submissions, setSubmissions] = useState(quizData.submissions || []);
+  const [submissions, setSubmissions] = useState<any[]>(
+    quizData?.submissions || []
+  );
   const [quizScore, showQuizScore] = useState(false);
   const [start, setStart] = useState(!!quizData.submissions?.length);
   const [userInput, setUserInput] = useState("");
@@ -90,6 +92,7 @@ export default function Chat({ quizData, quizId, user }: ChatProps) {
     // Store the user submission to the db
     (async () => {
       await storeUserSubmission(quizId, user.id, submissions);
+      router.refresh();
     })();
   }, [submissions]);
 
