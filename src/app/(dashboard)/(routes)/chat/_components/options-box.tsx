@@ -35,7 +35,10 @@ export default function OptionsBox({
         {JSON.parse(options).map((option: any, i: number) => (
           <button
             type="button"
-            disabled={completedQuestion}
+            disabled={
+              completedQuestion?.selected.text === option.text &&
+              option.correct === "true"
+            }
             key={i}
             onClick={() => handleOptionClick(i)}
             className={cn(
