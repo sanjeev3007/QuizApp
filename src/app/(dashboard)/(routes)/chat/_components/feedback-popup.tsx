@@ -26,10 +26,10 @@ export default function FeedBackPopup({
   }: {
     open: boolean;
     handleClickOpen: (open: boolean) => void;
-    handleClose: (open: boolean) => void;
+    handleClose: any;
     showOptions: boolean;
     reasons: Array<{ id: number; text: string }>;
-    handleReason: (reasonId: number) => void;
+    handleReason: any;
     responses: string | null;
     loader: boolean;
   }) {

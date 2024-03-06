@@ -17,9 +17,11 @@ import { Input } from "@/components/ui/input";
 import QuizScore from "./quiz-score-diloag";
 import { EndChatMessage, InitialChatMessage } from "./chat-messages";
 import {
+  getQuestions,
   storeUserSubmission,
   updateQuizStats,
 } from "@/app/supabase-client-provider";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { QuizDataType } from "@/types/quiz.types";
@@ -37,9 +39,15 @@ type ChatProps = {
     grade: string;
     id: string;
   };
+  numberOfCompletedQuizData: any;
 };
 
-export default function Chat({ quizData, quizId, user }: ChatProps) {
+export default function Chat({
+  quizData,
+  quizId,
+  user,
+  numberOfCompletedQuizData,
+}: ChatProps) {
   const bottom = useRef<HTMLDivElement>(null);
   const [questionIndex, setQuestionIndex] = useState(
     quizData.submissions?.length || 0
@@ -52,9 +60,36 @@ export default function Chat({ quizData, quizId, user }: ChatProps) {
   const [start, setStart] = useState(!!quizData.submissions?.length);
   const [userInput, setUserInput] = useState("");
   const [isMounted, setIsMounted] = useState(false);
+
   const router = useRouter();
 
   const { questions: questionList, complete: isComplete } = quizData;
+
+  const startNewQuiz = async () => {
+    const supabase = createClientComponentClient();
+
+    const QuestionLists = await getQuestions();
+    if (QuestionLists.length === 0) {
+      return;
+    }
+
+    const { data: assessment_data, error } = await supabase
+      .from("quiz")
+      .insert({
+        userid: user.id,
+        topic: QuestionLists?.[0].metadata.topic,
+        questions: QuestionLists,
+        start: true,
+      })
+      .select();
+
+    if (error) {
+      console.error(error);
+    }
+    if (assessment_data && assessment_data.length > 0) {
+      router.push(`/chat/${assessment_data[0].id}`);
+    }
+  };
 
   // Get the current question
   const currentQuestion = useMemo(() => {
@@ -193,7 +228,11 @@ export default function Chat({ quizData, quizId, user }: ChatProps) {
               </div>
             ))}
           {hasEnded && (
-            <EndChatMessage showQuizScore={showQuizScore} user={user} />
+            <EndChatMessage
+              showQuizScore={showQuizScore}
+              user={user}
+              startNewQuiz={startNewQuiz}
+            />
           )}
         </div>
         <div className="" ref={bottom}></div>
@@ -216,7 +255,12 @@ export default function Chat({ quizData, quizId, user }: ChatProps) {
           </div>
         </form>
       </div>
-      <QuizScore quizId={quizId} open={quizScore} setOpen={showQuizScore} />
+      <QuizScore
+        quizId={quizId}
+        open={quizScore}
+        setOpen={showQuizScore}
+        numberOfCompletedQuizData={numberOfCompletedQuizData}
+      />
     </ScrollArea>
   );
 }

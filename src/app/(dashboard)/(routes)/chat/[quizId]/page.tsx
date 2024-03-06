@@ -1,4 +1,4 @@
-import { getQuizById } from "@/app/supabase-server";
+import { getNumberOfCompletedQuiz, getQuizById } from "@/app/supabase-server";
 import Chat from "../_components/chat-box";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
@@ -12,6 +12,8 @@ export default async function Page({
   const userName = getCookie("userName", { cookies }) || "demo_user_id_2";
   const user_Id = getCookie("userId", { cookies }) || "demo_user_id_2";
   const grade = getCookie("grade", { cookies }) || "demo_user_id_2";
+  const numberOfCompletedQuizData = await getNumberOfCompletedQuiz(user_Id!);
+
   if (!quizData?.length)
     return <div className="mt-44 text-center">Not found.</div>;
   return (
@@ -24,6 +26,7 @@ export default async function Page({
           grade: grade!,
           id: user_Id!,
         }}
+        numberOfCompletedQuizData={numberOfCompletedQuizData}
       />
     </div>
   );
