@@ -138,24 +138,26 @@ export const getNumberOfCompletedQuiz = async (userid: string) => {
   const supabase = createServerSupabaseClient();
   const { data: allQuizes, error } = await supabase
     .from("quiz")
-    .select("questions", "submissions")
+    .select("questions, submissions")
     .eq("userid", userid)
-    .eq("complete","True")
-  
-    if (error) {
-      console.error(error);
-    }
-  let numberOfCompletedQuiz = allQuizes?.length;
-  const totalQuiz = numberOfCompletedQuiz <= 10 ? 10 : (numberOfCompletedQuiz - (numberOfCompletedQuiz % 10)) + 10
-  const level = totalQuiz / 10
+    .eq("complete", "True");
+
+  if (error) {
+    console.error(error);
+  }
+  let numberOfCompletedQuiz = allQuizes?.length || 0;
+
+  const totalQuiz =
+    numberOfCompletedQuiz <= 10
+      ? 10
+      : numberOfCompletedQuiz - (numberOfCompletedQuiz % 10) + 10;
+  const level = totalQuiz / 10;
   return {
     numberOfCompletedQuiz,
     level,
-    totalQuiz
+    totalQuiz,
   };
 };
-
-
 
 const compareScoreDescending = (a, b) => subtopics[b].totalScore - subtopics[a].totalScore;
 
@@ -224,24 +226,31 @@ for (const topic in subtopics) {
   if (subtopics.hasOwnProperty(topic)) {
     const score = subtopics[topic].totalScore;
 
-    if (score >= 4) {
-      scoreGreaterThanOrEqualTo4.push(topic);
-    } else {
-      scoreLessThanOrEqualTo3.push(topic);
-    }
-  }
-}
+//   // Function to compare ages in descending order
 
-// Sort arrays by age in descending order
-scoreGreaterThanOrEqualTo4.sort(compareScoreDescending);
-scoreLessThanOrEqualTo3.sort(compareScoreDescending);
-  if (error) {
-    console.error(error);
-  }
-  return numberOfCompletedExercise;
+//   // Categorize students into arrays
+//   for (const topic in subtopics) {
+//     if (subtopics.hasOwnProperty(topic)) {
+//       const score = subtopics[topic].totalScore;
+
+//       if (score >= 4) {
+//         scoreGreaterThanOrEqualTo4.push(topic);
+//       } else {
+//         scoreLessThanOrEqualTo3.push(topic);
+//       }
+//     }
+//   }
+
+//   // Sort arrays by age in descending order
+//   scoreGreaterThanOrEqualTo4.sort(compareScoreDescending);
+//   scoreLessThanOrEqualTo3.sort(compareScoreDescending);
+//   if (error) {
+//     console.error(error);
+//   }
+//   return numberOfCompletedExercise;
 };
-
-
+}
+}
 
 export async function getInCompletedQuiz(userId: string) {
   const supabase = createServerSupabaseClient();

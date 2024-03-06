@@ -62,11 +62,11 @@ const HomePage = ({
 }: Props) => {
   const router = useRouter();
   const theme = useTheme();
+
+  const isActiveJourney = quizData?.numberOfCompletedQuiz == 0 ? false : true;
+
   const mobileScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const [isActive, setIsActive] = useState<boolean>(
-    inCompleteQuiz?.start && !inCompleteQuiz?.complete
-  ); // check if the quiz is active
-  const [submissions, setSubmissions] = useState<any[]>([]);
+  const [isActive] = useState<boolean>(isActiveJourney);
   const [loader, setLoader] = useState<boolean>(false);
   const level = quizData?.level;
   const levelPercent =
@@ -74,23 +74,16 @@ const HomePage = ({
 
   const onSubmit = async (data?: Input) => {
     setLoader(true);
-    // const userId = Math.random().toString(36).substring(7);
-    const user = {
-      name: data?.name || "satvik",
-      age: data?.age || 15,
-      id: userId,
-    };
 
-    // localStorage.setItem("quiz_user", JSON.stringify(user));
+    if (!!inCompleteQuiz) {
+      router.push(`/chat/${inCompleteQuiz.id}`);
+      return;
+    }
 
     const supabase = createClientComponentClient();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
     const { data: assessment_data, error } = await supabase
       .from("quiz")
       .insert({
-        // random_user_id: userId,
         userid: userId,
         topic: QuestionList?.[0].metadata.topic,
         questions: QuestionList,
@@ -125,14 +118,6 @@ const HomePage = ({
       router.push(`/yourScore`);
     }
   };
-
-  useEffect(() => {
-    // getting the user submissions
-    const user_submissions = localStorage.getItem("cyquiz");
-    if (user_submissions) {
-      setSubmissions(JSON.parse(user_submissions).submissions);
-    }
-  }, []);
 
   return (
     <div className="mb-[2.5rem]">
@@ -188,7 +173,9 @@ const HomePage = ({
                       </span>
                     </div>
                     <div className="text-sm font-bold text-[#5B8989]">
-                      Answer 8 more quizzes to level up!
+                      Answer{" "}
+                      {quizData?.totalQuiz - quizData?.numberOfCompletedQuiz}{" "}
+                      more quizzes to level up!
                     </div>
                   </div>
                 </div>
@@ -207,7 +194,7 @@ const HomePage = ({
                   "w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-semibold text-[#FFF] hover:bg-[#E98451]",
                   mobileScreen && "px-5 py-6 w-[50%]"
                 )}
-                onClick={() => router.push(`/chat/${inCompleteQuiz?.id}`)}
+                onClick={() => onSubmit()}
               >
                 Continue{" "}
                 <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
@@ -220,9 +207,13 @@ const HomePage = ({
                 )}
                 onClick={() => onSubmit()}
               >
-                Get Started{" "}
+                Get Started
                 {loader ? (
-                  <CircularProgress color="inherit" size={25} />
+                  <CircularProgress
+                    color="inherit"
+                    size={25}
+                    className="ml-2"
+                  />
                 ) : (
                   <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
                 )}
@@ -231,12 +222,12 @@ const HomePage = ({
             <Button
               className={cn(
                 "w-max px-11 mt-[2rem] py-6 bg-[#B59585] text-lg font-semibold text-[#FFFFFF] hover:bg-[#B59585]",
-                level > 1 &&
+                level > 0 &&
                   "text-[#E98451] border-2 border-[#E98451] bg-[#FFF]",
                 mobileScreen && "px-5 py-6 w-[50%]"
               )}
               onClick={viewScore}
-              disabled={level < 1}
+              disabled={true}
             >
               View Insights{" "}
               {level > 0 ? (
