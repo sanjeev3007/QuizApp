@@ -159,98 +159,154 @@ export const getNumberOfCompletedQuiz = async (userid: string) => {
   };
 };
 
-const compareScoreDescending = (a, b) => subtopics[b].totalScore - subtopics[a].totalScore;
 
+
+const quizWiseScore = ({ quizes, quizNumber }) => {
+  const reverse = quizes.reverse()
+  const score = [];
+  reverse.map((quizDetails, index) => {
+    quizNumber += 1
+    const { submissions } = quizDetails
+    const correctAnswers = submissions.filter(({ isCorrect }) => isCorrect)
+    score.push({ quizNumber, correctAnswers: correctAnswers.length })
+  })
+  return score
+}
 
 export const getInsight = async (userid: string) => {
   const supabase = createServerSupabaseClient();
   const { data: allQuizes, error } = await supabase
     .from("quiz")
-    .select("questions", "submissions")
-    .eq("userid", userid)
+    .select()
+    .eq("userid", "TFwkXyjDPQ")
+    .eq("complete", "true")
   let numberOfCompletedExercise = 0;
   const subtopics = {}
   const quiredQuestion = {}
-  allQuizes?.map(async({ submissions }) => {
-    if(submissions){
-      submissions.map(async({questionId,isCorrected})=>{
-       const response =  await supabase
-        .from("db_grade7_math")
-        .select("difficulty_level","metadata")
-        .eq("uuid",questionId)
+  if (!allQuizes?.length) return []
+  allQuizes?.map(async ({ submissions }) => {
+    console.log(submissions, "submissions")
+    if (submissions.length) {
+      submissions.map(async ({ questionId, isCorrected }) => {
+        const response = await supabase
+          .from("db_grade7_math")
+          .select()
+          .eq("uuid", questionId)
+        const subtopic = response.data[0].metadata.subtopic
+        const difficultyLevel = response.data[0].difficulty_level
+        console.log(subtopic, "subtopicsubtopicsubtopicsubtopic")
+        if (subtopics[subtopic]) {
+          subtopics[subtopic].totalQuestion += 1
+          if (isCorrected) subtopics[subtopic].totalCorrectQuestion += 1
+          switch (difficultyLevel) {
+            case "easy":
+              // code block
+              subtopics[subtopic].easy += 1
+              break;
+            case "medium":
+              // code block
+              subtopics[subtopic].medium += 1
+
+              break;
+            default:
+              // code block
+              subtopics[subtopic].hard += 1
+
+          }
+        }
+        else {
+          subtopics[subtopic] = {
+            totalQuestion: 1,
+            totalCorrectQuestion: isCorrected ? 1 : 0,
+            easy: difficultyLevel == "easy" ? 1 : 0,
+            medium: difficultyLevel == "medium" ? 1 : 0,
+            hard: difficultyLevel == "hard" ? 1 : 0
+          }
+          console.log(subtopics, "subtopicssubtopicssubtopics")
+        }
       })
-      if(subtopics[response.metadata.subtopic]){
-        subtopics[response.metadata.subtopic].totalQuestion+=1
-        if(isCorrected) subtopics[response.metadata.subtopic].totalCorrectQuestion+=1
-        switch(response.difficulty_level) {
-          case "easy":
-            // code block
-            subtopics[response.metadata.subtopic].easy +=1
-            break;
-          case "medium":
-            // code block
-            subtopics[response.metadata.subtopic].medium +=1
-
-            break;
-          default:
-            // code block
-            subtopics[response.metadata.subtopic].hard +=1
-
-        }
-      }
-      else{
-        subtopics[response.metadata.subtopic] = {
-          totalQuestion:1,
-          totalCorrectQuestion:isCorrected ? 1:0,
-          easy : response.difficulty_level == "easy" ? 1:0,
-          medium : response.difficulty_level == "medium"? 1:0,
-          hard : response.difficulty_level == "hard"? 1:0
-        }
-      }
     }
   })
-  Object.keys(subtopics).map((subTopic)=>{
-    const {easy,medium,hard} = subtopics[subTopic]
-   if(!(easy && medium && hard)) delete subtopics[subTopic]
+  console.log("subtopicssubtopicssubtopicssubtopicssubtopics")
+  console.log(subtopics, "subtopics")
+  Object.keys(subtopics).map((subTopic) => {
+    const { easy, medium, hard } = subtopics[subTopic]
+    if (!(easy && medium && hard)) delete subtopics[subTopic]
+    else {
+      subtopics[subTopic].totalScore = (easy * 1) + (medium * 2) + (hard * 4)
+    }
   })
-  subtopics.map(({easy,medium,hard})=>{
-    subtopics.totalScore = easy*1 + medium*2 + hard*4
-  })
-const scoreGreaterThanOrEqualTo4 = [];
-const scoreLessThanOrEqualTo3 = [];
+  console.log(subtopics, "subtopics----after---filter")
+  // subtopics.map(({ easy, medium, hard }) => {
 
-// Function to compare ages in descending order
+  // })
+  const scoreGreaterThanOrEqualTo4 = [];
+  const scoreLessThanOrEqualTo3 = [];
 
-// Categorize students into arrays
-for (const topic in subtopics) {
-  if (subtopics.hasOwnProperty(topic)) {
-    const score = subtopics[topic].totalScore;
+  // Function to compare ages in descending order
 
-//   // Function to compare ages in descending order
+  // Categorize students into arrays
+  for (const topic in subtopics) {
+    if (subtopics.hasOwnProperty(topic)) {
+      const score = subtopics[topic].totalScore;
 
-//   // Categorize students into arrays
-//   for (const topic in subtopics) {
-//     if (subtopics.hasOwnProperty(topic)) {
-//       const score = subtopics[topic].totalScore;
+      if (score >= 4) {
+        scoreGreaterThanOrEqualTo4.push(topic);
+      } else {
+        scoreLessThanOrEqualTo3.push(topic);
+      }
+    }
+  }
+  const compareScoreDescending = (a, b) => subtopics[b].totalScore - subtopics[a].totalScore;
 
-//       if (score >= 4) {
-//         scoreGreaterThanOrEqualTo4.push(topic);
-//       } else {
-//         scoreLessThanOrEqualTo3.push(topic);
-//       }
-//     }
-//   }
+  // Sort arrays by age in descending order
+  scoreGreaterThanOrEqualTo4.sort(compareScoreDescending);
+  scoreLessThanOrEqualTo3.sort(compareScoreDescending);
+  if (error) {
+    console.error(error);
+  }
+  return {
+    scoreGreaterThanOrEqualTo4,
+    scoreLessThanOrEqualTo3
+  };
+}
 
-//   // Sort arrays by age in descending order
-//   scoreGreaterThanOrEqualTo4.sort(compareScoreDescending);
-//   scoreLessThanOrEqualTo3.sort(compareScoreDescending);
-//   if (error) {
-//     console.error(error);
-//   }
-//   return numberOfCompletedExercise;
+const getLast10Quizes = async ({ limit, userid }) => {
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase
+    .from('quiz')
+    .select('*')
+    .eq("complete", "true")
+    .eq("userid", userid)
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  return data
+}
+
+export const getDashboard = async (userid: string) => {
+  const supabase = createServerSupabaseClient();
+  const { data: allQuizes, error } = await supabase
+    .from("quiz")
+    .select("questions", "submissions")
+    .eq("userid", userid)
+    .eq("complete", "true")
+
+  const quizCurrentStatus = await getNumberOfCompletedQuiz(userid)
+  const last10Quizes = await getLast10Quizes({ limit: 10, userid })
+  console.log(quizCurrentStatus, "quizCurrentStatus")
+  // console.log(last10Quizes,"last10Quizes")
+
+  const quizNumber = quizCurrentStatus.numberOfCompletedQuiz <= 10 ? 0 : quizCurrentStatus.numberOfCompletedQuiz - 10
+  const quizWise = quizWiseScore({ quizes: last10Quizes, quizNumber })
+  console.log(quizNumber, "quizNumber")
+  console.log(quizWise, "quizWise")
+  if (error) {
+    console.error(error);
+  }
+  console.log(quizCurrentStatus,)
+  // return numberOfCompletedExercise;
 };
-}
-}
 
 export async function getInCompletedQuiz(userId: string) {
   const supabase = createServerSupabaseClient();
