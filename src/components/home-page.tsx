@@ -26,6 +26,12 @@ import podium from "@/assets/Images/podium.png";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import CircularProgress from "@mui/material/CircularProgress";
 import "@/components/home-page.css";
+import { Inter } from 'next/font/google'
+ 
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+})
 
 export const quizCreationSchema = z.object({
   topic: z
@@ -94,10 +100,10 @@ const HomePage = ({
     if (error) {
       console.error(error);
     }
-    setLoader(false);
     if (assessment_data && assessment_data.length > 0) {
       router.push(`/chat/${assessment_data[0].id}`);
     }
+    setLoader(false);
   };
 
   const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
@@ -114,20 +120,23 @@ const HomePage = ({
   }));
 
   const viewScore = () => {
-    if (level > 0) {
+    if (level > 9) {
       router.push(`/yourScore`);
     }
   };
 
   return (
-    <div className="mb-[2.5rem]">
+    <div className={`font-sans mb-[2.5rem]`}>
       <div className="flex flex-col-reverse mt-2 md:grid md:grid-cols-2 gap-4 md:mt-4">
         <div className="md:justify-self-center md:self-center grid gap-2 mt-2 md:grid-cols-1">
-          <div className="tracking-normal text-xl font-extrabold text-wrap md:text-4xl md:leading-10">
+          <div className="tracking-normal text-xl font-bold text-wrap md:text-4xl md:leading-10">
             {isActive ? (
               <div className="flex flex-col">
                 <span className="text-[#2F4F4F]">Continue your journey</span>
-                <span className="gradient-text mt-2"> with Noah</span>
+                <span className="text-[#2F4F4F] mt-2">
+                  {" "}
+                  with <span className="gradient-text mt-2">Noah</span>
+                </span>
               </div>
             ) : (
               <div>
@@ -148,7 +157,7 @@ const HomePage = ({
                   {quizData?.totalQuiz} quizzes
                 </span>
                 {level > 0 && (
-                  <span className="level-text font-extrabold text-sm">
+                  <span className="level-text font-bold text-sm">
                     Level {level}
                   </span>
                 )}
@@ -197,7 +206,15 @@ const HomePage = ({
                 onClick={() => onSubmit()}
               >
                 Continue{" "}
-                <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
+                {loader ? (
+                  <CircularProgress
+                    color="inherit"
+                    size={25}
+                    className="ml-2"
+                  />
+                ) : (
+                  <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
+                )}
               </Button>
             ) : (
               <Button
@@ -219,23 +236,29 @@ const HomePage = ({
                 )}
               </Button>
             )}
-            <Button
-              className={cn(
-                "w-max px-11 mt-[2rem] py-6 bg-[#B59585] text-lg font-semibold text-[#FFFFFF] hover:bg-[#B59585]",
-                level > 0 &&
-                  "text-[#E98451] border-2 border-[#E98451] bg-[#FFF]",
-                mobileScreen && "px-5 py-6 w-[50%]"
-              )}
-              onClick={viewScore}
-              disabled={true}
-            >
-              View Insights{" "}
-              {level > 0 ? (
-                <Image src={redirect_arrow} alt="redirect" className="ml-3" />
-              ) : (
-                <LockOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
-              )}
-            </Button>
+            {isActive && (
+              <Button
+                className={cn(
+                  "w-max px-11 mt-[2rem] py-6 bg-[#B59585] text-lg font-semibold text-[#FFFFFF] hover:bg-[#B59585]",
+                  level > 10 &&
+                    "text-[#E98451] border-2 border-[#E98451] bg-[#FFF]",
+                  mobileScreen && "px-5 py-6 w-[50%]"
+                )}
+                onClick={viewScore}
+                title={
+                  level <= 10
+                    ? "Complete at least 10 quizzes to view insights"
+                    : ""
+                }
+              >
+                View Insights{" "}
+                {level > 10 ? (
+                  <Image src={redirect_arrow} alt="redirect" className="ml-3" />
+                ) : (
+                  <LockOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
+                )}
+              </Button>
+            )}
           </div>
         </div>
         <div>
@@ -256,7 +279,7 @@ const HomePage = ({
             <Image src={podium} alt="cup" />
           </div>
           <div className="ml-[1.5rem] text-sm font-medium  md:text-lg leading-6 justify-self-center	self-center	text-[#5B8989]">
-            {level < 1
+            {level < 10
               ? "Complete at least 10 quizzes so Noah can share insights on your knowledge"
               : "Keep leveling up with more quizzes to help Noah assist you better"}
           </div>
