@@ -14,6 +14,8 @@ import { toast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import SelectedAnswer from "./selected-answer";
 import { Input } from "@/components/ui/input";
+import ion_send from "@/assets/Images/ion_send.png";
+import Image from "next/image";
 import QuizScore from "./quiz-score-diloag";
 import { EndChatMessage, InitialChatMessage } from "./chat-messages";
 import {
@@ -47,7 +49,7 @@ export default function Chat({
   quizId,
   user,
   QuestionLists,
-  numberOfCompletedQuizData
+  numberOfCompletedQuizData,
 }: ChatProps) {
   const bottom = useRef<HTMLDivElement>(null);
   const [questionIndex, setQuestionIndex] = useState(
@@ -59,12 +61,14 @@ export default function Chat({
   const [start, setStart] = useState(!!quizData.submissions?.length);
   const [userInput, setUserInput] = useState("");
   const [isMounted, setIsMounted] = useState(false);
+  const [loader, setLoader] = useState<boolean>(false);
 
   const router = useRouter();
 
   const { questions: questionList, complete: isComplete } = quizData;
 
   const startNewQuiz = async () => {
+    setLoader(true)
     const supabase = createClientComponentClient();
     const { data: assessment_data, error } = await supabase
       .from("quiz")
@@ -82,6 +86,7 @@ export default function Chat({
     if (assessment_data && assessment_data.length > 0) {
       router.push(`/chat/${assessment_data[0].id}`);
     }
+    setLoader(false);
   };
 
   // Get the current question
@@ -215,6 +220,7 @@ export default function Chat({
                   handleNext={handleNext}
                   submissions={submissions}
                   questionIndex={i + 1}
+                  user={user}
                 />
                 <SelectedAnswer submissions={submissions} index={i} />
               </div>
@@ -224,6 +230,7 @@ export default function Chat({
               showQuizScore={showQuizScore}
               user={user}
               startNewQuiz={startNewQuiz}
+              loader={loader}
             />
           )}
         </div>
@@ -232,22 +239,26 @@ export default function Chat({
           onSubmit={handleUserInput}
           className="bg-white h-[4rem] border-t px-4 flex items-center justify-center gap-x-2 fixed left-0 bottom-0 w-full shadow-md z-10"
         >
-          <Input
-            type="text"
-            placeholder="Enter your answer e.g. 'A'"
-            className="max-w-3xl focus-visible:outline-none focus-visible:ring-0 border-slate-400"
-            value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
-          />
-          <Button type="submit">Submit</Button>
-          <div className="flex items-center justify-center">
-            <span className="text-sm font-medium">
-              {questionIndex}/{questionList.length}
-            </span>
+          <div className="w-full rounded-lg md:ml-[-7rem] md:max-w-3xl flex bg-[#FFF] border-2 border-[#95B2B2]">
+            <Input
+              type="text"
+              placeholder="Enter your answer e.g. 'A'"
+              className="w-full border-0 focus-visible:outline-none focus-visible:border-0 focus-visible:ring-0"
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
+            />
+            <Button type="submit" className="border-0 bg-[#FFF] hover:bg-[#FFF]">
+              <Image src={ion_send} alt="" />
+            </Button>
           </div>
         </form>
       </div>
-      <QuizScore quizId={quizId} open={quizScore} setOpen={showQuizScore} numberOfCompletedQuizData={numberOfCompletedQuizData}/>
+      <QuizScore
+        quizId={quizId}
+        open={quizScore}
+        setOpen={showQuizScore}
+        numberOfCompletedQuizData={numberOfCompletedQuizData}
+      />
     </ScrollArea>
   );
 }

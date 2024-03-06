@@ -6,7 +6,17 @@ import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { useState } from "react";
 import FeedBackPopup from "./feedback-popup";
 
-export default function FeedBackForm({ questionId }: { questionId: string }) {
+export default function FeedBackForm({
+  questionId,
+  user,
+}: {
+  questionId: string;
+  user: {
+    name: string;
+    grade: string;
+    id: string;
+  };
+}) {
   const [response, setResponse] = useState<string | null>(null);
   const [feedbackDone, setFeedbackDone] = useState<boolean>(false);
   const [loader, setLoader] = useState<boolean>(false);
@@ -64,8 +74,7 @@ export default function FeedBackForm({ questionId }: { questionId: string }) {
   };
 
   const submitFeedback = async (res: string | null, reason: string | null) => {
-    const user = localStorage.getItem("quiz_user");
-    const userId = JSON.parse(user!).id;
+    const userId = user.id;
     if (!userId) return;
     setLoader(true);
     await feedbackQuiz({

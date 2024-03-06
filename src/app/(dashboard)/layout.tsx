@@ -3,6 +3,12 @@ import sandboxLogo from "@/assets/Images/sandboxLogo.svg";
 import Image from "next/image";
 import { getSession } from "../supabase-server";
 import Link from "next/link";
+import { Inter } from 'next/font/google'
+ 
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+})
 
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   const session = await getSession();
@@ -12,7 +18,7 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   // }
 
   return (
-    <div className="h-full w-full bg-[#FFF]">
+    <div className={`${inter.variable} font-sans h-full w-full bg-[#FFF]`}>
       <div className="w-full border-b-2 flex justify-center bg-[#FFF] py-4 sticky top-0">
         <Link href="/">
           <Image src={sandboxLogo} alt="sandbox-logo" />
