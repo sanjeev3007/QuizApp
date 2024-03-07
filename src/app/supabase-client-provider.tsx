@@ -98,7 +98,7 @@ export const getQuestions = async () => {
   const supabase = createClientComponentClient();
 
   let { data: random_topics, error: topic_error } = await supabase
-    .from("random_db_grade7_math")
+    .from("db_grade7_math_view")
     .select("id, topic");
 
   if (topic_error) {
@@ -111,21 +111,21 @@ export const getQuestions = async () => {
     random_topics[Math.floor(Math.random() * random_topics.length)];
 
   let { data: level1, error: level1Error } = await supabase
-    .from("random_db_grade7_math")
+    .from("db_grade7_math_view")
     .select("*")
     .eq("difficulty_level", "easy")
     .eq("topic", randomTopic.topic)
     .limit(4);
 
   let { data: level2, error: level2Error } = await supabase
-    .from("random_db_grade7_math")
+    .from("db_grade7_math_view")
     .select("*")
     .eq("difficulty_level", "medium")
     .eq("topic", randomTopic.topic)
     .limit(4);
 
   let { data: level3, error: level3Error } = await supabase
-    .from("random_db_grade7_math")
+    .from("db_grade7_math_view")
     .select("*")
     .eq("difficulty_level", "hard")
     .eq("topic", randomTopic.topic)
