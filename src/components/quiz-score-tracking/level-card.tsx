@@ -7,7 +7,7 @@ type Props = {};
 
 const LevelCard = (props: Props) => {
   return (
-    <div className="level-card  flex-column items-center content-center w-full p-4 md:max-w-56">
+    <div className="level-card mt-[2rem]  flex-column items-center content-center w-full p-4 md:mt-[0rem] md:max-w-56">
       <div className="flex justify-center">
         <Image
           src={levelCupStraight}

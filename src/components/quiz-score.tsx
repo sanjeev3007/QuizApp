@@ -1,7 +1,7 @@
 import React from "react";
-import NoahQuiz from "./yourScore/noah-quiz";
-import StrengthWeakness from "./yourScore/strength-weakness";
-import YourScore from "./yourScore/your-score";
+import NoahQuiz from "./quiz-score-tracking/noah-quiz";
+import StrengthWeakness from "./quiz-score-tracking/strength-weakness";
+import YourScore from "./quiz-score-tracking/your-score";
 import Divider from "@mui/material/Divider";
 
 type Props = {};
