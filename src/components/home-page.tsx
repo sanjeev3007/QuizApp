@@ -75,7 +75,7 @@ const HomePage = ({
         return;
       }
 
-      const questions = await getQuestions();
+      const questions = await getQuestions(grade);
       if (questions.length === 0) {
         return;
       }

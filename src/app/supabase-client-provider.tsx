@@ -94,42 +94,49 @@ export async function storeUserSubmission(
 }
 
 // generating questions
-export const getQuestions = async () => {
+export const getQuestions = async (grade: number | 7) => {
   const supabase = createClientComponentClient();
+  let db_with_grade = `fetch_rows_db_grade${grade}_math`;
 
   let { data: random_topics, error: topic_error } = await supabase
-    .from("db_grade7_math_view")
-    .select("id, topic");
+    .from(`db_grade${grade}_math`)
+    .select("topic");
 
   if (topic_error) {
     console.log(topic_error);
   }
   if (random_topics === null) {
-    random_topics = [{ id: 1, topic: "Fractions and Decimals" }];
+    random_topics = [{ topic: "Fractions and Decimals" }];
   }
   const randomTopic =
     random_topics[Math.floor(Math.random() * random_topics.length)];
 
-  let { data: level1, error: level1Error } = await supabase
-    .from("db_grade7_math_view")
-    .select("*")
-    .eq("difficulty_level", "easy")
-    .eq("topic", randomTopic.topic)
-    .limit(4);
+  const { data: level1, error: level1Error } = await supabase.rpc(
+    db_with_grade,
+    {
+      level: "easy",
+      topic_name: randomTopic.topic,
+      rows_limit: 4,
+    }
+  );
 
-  let { data: level2, error: level2Error } = await supabase
-    .from("db_grade7_math_view")
-    .select("*")
-    .eq("difficulty_level", "medium")
-    .eq("topic", randomTopic.topic)
-    .limit(4);
+  const { data: level2, error: level2Error } = await supabase.rpc(
+    db_with_grade,
+    {
+      level: "medium",
+      topic_name: randomTopic.topic,
+      rows_limit: 4,
+    }
+  );
 
-  let { data: level3, error: level3Error } = await supabase
-    .from("db_grade7_math_view")
-    .select("*")
-    .eq("difficulty_level", "hard")
-    .eq("topic", randomTopic.topic)
-    .limit(2);
+  const { data: level3, error: level3Error } = await supabase.rpc(
+    db_with_grade,
+    {
+      level: "hard",
+      topic_name: randomTopic.topic,
+      rows_limit: 2,
+    }
+  );
 
   if (level1Error || level2Error || level3Error) {
     console.log(level1Error || level2Error || level3Error);
