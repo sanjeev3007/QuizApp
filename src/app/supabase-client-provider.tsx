@@ -97,22 +97,38 @@ export async function storeUserSubmission(
 export const getQuestions = async () => {
   const supabase = createClientComponentClient();
 
+  let { data: random_topics, error: topic_error } = await supabase
+    .from("random_db_grade7_math")
+    .select("id, topic");
+
+  if (topic_error) {
+    console.log(topic_error);
+  }
+  if (random_topics === null) {
+    random_topics = [{ id: 1, topic: "Fractions and Decimals" }];
+  }
+  const randomTopic =
+    random_topics[Math.floor(Math.random() * random_topics.length)];
+
   let { data: level1, error: level1Error } = await supabase
     .from("random_db_grade7_math")
     .select("*")
     .eq("difficulty_level", "easy")
+    .eq("topic", randomTopic.topic)
     .limit(4);
 
   let { data: level2, error: level2Error } = await supabase
     .from("random_db_grade7_math")
     .select("*")
     .eq("difficulty_level", "medium")
+    .eq("topic", randomTopic.topic)
     .limit(4);
 
   let { data: level3, error: level3Error } = await supabase
     .from("random_db_grade7_math")
     .select("*")
     .eq("difficulty_level", "hard")
+    .eq("topic", randomTopic.topic)
     .limit(2);
 
   if (level1Error || level2Error || level3Error) {

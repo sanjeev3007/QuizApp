@@ -85,7 +85,7 @@ const HomePage = ({
         .from("quiz")
         .insert({
           userid: userId,
-          topic: "Fractions and Decimals",
+          topic: questions[0]?.topic,
           questions: questions,
           start: true,
         })
