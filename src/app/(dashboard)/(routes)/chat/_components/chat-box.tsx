@@ -48,7 +48,6 @@ export default function Chat({
   quizData,
   quizId,
   user,
-  QuestionLists,
   numberOfCompletedQuizData,
 }: ChatProps) {
   const bottom = useRef<HTMLDivElement>(null);
