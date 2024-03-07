@@ -1,6 +1,5 @@
 import {
   getInCompletedQuiz,
-  getQuestions,
   getNumberOfCompletedQuiz,
 } from "@/app/supabase-server";
 import HomePage from "@/components/home-page";
@@ -8,7 +7,6 @@ import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 
 const Home = async () => {
-  const data = await getQuestions();
   const userName = getCookie("userName", { cookies });
   const user_Id = getCookie("userId", { cookies });
   const grade = getCookie("grade", { cookies });
@@ -19,7 +17,6 @@ const Home = async () => {
   return (
     <div className="p-5 md:p-12 w-full md:max-w-7xl mx-auto bg-[#FFF] !important">
       <HomePage
-        QuestionList={data}
         inCompleteQuiz={inCompleteQuiz![0]}
         userId={user_Id!}
         userName={userName!}

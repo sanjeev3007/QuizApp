@@ -33,50 +33,6 @@ export async function getSession() {
 //   }
 // }
 
-export const getQuestions = async () => {
-  const supabase = createServerSupabaseClient();
-  let { data: level1, error: level1Error } = await supabase
-    .from("db_grade7_math")
-    .select("*")
-    .in("blooms_level", ["Knowing", "Understanding"])
-    .limit(4);
-
-  let { data: level2, error: level2Error } = await supabase
-    .from("db_grade7_math")
-    .select("*")
-    .in("blooms_level", ["Analyzing", "Applying"])
-    .limit(3);
-
-  let { data: level3, error: level3Error } = await supabase
-    .from("db_grade7_math")
-    .select("*")
-    .in("blooms_level", ["Evaluating", "Creating"])
-    .limit(3);
-
-  if (level1Error || level2Error || level3Error) {
-    console.log(level1Error || level2Error || level3Error);
-  }
-
-  // Shuffles the questions array
-  function shuffle(array: any[]) {
-    let currentIndex = array.length,
-      randomIndex;
-    while (currentIndex > 0) {
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex],
-        array[currentIndex],
-      ];
-    }
-    return array;
-  }
-
-  return shuffle(
-    [...(level1 ?? []), ...(level2 ?? []), ...(level3 ?? [])] ?? []
-  );
-};
-
 export const getInitialAssessmentStats = async () => {
   const supabase = createServerSupabaseClient();
   try {
