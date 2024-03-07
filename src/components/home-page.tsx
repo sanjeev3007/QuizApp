@@ -226,7 +226,7 @@ const HomePage = ({
               <Button
                 className={cn(
                   "w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-semibold text-[#FFF] hover:bg-[#E98451]",
-                  mobileScreen && "fixed bottom-0 w-[90%]" // Conditionally apply 'fixed bottom-0' for mobile screens
+                  mobileScreen && "fixed bottom-3 w-[90%]" // Conditionally apply 'fixed bottom-0' for mobile screens
                 )}
                 onClick={() => onSubmit()}
               >
