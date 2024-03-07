@@ -1,8 +1,6 @@
 "use client";
-import React, { use, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-// import { BrainCircuit, Pen } from "lucide-react";
-// import { useRouter } from "next/navigation";
 import Image from "next/image";
 import EastOutlinedIcon from "@mui/icons-material/EastOutlined";
 import { styled } from "@mui/material/styles";
@@ -14,7 +12,6 @@ import LinearProgress, {
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
 import quizIcon from "@/assets/Images/quizIcon.svg";
@@ -32,6 +29,7 @@ const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
 })
+import { getQuestions } from "@/app/supabase-client-provider";
 
 export const quizCreationSchema = z.object({
   topic: z
@@ -47,10 +45,7 @@ export const quizCreationSchema = z.object({
   age: z.string(),
 });
 
-type Input = z.infer<typeof quizCreationSchema>;
-
 type Props = {
-  QuestionList: any[];
   inCompleteQuiz: any;
   userId: string;
   userName: string;
@@ -59,7 +54,6 @@ type Props = {
 };
 
 const HomePage = ({
-  QuestionList,
   inCompleteQuiz,
   userId,
   userName,
@@ -78,30 +72,42 @@ const HomePage = ({
   const levelPercent =
     (quizData?.numberOfCompletedQuiz / quizData?.totalQuiz) * 100;
 
-  const onSubmit = async (data?: Input) => {
-    setLoader(true);
+  const onSubmit = async () => {
+    try {
+      setLoader(true);
 
-    if (!!inCompleteQuiz) {
-      router.push(`/chat/${inCompleteQuiz.id}`);
+      if (!!inCompleteQuiz) {
+        router.push(`/chat/${inCompleteQuiz.id}`);
+        return;
+      }
+
+      const questions = await getQuestions();
+      if (questions.length === 0) {
+        return;
+      }
+
+      const supabase = createClientComponentClient();
+      const { data: assessment_data, error } = await supabase
+        .from("quiz")
+        .insert({
+          userid: userId,
+          topic: "Fractions and Decimals",
+          questions: questions,
+          start: true,
+        })
+        .select();
+
+      if (error) {
+        console.error(error);
+      }
+      if (assessment_data && assessment_data.length > 0) {
+        router.push(`/chat/${assessment_data[0].id}`);
+      }
+    } catch (error) {
+      console.log(error);
       return;
-    }
-
-    const supabase = createClientComponentClient();
-    const { data: assessment_data, error } = await supabase
-      .from("quiz")
-      .insert({
-        userid: userId,
-        topic: QuestionList?.[0].metadata.topic,
-        questions: QuestionList,
-        start: true,
-      })
-      .select();
-
-    if (error) {
-      console.error(error);
-    }
-    if (assessment_data && assessment_data.length > 0) {
-      router.push(`/chat/${assessment_data[0].id}`);
+    } finally {
+      setLoader(false);
     }
     setLoader(false);
   };
@@ -205,7 +211,7 @@ const HomePage = ({
                 )}
                 onClick={() => onSubmit()}
               >
-                Continue{" "}
+                Continue
                 {loader ? (
                   <CircularProgress
                     color="inherit"

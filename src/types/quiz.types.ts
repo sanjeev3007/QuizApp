@@ -32,9 +32,9 @@ export type QuizDataType = {
     isCorrect: false;
     questionId: string;
   }[];
+  created_at: Date;
   timestarted: Date;
   timeended: Date;
-  created_at: Date;
   start: boolean;
   complete: boolean;
 };

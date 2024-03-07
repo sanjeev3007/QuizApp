@@ -19,6 +19,7 @@ import Image from "next/image";
 import QuizScore from "./quiz-score-diloag";
 import { EndChatMessage, InitialChatMessage } from "./chat-messages";
 import {
+  getQuestions,
   storeUserSubmission,
   updateQuizStats,
 } from "@/app/supabase-client-provider";
@@ -40,7 +41,6 @@ type ChatProps = {
     grade: string;
     id: string;
   };
-  QuestionLists: any[];
   numberOfCompletedQuizData: any;
 };
 
@@ -56,7 +56,9 @@ export default function Chat({
     quizData.submissions?.length || 0
   );
   const [hasEnded, setHasEnded] = useState(false);
-  const [submissions, setSubmissions] = useState(quizData.submissions || []);
+  const [submissions, setSubmissions] = useState<any[]>(
+    quizData?.submissions || []
+  );
   const [quizScore, showQuizScore] = useState(false);
   const [start, setStart] = useState(!!quizData.submissions?.length);
   const [userInput, setUserInput] = useState("");
@@ -70,6 +72,12 @@ export default function Chat({
   const startNewQuiz = async () => {
     setLoader(true)
     const supabase = createClientComponentClient();
+
+    const QuestionLists = await getQuestions();
+    if (QuestionLists.length === 0) {
+      return;
+    }
+
     const { data: assessment_data, error } = await supabase
       .from("quiz")
       .insert({
@@ -125,6 +133,7 @@ export default function Chat({
     // Store the user submission to the db
     (async () => {
       await storeUserSubmission(quizId, user.id, submissions);
+      router.refresh();
     })();
   }, [submissions]);
 
