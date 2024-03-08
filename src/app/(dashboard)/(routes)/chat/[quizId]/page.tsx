@@ -9,9 +9,11 @@ export default async function Page({
   params: { quizId: string };
 }) {
   const quizData = await getQuizById(quizId);
-  const userName = getCookie("userName", { cookies });
-  const user_Id = getCookie("userId", { cookies });
-  const grade = getCookie("grade", { cookies });
+  const userName = getCookie("userName", { cookies }) || "demo_user_id_4";
+  const user_Id = getCookie("userId", { cookies }) || "demo_user_id_4";
+  const grade =
+    getCookie("grade", { cookies }) ||
+    Math.max(1, Math.floor(Math.random() * 7) + 1);
   const numberOfCompletedQuizData = await getNumberOfCompletedQuiz(user_Id!);
 
   if (!quizData?.length)
@@ -23,7 +25,7 @@ export default async function Page({
         quizId={quizId}
         user={{
           name: userName!,
-          grade: grade!,
+          grade: grade as number,
           id: user_Id!,
         }}
         numberOfCompletedQuizData={numberOfCompletedQuizData}

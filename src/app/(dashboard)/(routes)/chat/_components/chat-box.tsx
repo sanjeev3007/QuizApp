@@ -36,7 +36,7 @@ type ChatProps = {
   quizId: string;
   user: {
     name: string;
-    grade: string;
+    grade: number;
     id: string;
   };
   numberOfCompletedQuizData: any;
@@ -68,7 +68,7 @@ export default function Chat({
   const startNewQuiz = async () => {
     const supabase = createClientComponentClient();
 
-    const QuestionLists = await getQuestions();
+    const QuestionLists = await getQuestions(user.grade);
     if (QuestionLists.length === 0) {
       return;
     }

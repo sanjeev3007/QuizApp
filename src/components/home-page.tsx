@@ -75,7 +75,7 @@ const HomePage = ({
         return;
       }
 
-      const questions = await getQuestions();
+      const questions = await getQuestions(grade);
       if (questions.length === 0) {
         return;
       }
@@ -85,7 +85,7 @@ const HomePage = ({
         .from("quiz")
         .insert({
           userid: userId,
-          topic: "Fractions and Decimals",
+          topic: questions[0]?.topic,
           questions: questions,
           start: true,
         })
