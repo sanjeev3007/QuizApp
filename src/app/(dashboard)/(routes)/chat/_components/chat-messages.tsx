@@ -19,7 +19,7 @@ export function InitialChatMessage({
   user,
 }: {
   setStart: Dispatch<SetStateAction<boolean>>;
-  user: { name: string; grade: string; id: string };
+  user: { name: string; grade: number; id: string };
 }) {
   return (
     <div className="max-w-3xl my-2 flex items-start w-full gap-x-2">
@@ -53,7 +53,7 @@ export function EndChatMessage({
   loader,
 }: {
   showQuizScore: Dispatch<SetStateAction<boolean>>;
-  user: { name: string; grade: string; id: string };
+  user: { name: string; grade: number; id: string };
   startNewQuiz: any;
   loader: boolean;
 }) {
@@ -102,6 +102,19 @@ export function EndChatMessage({
               onClick={() => router.push(`/`)}
             >
               End Quiz & Exit{" "}
+            </Button>
+            <Button
+              className="w-fit mt-2 bg-[#E98451] text-[#FFF] hover:bg-[#E98451]"
+              onClick={() => showQuizScore(true)}
+            >
+              View Score
+              <BarChart className="w-4 h-4 ml-2" />
+            </Button>
+            <Button
+              className="w-fit mt-2 bg-[#E98451] text-[#FFF] hover:bg-[#E98451] md:ml-2"
+              onClick={() => startNewQuiz()}
+            >
+              Start New Quiz <EastOutlinedIcon fontSize="small" />
             </Button>
           </div>
         </div>
