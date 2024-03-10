@@ -1,4 +1,4 @@
-import { getNumberOfCompletedQuiz, getQuizById } from "@/app/supabase-server";
+import { getNumberOfCompletedQuiz, getGkQuizById } from "@/app/supabase-server";
 import Chat from "../_components/chat-box";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
@@ -8,8 +8,7 @@ export default async function Page({
 }: {
   params: { quizId: string };
 }) {
-  const quizData = await getQuizById(quizId);
-  console.log(quizData);
+  const quizData = await getGkQuizById(quizId);
   const userName = getCookie("userName", { cookies }) || "demo_user_id_4";
   const user_Id = getCookie("userId", { cookies }) || "demo_user_id_4";
   const grade =

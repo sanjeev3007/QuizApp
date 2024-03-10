@@ -77,6 +77,28 @@ export const getQuizById = async (id: any) => {
   }
 };
 
+export const getGkQuizById = async (id: any) => {
+  const supabase = createServerSupabaseClient();
+  try {
+    const session = await getSession();
+    const user = session?.user;
+    let { data, error } = await supabase
+      .from("gk_quiz")
+      .select("*")
+      .eq("id", id)
+      .limit(1);
+
+    if ((data?.length ?? 0) > 0) {
+      return data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    return null;
+  }
+};
+
 export const getQuizStats = async (quizId: string) => {
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
