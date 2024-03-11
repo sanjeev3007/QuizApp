@@ -170,6 +170,14 @@ export const getGkQuestions = async () => {
     const { data: questions } = await axios.post("/api/questions", {
       amount: 10,
     });
+
+    const { data, error } = await supabase
+      .from("gk_quiz")
+      .insert({
+        questions,
+        // userId: userId,
+      })
+      .select();
   } catch (error) {
     console.error("Error:", error);
     return null;
