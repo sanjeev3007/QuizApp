@@ -2,6 +2,7 @@ import {
   getInCompletedQuiz,
   getNumberOfCompletedQuiz,
 } from "@/app/supabase-server";
+import GkQuiz from "@/components/gk-quiz";
 import HomePage from "@/components/home-page";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
@@ -17,7 +18,7 @@ const Home = async () => {
   const inCompleteQuiz = await getInCompletedQuiz(user_Id!); // get the incompleted quiz
 
   return (
-    <div className="p-5 md:p-12 w-full md:max-w-7xl mx-auto bg-[#FFF] !important">
+    <div className='p-5 md:p-12 w-full md:max-w-7xl mx-auto bg-[#FFF] !important'>
       <HomePage
         inCompleteQuiz={inCompleteQuiz![0]}
         userId={user_Id!}
@@ -25,6 +26,9 @@ const Home = async () => {
         grade={grade}
         quizData={numberOfCompletedQuizData}
       />
+
+      {/* GK Quiz Button */}
+      <GkQuiz />
     </div>
   );
 };

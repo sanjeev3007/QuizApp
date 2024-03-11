@@ -1,4 +1,5 @@
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import axios from "axios";
 
 export const getQuizStats = async (quizId: string) => {
   const supabase = createClientComponentClient();
@@ -160,4 +161,16 @@ export const getQuestions = async (grade: number | 7) => {
   return shuffle(
     [...(level1 ?? []), ...(level2 ?? []), ...(level3 ?? [])] ?? []
   );
+};
+
+// get gk quiz
+export const getGkQuestions = async () => {
+  const supabase = createClientComponentClient();
+  try {
+    const { data } = await axios.post("/api/questions");
+    console.log(data);
+  } catch (error) {
+    console.error("Error:", error);
+    return null;
+  }
 };

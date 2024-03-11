@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { ZodError } from "zod";
 import { strict_output } from "@/lib/strict-json";
-import { getQuestionsSchema } from "@/schemas/question.schema";
+import { getQuestionsSchema } from "@/schemas/questions";
 
 export async function GET(req: NextRequest, res: NextResponse) {
   return NextResponse.json({ message: "Hello from the API" });
@@ -19,7 +19,7 @@ export async function POST(req: Request, res: Response) {
 
     questions = await strict_output(
       "You are a helpful AI that is able to generate mcq question and answers on topic integers, the length of each answer should not be more than 15 words, store all answers and questions and options in a JSON array",
-      `You are to generate a random hard mcq question about Integers`,
+      `You are to generate a random hard mcq question about General Knowledge`,
       {
         question: "question",
         answer: "answer with max length of 15 words",
