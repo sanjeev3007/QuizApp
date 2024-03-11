@@ -13,13 +13,14 @@ export const runtime = "nodejs";
 
 export async function POST(req: Request, res: Response) {
   try {
-    const body = await req.json();
-    const { amount, topic } = getQuestionsSchema.parse(body);
+    // const body = await req.json();
+    // const { amount } = getQuestionsSchema.parse(body);
     let questions: any;
+    const amount = 10;
 
     questions = await strict_output(
-      "You are a helpful AI that is able to generate mcq question and answers on topic integers, the length of each answer should not be more than 15 words, store all answers and questions and options in a JSON array",
-      `You are to generate a random hard mcq question about General Knowledge`,
+      "You are a helpful AI that is able to generate mcq question and answers on topic general knowledge, the length of each answer should not be more than 15 words, store all answers and questions and options in a JSON array",
+      `You are to generate ${amount} random hard mcq question about General Knowledge`,
       {
         question: "question",
         answer: "answer with max length of 15 words",

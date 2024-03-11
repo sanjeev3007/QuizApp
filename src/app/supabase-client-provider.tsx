@@ -167,8 +167,9 @@ export const getQuestions = async (grade: number | 7) => {
 export const getGkQuestions = async () => {
   const supabase = createClientComponentClient();
   try {
-    const { data } = await axios.post("/api/questions");
-    console.log(data);
+    const { data: questions } = await axios.post("/api/questions", {
+      amount: 10,
+    });
   } catch (error) {
     console.error("Error:", error);
     return null;
