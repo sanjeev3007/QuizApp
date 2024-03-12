@@ -3,14 +3,14 @@ import Chat from "../_components/chat-box";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 
-export default async function Page({
+export default async function ChatPage({
   params: { quizId },
 }: {
   params: { quizId: string };
 }) {
   const quizData = await getQuizById(quizId);
-  const userName = getCookie("userName", { cookies }) || "demo_user_id_4";
-  const user_Id = getCookie("userId", { cookies }) || "demo_user_id_4";
+  const userName = getCookie("userName", { cookies }) || "demo_user_id_5";
+  const user_Id = getCookie("userId", { cookies }) || "demo_user_id_5";
   const grade =
     getCookie("grade", { cookies }) ||
     Math.max(1, Math.floor(Math.random() * 7) + 1);

@@ -12,7 +12,7 @@ export default function MCQBox({
   handleNext,
   submissions,
   questionIndex,
-  user
+  user,
 }: {
   currentQuestion: any;
   handleNext: any;
@@ -24,7 +24,7 @@ export default function MCQBox({
     id: string;
   };
 }) {
-  const correctAnswer = JSON.parse(currentQuestion?.options).find(
+  const correctAnswer = currentQuestion?.options.find(
     (option: any) => option.correct == "true"
   )?.text;
 
@@ -48,7 +48,7 @@ export default function MCQBox({
           question={currentQuestion?.question}
           answer={correctAnswer}
         />
-          <FeedBackForm questionId={currentQuestion?.uuid} user={user}/>
+        <FeedBackForm questionId={currentQuestion?.uuid} user={user} />
       </div>
     </div>
   );
