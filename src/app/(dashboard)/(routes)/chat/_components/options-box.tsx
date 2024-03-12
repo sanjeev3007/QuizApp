@@ -31,7 +31,7 @@ export default function OptionsBox({
   return (
     <div className="space-y-2 mt-2">
       <div className="grid grid-cols-2 gap-2">
-        {JSON.parse(options).map((option: any, i: number) => (
+        {options.map((option: any, i: number) => (
           <button
             type="button"
             key={i}

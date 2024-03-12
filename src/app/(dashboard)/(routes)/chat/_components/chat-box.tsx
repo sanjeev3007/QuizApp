@@ -69,7 +69,7 @@ export default function Chat({
   const { questions: questionList, complete: isComplete } = quizData;
 
   const startNewQuiz = async () => {
-    setLoader(true)
+    setLoader(true);
     const supabase = createClientComponentClient();
 
     const QuestionLists = await getQuestions(user.grade);
@@ -105,7 +105,7 @@ export default function Chat({
   const options = useMemo(() => {
     if (!currentQuestion) return [];
     if (!currentQuestion.options) return [];
-    return JSON.parse(currentQuestion.options) as Option[];
+    return currentQuestion.options;
   }, [currentQuestion]);
 
   // Scroll to the bottom of the chat
@@ -255,7 +255,10 @@ export default function Chat({
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
             />
-            <Button type="submit" className="border-0 bg-[#FFF] hover:bg-[#FFF]">
+            <Button
+              type="submit"
+              className="border-0 bg-[#FFF] hover:bg-[#FFF]"
+            >
               <Image src={ion_send} alt="" />
             </Button>
           </div>
