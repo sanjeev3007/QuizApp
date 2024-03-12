@@ -103,19 +103,6 @@ export function EndChatMessage({
             >
               End Quiz & Exit{" "}
             </Button>
-            <Button
-              className="w-fit mt-2 bg-[#E98451] text-[#FFF] hover:bg-[#E98451]"
-              onClick={() => showQuizScore(true)}
-            >
-              View Score
-              <BarChart className="w-4 h-4 ml-2" />
-            </Button>
-            <Button
-              className="w-fit mt-2 bg-[#E98451] text-[#FFF] hover:bg-[#E98451] md:ml-2"
-              onClick={() => startNewQuiz()}
-            >
-              Start New Quiz <EastOutlinedIcon fontSize="small" />
-            </Button>
           </div>
         </div>
       </div>
