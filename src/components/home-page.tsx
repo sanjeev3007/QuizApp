@@ -23,12 +23,12 @@ import podium from "@/assets/Images/podium.png";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import CircularProgress from "@mui/material/CircularProgress";
 import "@/components/home-page.css";
-import { Inter } from 'next/font/google'
- 
+import { Inter } from "next/font/google";
+
 const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-})
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
 import { getQuestions } from "@/app/supabase-client-provider";
 
 export const quizCreationSchema = z.object({
@@ -81,19 +81,24 @@ const HomePage = ({
         return;
       }
 
-      const questions = await getQuestions(grade);
+      const { questions, topics } = await getQuestions(grade, userId);
       if (questions.length === 0) {
         return;
       }
 
+      const metadata = {
+        grade: grade,
+        topics: topics,
+      };
       const supabase = createClientComponentClient();
       const { data: assessment_data, error } = await supabase
         .from("quiz")
         .insert({
           userid: userId,
-          topic: questions[0]?.topic,
+          multiple_topics: topics,
           questions: questions,
           start: true,
+          metadata: metadata,
         })
         .select();
 
