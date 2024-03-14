@@ -37,6 +37,7 @@ export type QuizDataType = {
   timeended: Date;
   start: boolean;
   complete: boolean;
+  multiple_topics: Array<string>;
 };
 
 type Option = {

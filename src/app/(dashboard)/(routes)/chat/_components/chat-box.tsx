@@ -20,6 +20,7 @@ import QuizScore from "./quiz-score-diloag";
 import { EndChatMessage, InitialChatMessage } from "./chat-messages";
 import {
   getQuestions,
+  storeCorrectSubmission,
   storeUserSubmission,
   updateQuizStats,
 } from "@/app/supabase-client-provider";
@@ -28,9 +29,10 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { QuizDataType } from "@/types/quiz.types";
 
-type Option = {
-  text: string;
-  correct: string;
+type SubmissionType = {
+  questionId: string;
+  selected: { text: string; correct: string };
+  isCorrect: boolean;
 };
 
 type ChatProps = {
@@ -63,6 +65,8 @@ export default function Chat({
   const [userInput, setUserInput] = useState("");
   const [isMounted, setIsMounted] = useState(false);
   const [loader, setLoader] = useState<boolean>(false);
+  const [currentSubmission, setCurrentSubmission] =
+    useState<SubmissionType | null>(null);
 
   const router = useRouter();
 
@@ -72,18 +76,27 @@ export default function Chat({
     setLoader(true);
     const supabase = createClientComponentClient();
 
-    const QuestionLists = await getQuestions(user.grade);
+    const { questions: QuestionLists, topics } = await getQuestions(
+      user.grade,
+      user.id
+    );
     if (QuestionLists.length === 0) {
       return;
     }
+
+    const metadata = {
+      grade: user.grade,
+      topics: topics,
+    };
 
     const { data: assessment_data, error } = await supabase
       .from("quiz")
       .insert({
         userid: user.id,
-        topic: QuestionLists?.[0].metadata.topic,
+        multiple_topics: topics,
         questions: QuestionLists,
         start: true,
+        metadata: metadata,
       })
       .select();
 
@@ -132,6 +145,15 @@ export default function Chat({
     // Store the user submission to the db
     (async () => {
       await storeUserSubmission(quizId, user.id, submissions);
+      if (currentSubmission?.isCorrect) {
+        await storeCorrectSubmission(
+          user.id,
+          currentSubmission.questionId,
+          quizData.id,
+          quizData.multiple_topics,
+          user.grade
+        );
+      }
       router.refresh();
     })();
   }, [submissions]);
@@ -144,6 +166,12 @@ export default function Chat({
         return;
       }
       const isCorrect = checkAnswer(index);
+
+      setCurrentSubmission({
+        questionId: currentQuestion?.uuid,
+        selected: options[index!],
+        isCorrect,
+      });
 
       setSubmissions((submissions: any) => [
         ...submissions,
@@ -207,7 +235,7 @@ export default function Chat({
   useEffect(() => {
     // If the quiz is complete, redirect to the home page
     if (isComplete) {
-      router.push("/");
+      // router.push("/");
     }
     setIsMounted(true);
   }, []);
