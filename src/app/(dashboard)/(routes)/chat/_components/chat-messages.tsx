@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { BarChart, Bot } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import botIcon from "@/assets/Images/botIcon.svg";
+import botIcon from "@/assets/Images/bot_icon.png";
 import lucide_trophy from "@/assets/Images/lucide_trophy.png";
 import Image from "next/image";
 import EastOutlinedIcon from "@mui/icons-material/EastOutlined";

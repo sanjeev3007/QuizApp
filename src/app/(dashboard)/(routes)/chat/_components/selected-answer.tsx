@@ -2,7 +2,7 @@
 
 import { User } from "lucide-react";
 import Image from "next/image";
-import userIcon from "@/assets/Images/userIcon.svg";
+import userIcon from "@/assets/Images/user_icon.png";
 
 export default function SelectedAnswer({
   submissions,
