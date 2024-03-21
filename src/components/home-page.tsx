@@ -151,7 +151,7 @@ const HomePage = ({
               </div>
             ) : (
               <div>
-                <span className="text-[#2F4F4F]">Introducing</span>
+                <span className="text-[#2F4F4F]">Introducing </span>
                 <span className="gradient-text mt-2 ml-1">Noah</span>
               </div>
             )}
