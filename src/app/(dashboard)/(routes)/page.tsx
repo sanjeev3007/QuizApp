@@ -11,7 +11,7 @@ const Home = async () => {
   const user_Id = getCookie("userId", { cookies }) || "demo_user_id_6";
   const grade =
     getCookie("grade", { cookies }) ||
-    Math.max(1, Math.floor(Math.random() * 7) + 1);
+    Math.max(1, Math.floor(Math.random() * 8) + 1);
 
   const numberOfCompletedQuizData = await getNumberOfCompletedQuiz(user_Id!);
   const inCompleteQuiz = await getInCompletedQuiz(user_Id!); // get the incompleted quiz

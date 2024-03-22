@@ -13,7 +13,7 @@ export default async function ChatPage({
   const user_Id = getCookie("userId", { cookies }) || "demo_user_id_6";
   const grade =
     getCookie("grade", { cookies }) ||
-    Math.max(1, Math.floor(Math.random() * 7) + 1);
+    Math.max(1, Math.floor(Math.random() * 8) + 1);
   const numberOfCompletedQuizData = await getNumberOfCompletedQuiz(user_Id!);
 
   if (!quizData?.length)

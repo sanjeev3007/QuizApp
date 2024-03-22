@@ -165,7 +165,10 @@ const fetchQuestionsByLevel = async (
 };
 
 // generating questions
-export const getQuestions = async (grade: number | 7, userId: string) => {
+export const getQuestions = async (user_grade: number | 7, userId: string) => {
+  let grade = user_grade;
+  if (grade > 8) grade = 8;
+
   let db_with_grade = `fetch_rows_db_grade${grade}_math`;
 
   // generate two random topics
