@@ -4,7 +4,7 @@ import { Bot } from "lucide-react";
 import OptionsBox from "./options-box";
 import QuestionBox from "./question-box";
 import Image from "next/image";
-import botIcon from "@/assets/Images/botIcon.svg";
+import botIcon from "@/assets/Images/bot_icon.png";
 import ExplainationPopover from "./explaination-popover";
 import FeedBackForm from "./feedback-form";
 export default function MCQBox({
@@ -12,13 +12,19 @@ export default function MCQBox({
   handleNext,
   submissions,
   questionIndex,
+  user,
 }: {
   currentQuestion: any;
   handleNext: any;
   submissions: any;
   questionIndex: number;
+  user: {
+    name: string;
+    grade: number;
+    id: string;
+  };
 }) {
-  const correctAnswer = JSON.parse(currentQuestion?.options).find(
+  const correctAnswer = currentQuestion?.options.find(
     (option: any) => option.correct == "true"
   )?.text;
 
@@ -42,9 +48,7 @@ export default function MCQBox({
           question={currentQuestion?.question}
           answer={correctAnswer}
         />
-        {!completedQuestion && (
-          <FeedBackForm questionId={currentQuestion?.uuid} />
-        )}
+        <FeedBackForm questionId={currentQuestion?.uuid} user={user} />
       </div>
     </div>
   );

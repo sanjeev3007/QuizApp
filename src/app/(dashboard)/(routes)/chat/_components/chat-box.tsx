@@ -14,9 +14,13 @@ import { toast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import SelectedAnswer from "./selected-answer";
 import { Input } from "@/components/ui/input";
+import ion_send from "@/assets/Images/ion_send.png";
+import Image from "next/image";
 import QuizScore from "./quiz-score-diloag";
 import { EndChatMessage, InitialChatMessage } from "./chat-messages";
 import {
+  getQuestions,
+  storeCorrectSubmission,
   storeUserSubmission,
   updateQuizStats,
 } from "@/app/supabase-client-provider";
@@ -25,9 +29,10 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { QuizDataType } from "@/types/quiz.types";
 
-type Option = {
-  text: string;
-  correct: string;
+type SubmissionType = {
+  questionId: string;
+  selected: { text: string; correct: string };
+  isCorrect: boolean;
 };
 
 type ChatProps = {
@@ -35,10 +40,9 @@ type ChatProps = {
   quizId: string;
   user: {
     name: string;
-    grade: string;
+    grade: number;
     id: string;
   };
-  QuestionLists: any[];
   numberOfCompletedQuizData: any;
 };
 
@@ -46,33 +50,53 @@ export default function Chat({
   quizData,
   quizId,
   user,
-  QuestionLists,
-  numberOfCompletedQuizData
+  numberOfCompletedQuizData,
 }: ChatProps) {
   const bottom = useRef<HTMLDivElement>(null);
   const [questionIndex, setQuestionIndex] = useState(
     quizData.submissions?.length || 0
   );
   const [hasEnded, setHasEnded] = useState(false);
-  const [submissions, setSubmissions] = useState(quizData.submissions || []);
+  const [submissions, setSubmissions] = useState<any[]>(
+    quizData?.submissions || []
+  );
   const [quizScore, showQuizScore] = useState(false);
   const [start, setStart] = useState(!!quizData.submissions?.length);
   const [userInput, setUserInput] = useState("");
   const [isMounted, setIsMounted] = useState(false);
+  const [loader, setLoader] = useState<boolean>(false);
+  const [currentSubmission, setCurrentSubmission] =
+    useState<SubmissionType | null>(null);
 
   const router = useRouter();
 
   const { questions: questionList, complete: isComplete } = quizData;
 
   const startNewQuiz = async () => {
+    setLoader(true);
     const supabase = createClientComponentClient();
+
+    const { questions: QuestionLists, topics } = await getQuestions(
+      user.grade,
+      user.id
+    );
+    if (QuestionLists.length === 0) {
+      return;
+    }
+
+    const metadata = {
+      grade: user.grade,
+      topics: topics,
+    };
+
     const { data: assessment_data, error } = await supabase
       .from("quiz")
       .insert({
         userid: user.id,
-        topic: QuestionLists?.[0].metadata.topic,
+        multiple_topics: topics,
         questions: QuestionLists,
         start: true,
+        metadata: metadata,
       })
       .select();
 
@@ -82,6 +106,7 @@ export default function Chat({
     if (assessment_data && assessment_data.length > 0) {
       router.push(`/chat/${assessment_data[0].id}`);
     }
+    setLoader(false);
   };
 
   // Get the current question
@@ -93,7 +118,7 @@ export default function Chat({
   const options = useMemo(() => {
     if (!currentQuestion) return [];
     if (!currentQuestion.options) return [];
-    return JSON.parse(currentQuestion.options) as Option[];
+    return currentQuestion.options;
   }, [currentQuestion]);
 
   // Scroll to the bottom of the chat
@@ -120,6 +145,16 @@ export default function Chat({
     // Store the user submission to the db
     (async () => {
       await storeUserSubmission(quizId, user.id, submissions);
+      if (currentSubmission?.isCorrect) {
+        await storeCorrectSubmission(
+          user.id,
+          currentSubmission.questionId,
+          quizData.id,
+          quizData.multiple_topics,
+          user.grade
+        );
+      }
+      router.refresh();
     })();
   }, [submissions]);
 
@@ -131,6 +166,12 @@ export default function Chat({
         return;
       }
       const isCorrect = checkAnswer(index);
+
+      setCurrentSubmission({
+        questionId: currentQuestion?.uuid,
+        selected: options[index!],
+        isCorrect,
+      });
 
       setSubmissions((submissions: any) => [
         ...submissions,
@@ -194,7 +235,7 @@ export default function Chat({
   useEffect(() => {
     // If the quiz is complete, redirect to the home page
     if (isComplete) {
-      router.push("/");
+      // router.push("/");
     }
     setIsMounted(true);
   }, []);
@@ -215,6 +256,7 @@ export default function Chat({
                   handleNext={handleNext}
                   submissions={submissions}
                   questionIndex={i + 1}
+                  user={user}
                 />
                 <SelectedAnswer submissions={submissions} index={i} />
               </div>
@@ -224,6 +266,7 @@ export default function Chat({
               showQuizScore={showQuizScore}
               user={user}
               startNewQuiz={startNewQuiz}
+              loader={loader}
             />
           )}
         </div>
@@ -232,22 +275,29 @@ export default function Chat({
           onSubmit={handleUserInput}
           className="bg-white h-[4rem] border-t px-4 flex items-center justify-center gap-x-2 fixed left-0 bottom-0 w-full shadow-md z-10"
         >
-          <Input
-            type="text"
-            placeholder="Enter your answer e.g. 'A'"
-            className="max-w-3xl focus-visible:outline-none focus-visible:ring-0 border-slate-400"
-            value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
-          />
-          <Button type="submit">Submit</Button>
-          <div className="flex items-center justify-center">
-            <span className="text-sm font-medium">
-              {questionIndex}/{questionList.length}
-            </span>
+          <div className="w-full rounded-lg md:ml-[-7rem] md:max-w-3xl flex bg-[#FFF] border-2 border-[#95B2B2]">
+            <Input
+              type="text"
+              placeholder="Enter your answer e.g. 'A'"
+              className="w-full border-0 focus-visible:outline-none focus-visible:border-0 focus-visible:ring-0"
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
+            />
+            <Button
+              type="submit"
+              className="border-0 bg-[#FFF] hover:bg-[#FFF]"
+            >
+              <Image src={ion_send} alt="" />
+            </Button>
           </div>
         </form>
       </div>
-      <QuizScore quizId={quizId} open={quizScore} setOpen={showQuizScore} numberOfCompletedQuizData={numberOfCompletedQuizData}/>
+      <QuizScore
+        quizId={quizId}
+        open={quizScore}
+        setOpen={showQuizScore}
+        numberOfCompletedQuizData={numberOfCompletedQuizData}
+      />
     </ScrollArea>
   );
 }

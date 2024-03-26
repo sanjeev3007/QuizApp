@@ -7,7 +7,7 @@ export type QuizDataType = {
     uuid: string;
     grade: string;
     topic: string;
-    options: string;
+    options: Option[];
     subject: string;
     metadata: {
       grade: string;
@@ -32,9 +32,15 @@ export type QuizDataType = {
     isCorrect: false;
     questionId: string;
   }[];
+  created_at: Date;
   timestarted: Date;
   timeended: Date;
-  created_at: Date;
   start: boolean;
   complete: boolean;
+  multiple_topics: Array<string>;
+};
+
+type Option = {
+  text: string;
+  correct: string;
 };

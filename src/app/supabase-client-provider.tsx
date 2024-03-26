@@ -92,3 +92,156 @@ export async function storeUserSubmission(
 
   return { success: true, data };
 }
+
+export const fetchCorrectSubmissions = async (
+  userId: string,
+  topics: string[]
+) => {
+  const supabase = createClientComponentClient();
+
+  const { data } = await supabase
+    .from("correct_submissions")
+    .select("questionid")
+    .eq("userid", userId)
+    .in("topic", topics);
+
+  if (!data) {
+    return [];
+  }
+
+  const formattedData = data.map((quiz) => {
+    return quiz.questionid;
+  });
+
+  return formattedData;
+};
+
+const generateRandomTopics = async () => {
+  const supabase = createClientComponentClient();
+
+  const { data, error } = await supabase.from(`db_grade7_math`).select("topic");
+
+  if (error) {
+    console.log(error);
+  }
+
+  const allTopics = Array.from(new Set(data?.map((topic) => topic.topic)));
+
+  const randomTopics = [] as string[];
+  for (let i = 0; i < 2; i++) {
+    const randomTopic = allTopics[Math.floor(Math.random() * allTopics.length)];
+    if (randomTopics.includes(randomTopic)) {
+      i--;
+      continue;
+    }
+    randomTopics.push(randomTopic);
+  }
+
+  return randomTopics;
+};
+
+// fetching question function
+const fetchQuestionsByLevel = async (
+  level: "easy" | "medium" | "hard",
+  limit: number,
+  topics: string[],
+  questionIds: string[],
+  db_url: string
+) => {
+  const supabase = createClientComponentClient();
+
+  const { data, error } = await supabase.rpc(db_url, {
+    level: level,
+    rows_limit: limit,
+    topics: topics,
+    uuids: questionIds,
+  });
+
+  if (error) {
+    console.log(error);
+  }
+
+  return data;
+};
+
+// generating questions
+export const getQuestions = async (user_grade: number | 7, userId: string) => {
+  let grade = user_grade;
+  if (grade > 8) grade = 8;
+
+  let db_with_grade = `fetch_rows_db_grade${grade}_math`;
+
+  // generate two random topics
+  const topics = await generateRandomTopics();
+
+  // fetching stored correct submissions
+  const questionIds = await fetchCorrectSubmissions(userId, topics);
+
+  const level1 = await fetchQuestionsByLevel(
+    "easy",
+    4,
+    topics,
+    questionIds,
+    db_with_grade
+  );
+  const level2 = await fetchQuestionsByLevel(
+    "medium",
+    4,
+    topics,
+    questionIds,
+    db_with_grade
+  );
+  const level3 = await fetchQuestionsByLevel(
+    "hard",
+    2,
+    topics,
+    questionIds,
+    db_with_grade
+  );
+
+  // Shuffles the questions array
+  function shuffle(array: any[]) {
+    let currentIndex = array.length,
+      randomIndex;
+    while (currentIndex > 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex],
+        array[currentIndex],
+      ];
+    }
+    return array;
+  }
+
+  const questions = shuffle(
+    [...(level1 ?? []), ...(level2 ?? []), ...(level3 ?? [])] ?? []
+  );
+  return { questions, topics: topics };
+};
+
+// storing correct submission
+export async function storeCorrectSubmission(
+  userId: string,
+  questionId: string,
+  quizId: number,
+  multiple_topics: string[],
+  grade: number
+) {
+  const supabase = createClientComponentClient();
+
+  const { error } = await supabase.from("correct_submissions").insert({
+    userid: userId,
+    questionid: questionId,
+    quizid: quizId,
+    multiple_topics: multiple_topics,
+    grade: grade,
+  });
+
+  if (error) {
+    console.error("store Correct Submission error", error);
+    return { success: false };
+  }
+
+  return { success: true };
+}

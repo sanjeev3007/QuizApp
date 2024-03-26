@@ -9,7 +9,6 @@ const together = new OpenAI({
 export async function POST(req: Request) {
   const body = await req.json();
   const { prompt: question, correctOption } = body;
-  console.log(prompt, correctOption);
 
   const response = await together.chat.completions.create({
     model: "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO",
@@ -23,7 +22,6 @@ export async function POST(req: Request) {
     ],
   });
 
-  console.log(response);
   const stream = OpenAIStream(response);
   return new StreamingTextResponse(stream, {
     status: 200,
