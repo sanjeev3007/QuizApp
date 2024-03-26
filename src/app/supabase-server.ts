@@ -184,7 +184,6 @@ export const getInsight = async (userid: string) => {
          // console.log(subtopics[subtopic],"subtopics[subtopic]---else",subtopic)
 
         }
-        console.log(Object.keys(subtopics).length, "subtopicssubtopicssubtopics")
 
       }))
     }
@@ -229,8 +228,6 @@ export const getInsight = async (userid: string) => {
   if (error) {
     console.error(error);
   }
-  console.log(scoreGreaterThanOrEqualTo4,"scoreGreaterThanOrEqualTo4")
-  console.log(scoreLessThanOrEqualTo3,"scoreGreaterThanOrEqualTo4")
 
   return {
     scoreGreaterThanOrEqualTo4,
@@ -271,8 +268,12 @@ export const getDashboard = async (userid: string) => {
   if (error) {
     console.error(error);
   }
-  console.log(quizCurrentStatus,)
   // return numberOfCompletedExercise;
+  return{
+    quizNumber,
+    quizWise,
+    last10Quizes
+  }
 };
 
 export async function getInCompletedQuiz(userId: string) {
