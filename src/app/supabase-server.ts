@@ -129,46 +129,30 @@ const quizWiseScore = ({ quizes, quizNumber }) => {
   return score
 }
 
-export const getInsight = async (userid: string) => {
-  const supabase = createServerSupabaseClient();
-  const { data: allQuizes, error } = await supabase
-    .from("quiz")
-    .select()
-    .eq("userid", userid)
-    .eq("complete", "true")
-  let numberOfCompletedExercise = 0;
+
+const getTopicWiseLevelScore = async(allQuizes,supabase)=>{
   const subtopics = {}
-  const quiredQuestion = {}
-  if (!allQuizes?.length) return []
   await Promise.all(allQuizes?.map(async ({ submissions }) => {
-    // console.log(submissions, "submissions")
     if (submissions.length) {
       await Promise.all(submissions.map(async ({ questionId, isCorrected }) => {
         const response = await supabase
           .from("db_grade7_math")
           .select()
           .eq("uuid", questionId)
-        // if(!response.data[0] && questionId) console.log("herereerere")
         if(!response.data[0]) return
         const subtopic = JSON.parse(response.data[0].metadata).subtopic
         const difficultyLevel = response.data[0].difficulty_level
-        // console.log(subtopic, "subtopicsubtopicsubtopicsubtopic")
         if (subtopics[subtopic]) {
-         // console.log(subtopics[subtopic],"subtopics[subtopic]",subtopic)
           subtopics[subtopic].totalQuestion += 1
           if (isCorrected) subtopics[subtopic].totalCorrectQuestion += 1
           switch (difficultyLevel) {
             case "easy":
-              // code block
               subtopics[subtopic].easy += 1
               break;
             case "medium":
-              // code block
               subtopics[subtopic].medium += 1
-
               break;
             default:
-              // code block
               subtopics[subtopic].hard += 1
 
           }
@@ -181,14 +165,14 @@ export const getInsight = async (userid: string) => {
             medium: difficultyLevel == "medium" ? 1 : 0,
             hard: difficultyLevel == "hard" ? 1 : 0
           }
-         // console.log(subtopics[subtopic],"subtopics[subtopic]---else",subtopic)
-
         }
-
       }))
     }
   }))
-  // console.log("subtopicssubtopicssubtopicssubtopicssubtopics")
+  return subtopics
+}
+
+const pushFinalScore = (subtopics)=>{
   Object.keys(subtopics).map((subTopic) => {
     const { easy, medium, hard } = subtopics[subTopic]
     if (!(easy && medium && hard)) delete subtopics[subTopic]
@@ -196,11 +180,22 @@ export const getInsight = async (userid: string) => {
       subtopics[subTopic].totalScore = (easy * 1) + (medium * 2) + (hard * 4)
     }
   })
-  // 
- //  console.log(subtopics, "subtopics----after---filter")
-  // subtopics.map(({ easy, medium, hard }) => {
+}
 
-  // })
+export const getInsight = async (userid: string) => {
+  const supabase = createServerSupabaseClient();
+  const { data: allQuizes, error } = await supabase
+    .from("quiz")
+    .select()
+    .eq("userid", userid)
+    .eq("complete", "true")
+  if (error) {
+      console.error(error);
+  }
+  const quiredQuestion = {}
+  if (!allQuizes?.length) return []
+  const subtopics = await getTopicWiseLevelScore(allQuizes,supabase)
+  await pushFinalScore(subtopics)
   const scoreGreaterThanOrEqualTo4 = [];
   const scoreLessThanOrEqualTo3 = [];
 
@@ -219,15 +214,12 @@ export const getInsight = async (userid: string) => {
     }
   }
 
-  // console.log(subtopics,"subtopics")
   const compareScoreDescending = (a, b) => subtopics[b].totalScore - subtopics[a].totalScore;
 
   // Sort arrays by age in descending order
   scoreGreaterThanOrEqualTo4.sort(compareScoreDescending);
   scoreLessThanOrEqualTo3.sort(compareScoreDescending);
-  if (error) {
-    console.error(error);
-  }
+
 
   return {
     scoreGreaterThanOrEqualTo4,
@@ -258,13 +250,9 @@ export const getDashboard = async (userid: string) => {
 
   const quizCurrentStatus = await getNumberOfCompletedQuiz(userid)
   const last10Quizes = await getLast10Quizes({ limit: 10, userid })
-  // console.log(quizCurrentStatus, "quizCurrentStatus")
-  // console.log(last10Quizes,"last10Quizes")
 
   const quizNumber = quizCurrentStatus.numberOfCompletedQuiz <= 10 ? 0 : quizCurrentStatus.numberOfCompletedQuiz - 10
   const quizWise = quizWiseScore({ quizes: last10Quizes, quizNumber })
-  // console.log(quizNumber, "quizNumber")
-  // console.log(quizWise, "quizWise")
   if (error) {
     console.error(error);
   }
