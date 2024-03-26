@@ -134,24 +134,27 @@ export const getInsight = async (userid: string) => {
   const { data: allQuizes, error } = await supabase
     .from("quiz")
     .select()
-    .eq("userid", "TFwkXyjDPQ")
+    .eq("userid", userid)
     .eq("complete", "true")
   let numberOfCompletedExercise = 0;
   const subtopics = {}
   const quiredQuestion = {}
   if (!allQuizes?.length) return []
-  allQuizes?.map(async ({ submissions }) => {
-    console.log(submissions, "submissions")
+  await Promise.all(allQuizes?.map(async ({ submissions }) => {
+    // console.log(submissions, "submissions")
     if (submissions.length) {
-      submissions.map(async ({ questionId, isCorrected }) => {
+      await Promise.all(submissions.map(async ({ questionId, isCorrected }) => {
         const response = await supabase
           .from("db_grade7_math")
           .select()
           .eq("uuid", questionId)
-        const subtopic = response.data[0].metadata.subtopic
+        // if(!response.data[0] && questionId) console.log("herereerere")
+        if(!response.data[0]) return
+        const subtopic = JSON.parse(response.data[0].metadata).subtopic
         const difficultyLevel = response.data[0].difficulty_level
-        console.log(subtopic, "subtopicsubtopicsubtopicsubtopic")
+        // console.log(subtopic, "subtopicsubtopicsubtopicsubtopic")
         if (subtopics[subtopic]) {
+         // console.log(subtopics[subtopic],"subtopics[subtopic]",subtopic)
           subtopics[subtopic].totalQuestion += 1
           if (isCorrected) subtopics[subtopic].totalCorrectQuestion += 1
           switch (difficultyLevel) {
@@ -178,13 +181,15 @@ export const getInsight = async (userid: string) => {
             medium: difficultyLevel == "medium" ? 1 : 0,
             hard: difficultyLevel == "hard" ? 1 : 0
           }
-          console.log(subtopics, "subtopicssubtopicssubtopics")
+         // console.log(subtopics[subtopic],"subtopics[subtopic]---else",subtopic)
+
         }
-      })
+        console.log(Object.keys(subtopics).length, "subtopicssubtopicssubtopics")
+
+      }))
     }
-  })
-  console.log("subtopicssubtopicssubtopicssubtopicssubtopics")
-  console.log(subtopics, "subtopics")
+  }))
+  // console.log("subtopicssubtopicssubtopicssubtopicssubtopics")
   Object.keys(subtopics).map((subTopic) => {
     const { easy, medium, hard } = subtopics[subTopic]
     if (!(easy && medium && hard)) delete subtopics[subTopic]
@@ -192,7 +197,8 @@ export const getInsight = async (userid: string) => {
       subtopics[subTopic].totalScore = (easy * 1) + (medium * 2) + (hard * 4)
     }
   })
-  console.log(subtopics, "subtopics----after---filter")
+  // 
+ //  console.log(subtopics, "subtopics----after---filter")
   // subtopics.map(({ easy, medium, hard }) => {
 
   // })
@@ -213,6 +219,8 @@ export const getInsight = async (userid: string) => {
       }
     }
   }
+
+  // console.log(subtopics,"subtopics")
   const compareScoreDescending = (a, b) => subtopics[b].totalScore - subtopics[a].totalScore;
 
   // Sort arrays by age in descending order
@@ -221,6 +229,9 @@ export const getInsight = async (userid: string) => {
   if (error) {
     console.error(error);
   }
+  console.log(scoreGreaterThanOrEqualTo4,"scoreGreaterThanOrEqualTo4")
+  console.log(scoreLessThanOrEqualTo3,"scoreGreaterThanOrEqualTo4")
+
   return {
     scoreGreaterThanOrEqualTo4,
     scoreLessThanOrEqualTo3
@@ -250,13 +261,13 @@ export const getDashboard = async (userid: string) => {
 
   const quizCurrentStatus = await getNumberOfCompletedQuiz(userid)
   const last10Quizes = await getLast10Quizes({ limit: 10, userid })
-  console.log(quizCurrentStatus, "quizCurrentStatus")
+  // console.log(quizCurrentStatus, "quizCurrentStatus")
   // console.log(last10Quizes,"last10Quizes")
 
   const quizNumber = quizCurrentStatus.numberOfCompletedQuiz <= 10 ? 0 : quizCurrentStatus.numberOfCompletedQuiz - 10
   const quizWise = quizWiseScore({ quizes: last10Quizes, quizNumber })
-  console.log(quizNumber, "quizNumber")
-  console.log(quizWise, "quizWise")
+  // console.log(quizNumber, "quizNumber")
+  // console.log(quizWise, "quizWise")
   if (error) {
     console.error(error);
   }
