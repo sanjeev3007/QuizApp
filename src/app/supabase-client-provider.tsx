@@ -199,24 +199,7 @@ export const getQuestions = async (user_grade: number | 7, userId: string) => {
     db_with_grade
   );
 
-  // Shuffles the questions array
-  function shuffle(array: any[]) {
-    let currentIndex = array.length,
-      randomIndex;
-    while (currentIndex > 0) {
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex],
-        array[currentIndex],
-      ];
-    }
-    return array;
-  }
-
-  const questions = shuffle(
-    [...(level1 ?? []), ...(level2 ?? []), ...(level3 ?? [])] ?? []
-  );
+  const questions = [...level1, ...level2, ...level3];
   return { questions, topics: topics };
 };
 
