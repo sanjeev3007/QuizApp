@@ -144,7 +144,7 @@ const quizWiseScore = ({ quizes, quizNumber }: { quizes: any[], quizNumber: numb
 
 const getTopicWiseLevelScore = async (allQuizes:any[] ,grade: number) => {
   const supabase = createServerSupabaseClient();
-  const subtopics : Subtopics = {
+  const subtopics : any = {
     totalQuestion: 0,
     totalCorrectQuestion: 0,
     easy: 0,
@@ -166,7 +166,7 @@ const getTopicWiseLevelScore = async (allQuizes:any[] ,grade: number) => {
           .eq("uuid", questionId)
         if (response && response.data && !response.data[0]) return
         const questionData = response && response.data && response.data[0]
-        const subtopic = JSON.parse(questionData.metadata).subtopic
+        const subtopic: any = JSON.parse(questionData.metadata).subtopic
         const difficultyLevel = questionData.difficulty_level
         if (subtopics[subtopic]) {
           subtopics[subtopic].totalQuestion += 1
@@ -247,7 +247,7 @@ export const getInsight = async (userid: string,grade:number) => {
     }
   }
 
-  const compareScoreDescending = (a, b) => b.totalScore - a.totalScore;
+  const compareScoreDescending = (a:any, b:any) => b.totalScore - a.totalScore;
   // Sort arrays by age in descending order
   scoreGreaterThanOrEqualTo4.sort(compareScoreDescending);
   scoreLessThanOrEqualTo3.sort(compareScoreDescending);
