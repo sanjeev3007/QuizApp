@@ -117,25 +117,29 @@ export const getNumberOfCompletedQuiz = async (userid: string) => {
 
 
 
-const quizWiseScore = ({ quizes, quizNumber }) => {
-  const reverse = quizes.reverse()
-  const score = [];
-  reverse.map((quizDetails, index) => {
-    quizNumber += 1
-    const { submissions } = quizDetails
-    const correctAnswers = submissions.filter(({ isCorrect }) => isCorrect)
-    score.push({ quizNumber, correctAnswers: correctAnswers.length })
-  })
-  return score
-}
+const quizWiseScore = ({ quizes, quizNumber }: { quizes: any[], quizNumber: number }): { quizNumber: number, correctAnswers: number }[] => {
+  const reverse = quizes.reverse();
+  const score: { quizNumber: number, correctAnswers: number }[] = [];
+  reverse.forEach((quizDetails, index) => {
+    quizNumber += 1;
+    const { submissions } = quizDetails;
+    const correctAnswers = submissions.filter(({ isCorrect }: { isCorrect: boolean }) => isCorrect);
+    score.push({ quizNumber, correctAnswers: correctAnswers.length });
+  });
+  return score;
+};
 
 
-const getTopicWiseLevelScore = async (allQuizes,grade) => {
+
+const getTopicWiseLevelScore = async (allQuizes:any[] ,grade: number) => {
   const supabase = createServerSupabaseClient();
   const subtopics = {}
   await Promise.all(allQuizes?.map(async ({ submissions }) => {
     if (submissions.length) {
-      await Promise.all(submissions.map(async ({ questionId, isCorrect }) => {
+      await Promise.all(submissions.map(async ({ questionId, isCorrect }:{
+        questionId:number;
+        isCorrect: boolean
+      }) => {
         const response = await supabase
           .from(`db_grade${grade}_math`)
           .select()
@@ -178,7 +182,7 @@ const getTopicWiseLevelScore = async (allQuizes,grade) => {
   return subtopics
 }
 
-const pushFinalScore = (subtopics) => {
+const pushFinalScore = (subtopics: any) => {
   Object.keys(subtopics).map((subTopic) => {
     const { easy, medium, hard, easyTotal, mediumTotal, hardTotal } = subtopics[subTopic]
     // Should Answer in all category
