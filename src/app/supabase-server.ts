@@ -130,40 +130,46 @@ const quizWiseScore = ({ quizes, quizNumber }) => {
 }
 
 
-const getTopicWiseLevelScore = async(allQuizes,supabase)=>{
+const getTopicWiseLevelScore = async (allQuizes) => {
+  const supabase = createServerSupabaseClient();
   const subtopics = {}
   await Promise.all(allQuizes?.map(async ({ submissions }) => {
     if (submissions.length) {
-      await Promise.all(submissions.map(async ({ questionId, isCorrected }) => {
+      await Promise.all(submissions.map(async ({ questionId, isCorrect }) => {
         const response = await supabase
           .from("db_grade7_math")
           .select()
           .eq("uuid", questionId)
-        if(!response.data[0]) return
+        if (!response.data[0]) return
         const subtopic = JSON.parse(response.data[0].metadata).subtopic
         const difficultyLevel = response.data[0].difficulty_level
         if (subtopics[subtopic]) {
           subtopics[subtopic].totalQuestion += 1
-          if (isCorrected) subtopics[subtopic].totalCorrectQuestion += 1
+          // if (isCorrected) subtopics[subtopic].totalCorrectQuestion += 1
           switch (difficultyLevel) {
             case "easy":
-              subtopics[subtopic].easy += 1
+              subtopics[subtopic].easy += isCorrect ? 1 : 0
+              subtopics[subtopic].easyTotal += 1
               break;
             case "medium":
-              subtopics[subtopic].medium += 1
+              subtopics[subtopic].medium += isCorrect ? 1 : 0
+              subtopics[subtopic].mediumTotal += 1
               break;
             default:
-              subtopics[subtopic].hard += 1
-
+              subtopics[subtopic].hard += isCorrect ? 1 : 0
+              subtopics[subtopic].hardTotal += 1
           }
         }
         else {
           subtopics[subtopic] = {
             totalQuestion: 1,
-            totalCorrectQuestion: isCorrected ? 1 : 0,
-            easy: difficultyLevel == "easy" ? 1 : 0,
-            medium: difficultyLevel == "medium" ? 1 : 0,
-            hard: difficultyLevel == "hard" ? 1 : 0
+            totalCorrectQuestion: isCorrect ? 1 : 0,
+            easy: difficultyLevel == "easy" && isCorrect ? 1 : 0,
+            medium: difficultyLevel == "medium" && isCorrect ? 1 : 0,
+            hard: difficultyLevel == "hard" && isCorrect ? 1 : 0,
+            easyTotal: difficultyLevel == "easy" ? 1 : 0,
+            mediumTotal: difficultyLevel == "medium" ? 1 : 0,
+            hardTotal: difficultyLevel == "hard" ? 1 : 0
           }
         }
       }))
@@ -172,15 +178,19 @@ const getTopicWiseLevelScore = async(allQuizes,supabase)=>{
   return subtopics
 }
 
-const pushFinalScore = (subtopics)=>{
+const pushFinalScore = (subtopics) => {
   Object.keys(subtopics).map((subTopic) => {
-    const { easy, medium, hard } = subtopics[subTopic]
+    const { easy, medium, hard, easyTotal, mediumTotal, hardTotal } = subtopics[subTopic]
+    // Should Answer in all category
     if (!(easy && medium && hard)) delete subtopics[subTopic]
     else {
-      subtopics[subTopic].totalScore = (easy * 1) + (medium * 2) + (hard * 4)
+      const score = ((easy / easyTotal) * 1) + ((medium / mediumTotal) * 2) + ((hard / hardTotal) * 4)
+      subtopics[subTopic].totalScore = Math.round(((score / 7) * 10));
     }
   })
 }
+
+
 
 export const getInsight = async (userid: string) => {
   const supabase = createServerSupabaseClient();
@@ -190,40 +200,35 @@ export const getInsight = async (userid: string) => {
     .eq("userid", userid)
     .eq("complete", "true")
   if (error) {
-      console.error(error);
+    console.error(error);
   }
   const quiredQuestion = {}
   if (!allQuizes?.length) return []
-  const subtopics = await getTopicWiseLevelScore(allQuizes,supabase)
+  const subtopics = await getTopicWiseLevelScore(allQuizes)
   await pushFinalScore(subtopics)
   const scoreGreaterThanOrEqualTo4 = [];
   const scoreLessThanOrEqualTo3 = [];
 
   // Function to compare ages in descending order
-
   // Categorize students into arrays
   for (const topic in subtopics) {
     if (subtopics.hasOwnProperty(topic)) {
       const score = subtopics[topic].totalScore;
-
       if (score >= 4) {
-        scoreGreaterThanOrEqualTo4.push(topic);
+        scoreGreaterThanOrEqualTo4.push({ topic, totalScore: subtopics[topic].totalScore });
       } else {
-        scoreLessThanOrEqualTo3.push(topic);
+        scoreLessThanOrEqualTo3.push({ topic, totalScore: subtopics[topic].totalScore });
       }
     }
   }
 
-  const compareScoreDescending = (a, b) => subtopics[b].totalScore - subtopics[a].totalScore;
-
+  const compareScoreDescending = (a, b) => b.totalScore - a.totalScore;
   // Sort arrays by age in descending order
   scoreGreaterThanOrEqualTo4.sort(compareScoreDescending);
   scoreLessThanOrEqualTo3.sort(compareScoreDescending);
-
-
   return {
-    scoreGreaterThanOrEqualTo4,
-    scoreLessThanOrEqualTo3
+    scoreGreaterThanOrEqualTo4: scoreGreaterThanOrEqualTo4.slice(0, 6),
+    scoreLessThanOrEqualTo3: scoreLessThanOrEqualTo3.slice(0, 6)
   };
 }
 
@@ -257,7 +262,7 @@ export const getDashboard = async (userid: string) => {
     console.error(error);
   }
   // return numberOfCompletedExercise;
-  return{
+  return {
     quizNumber,
     quizWise,
     last10Quizes
