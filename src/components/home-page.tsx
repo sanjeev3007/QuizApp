@@ -68,6 +68,7 @@ const HomePage = ({
   const mobileScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [isActive] = useState<boolean>(isActiveJourney);
   const [loader, setLoader] = useState<boolean>(false);
+  const [insightLoader, setInsightLoader] = useState<boolean>(false);
   const level = quizData?.level;
   const levelPercent =
     (quizData?.numberOfCompletedQuiz / quizData?.totalQuiz) * 100;
@@ -132,7 +133,11 @@ const HomePage = ({
 
   const viewScore = () => {
     if (quizData?.numberOfCompletedQuiz > 9) {
-      router.push(`/view-insights`);
+      setInsightLoader(true);
+      setTimeout(() => {
+        router.push(`/view-insights`);
+        setInsightLoader(false);
+      }, 1000);
     }
   };
 
@@ -263,7 +268,13 @@ const HomePage = ({
                 }
               >
                 View Insights{" "}
-                {quizData?.numberOfCompletedQuiz > 9 ? (
+                {insightLoader ? (
+                  <CircularProgress
+                    color="inherit"
+                    size={25}
+                    className="ml-2"
+                  />
+                ) : quizData?.numberOfCompletedQuiz > 9 ? (
                   <Image src={redirect_arrow} alt="redirect" className="ml-3" />
                 ) : (
                   <LockOutlinedIcon className="ml-[0.5rem]" fontSize="small" />

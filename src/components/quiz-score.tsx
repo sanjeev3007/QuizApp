@@ -9,16 +9,23 @@ type QuizData = {
   quizNumber: number;
   correctAnswers: number;
 };
-type Insights = {
-  scoreGreaterThanOrEqualTo4: string[] | never[];
-  scoreLessThanOrEqualTo3: string[] | never[];
+type scoreGreaterThanOrEqualTo4Data = {
+  topic: string;
+  totalScore: number;
+};
+type scoreLessThanOrEqualTo3Data = {
+  topic: string;
+  totalScore: number;
 };
 type Props = {
   dashboardData: {
     quizNumber: number | null;
     quizWise: QuizData[] | never[];
   };
-  insights: Insights;
+  insights: {
+    scoreGreaterThanOrEqualTo4: scoreGreaterThanOrEqualTo4Data[] | never[];
+    scoreLessThanOrEqualTo3: scoreLessThanOrEqualTo3Data[] | never[];
+  } | any;
 };
 
 const QuizScore = ({ dashboardData, insights }: Props) => {
