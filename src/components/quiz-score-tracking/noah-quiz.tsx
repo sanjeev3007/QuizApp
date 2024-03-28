@@ -20,7 +20,7 @@ const NoahQuiz = (props: Props) => {
     setTimeout(() => {
       router.push(`/`);
       setLoader(false);
-    }, 1000);
+    }, 400);
   };
   return (
     <div className="bg-[#F0F6FA] p-3 md:flex justify-around xs:flex-col">

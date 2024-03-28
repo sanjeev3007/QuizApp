@@ -36,7 +36,7 @@ const LevelCard = ({ dashboardData }: Props) => {
         />
       </div>
       <div className="mt-[1rem] flex justify-center text-[#569090] text-[48px] font-[700]">
-        {dashboardData?.quizNumber ? dashboardData?.quizNumber : "-"}
+        {dashboardData?.quizNumber ? dashboardData?.quizNumber : "0"}
       </div>
       <div className="flex justify-center text-[#569090] text-[14px] font-[500]">
         Completed Quizzes

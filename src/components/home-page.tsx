@@ -137,7 +137,7 @@ const HomePage = ({
       setTimeout(() => {
         router.push(`/view-insights`);
         setInsightLoader(false);
-      }, 1000);
+      }, 400);
     }
   };
 
