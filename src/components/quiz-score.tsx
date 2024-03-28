@@ -21,11 +21,17 @@ type Props = {
   dashboardData: {
     quizNumber: number | null;
     quizWise: QuizData[] | never[];
+    quizCurrentStatus: {
+      numberOfCompletedQuiz: number;
+      level: number;
+    };
   };
-  insights: {
-    scoreGreaterThanOrEqualTo4: scoreGreaterThanOrEqualTo4Data[] | never[];
-    scoreLessThanOrEqualTo3: scoreLessThanOrEqualTo3Data[] | never[];
-  } | any;
+  insights:
+    | {
+        scoreGreaterThanOrEqualTo4: scoreGreaterThanOrEqualTo4Data[] | never[];
+        scoreLessThanOrEqualTo3: scoreLessThanOrEqualTo3Data[] | never[];
+      }
+    | any;
 };
 
 const QuizScore = ({ dashboardData, insights }: Props) => {

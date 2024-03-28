@@ -11,6 +11,10 @@ type Props = {
   dashboardData: {
     quizNumber: number | null;
     quizWise: QuizData[] | never[];
+    quizCurrentStatus: {
+      numberOfCompletedQuiz: number;
+      level: number;
+    };
   };
 };
 
