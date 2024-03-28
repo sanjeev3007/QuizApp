@@ -130,14 +130,14 @@ const quizWiseScore = ({ quizes, quizNumber }) => {
 }
 
 
-const getTopicWiseLevelScore = async (allQuizes) => {
+const getTopicWiseLevelScore = async (allQuizes,grade) => {
   const supabase = createServerSupabaseClient();
   const subtopics = {}
   await Promise.all(allQuizes?.map(async ({ submissions }) => {
     if (submissions.length) {
       await Promise.all(submissions.map(async ({ questionId, isCorrect }) => {
         const response = await supabase
-          .from("db_grade7_math")
+          .from(`db_grade${grade}_math`)
           .select()
           .eq("uuid", questionId)
         if (!response.data[0]) return
@@ -192,7 +192,7 @@ const pushFinalScore = (subtopics) => {
 
 
 
-export const getInsight = async (userid: string) => {
+export const getInsight = async (userid: string,grade:number) => {
   const supabase = createServerSupabaseClient();
   const { data: allQuizes, error } = await supabase
     .from("quiz")
@@ -204,7 +204,7 @@ export const getInsight = async (userid: string) => {
   }
   const quiredQuestion = {}
   if (!allQuizes?.length) return []
-  const subtopics = await getTopicWiseLevelScore(allQuizes)
+  const subtopics = await getTopicWiseLevelScore(allQuizes,grade)
   await pushFinalScore(subtopics)
   const scoreGreaterThanOrEqualTo4 = [];
   const scoreLessThanOrEqualTo3 = [];
