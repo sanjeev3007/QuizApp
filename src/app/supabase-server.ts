@@ -142,9 +142,9 @@ const quizWiseScore = ({ quizes, quizNumber }: { quizes: any[], quizNumber: numb
 
 
 
-const getTopicWiseLevelScore = async (allQuizes:any[] ,grade: number) => {
+const getTopicWiseLevelScore = async (allQuizes: any[], grade: number) => {
   const supabase = createServerSupabaseClient();
-  const subtopics : any = {
+  const subtopics: any = {
     totalQuestion: 0,
     totalCorrectQuestion: 0,
     easy: 0,
@@ -153,11 +153,11 @@ const getTopicWiseLevelScore = async (allQuizes:any[] ,grade: number) => {
     easyTotal: 0,
     mediumTotal: 0,
     hardTotal: 0
-  } 
+  }
   await Promise.all(allQuizes?.map(async ({ submissions }) => {
     if (submissions.length) {
-      await Promise.all(submissions.map(async ({ questionId, isCorrect }:{
-        questionId:number;
+      await Promise.all(submissions.map(async ({ questionId, isCorrect }: {
+        questionId: number;
         isCorrect: boolean
       }) => {
         const response = await supabase
@@ -217,7 +217,7 @@ const pushFinalScore = (subtopics: any) => {
 
 
 
-export const getInsight = async (userid: string,grade:number) => {
+export const getInsight = async (userid: string, grade: number) => {
   const supabase = createServerSupabaseClient();
   const { data: allQuizes, error } = await supabase
     .from("quiz")
@@ -229,7 +229,7 @@ export const getInsight = async (userid: string,grade:number) => {
   }
   const quiredQuestion = {}
   if (!allQuizes?.length) return []
-  const subtopics = await getTopicWiseLevelScore(allQuizes,grade)
+  const subtopics = await getTopicWiseLevelScore(allQuizes, grade)
   await pushFinalScore(subtopics)
   const scoreGreaterThanOrEqualTo4 = [];
   const scoreLessThanOrEqualTo3 = [];
@@ -247,7 +247,7 @@ export const getInsight = async (userid: string,grade:number) => {
     }
   }
 
-  const compareScoreDescending = (a:any, b:any) => b.totalScore - a.totalScore;
+  const compareScoreDescending = (a: any, b: any) => b.totalScore - a.totalScore;
   // Sort arrays by age in descending order
   scoreGreaterThanOrEqualTo4.sort(compareScoreDescending);
   scoreLessThanOrEqualTo3.sort(compareScoreDescending);
@@ -257,7 +257,7 @@ export const getInsight = async (userid: string,grade:number) => {
   };
 }
 
-const getLast10Quizes = async ({ limit, userid }) => {
+const getLast10Quizes = async ({ limit, userid }: { limit: any; userid: string; }) => {
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
     .from('quiz')
@@ -266,31 +266,30 @@ const getLast10Quizes = async ({ limit, userid }) => {
     .eq("userid", userid)
     .order('created_at', { ascending: false })
     .limit(limit);
-
-  return data
+  return data || []
 }
 
 export const getDashboard = async (userid: string) => {
   const supabase = createServerSupabaseClient();
-  const { data: allQuizes, error } = await supabase
-    .from("quiz")
-    .select("questions", "submissions")
-    .eq("userid", userid)
-    .eq("complete", "true")
+  // const { data: allQuizes, error } = await supabase
+  //   .from("quiz")
+  //   .select("questions", "submissions")
+  //   .eq("userid", userid)
+  //   .eq("complete", "true")
 
   const quizCurrentStatus = await getNumberOfCompletedQuiz(userid)
   const last10Quizes = await getLast10Quizes({ limit: 10, userid })
 
   const quizNumber = quizCurrentStatus.numberOfCompletedQuiz <= 10 ? 0 : quizCurrentStatus.numberOfCompletedQuiz - 10
   const quizWise = quizWiseScore({ quizes: last10Quizes, quizNumber })
-  if (error) {
-    console.error(error);
-  }
+  // if (error) {
+  //   console.error(error);
+  // }
   // return numberOfCompletedExercise;
   return {
     quizNumber,
     quizWise,
-    last10Quizes
+    quizCurrentStatus
   }
 };
 
