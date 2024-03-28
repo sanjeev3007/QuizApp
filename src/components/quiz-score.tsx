@@ -20,7 +20,7 @@ type scoreLessThanOrEqualTo3Data = {
 type Props = {
   dashboardData: {
     quizNumber: number | null;
-    quizWise: QuizData[] | never[];
+    quizWise: QuizData[];
     quizCurrentStatus: {
       numberOfCompletedQuiz: number;
       level: number;
@@ -28,8 +28,8 @@ type Props = {
   };
   insights:
     | {
-        scoreGreaterThanOrEqualTo4: scoreGreaterThanOrEqualTo4Data[] | never[];
-        scoreLessThanOrEqualTo3: scoreLessThanOrEqualTo3Data[] | never[];
+        scoreGreaterThanOrEqualTo4: scoreGreaterThanOrEqualTo4Data[];
+        scoreLessThanOrEqualTo3: scoreLessThanOrEqualTo3Data[];
       }
     | any;
 };

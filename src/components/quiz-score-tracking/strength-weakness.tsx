@@ -14,8 +14,8 @@ type scoreLessThanOrEqualTo3Data = {
 type Props = {
   type: string;
   insights: {
-    scoreGreaterThanOrEqualTo4: scoreGreaterThanOrEqualTo4Data[] | never[];
-    scoreLessThanOrEqualTo3: scoreLessThanOrEqualTo3Data[] | never[];
+    scoreGreaterThanOrEqualTo4: scoreGreaterThanOrEqualTo4Data[];
+    scoreLessThanOrEqualTo3: scoreLessThanOrEqualTo3Data[];
   };
 };
 
@@ -40,7 +40,7 @@ const StrengthWeakness = ({ type, insights }: Props) => {
       <div>
         {type === "strengths" && (
           <div>
-            {insights?.scoreGreaterThanOrEqualTo4.length > 0 ? (
+            {insights?.scoreGreaterThanOrEqualTo4?.length > 0 ? (
               <div className="p-3 pt-[4rem] overflow-y-auto max-h-[290px] grid grid-cols-1 md:grid-cols-2 gap-2 mt-[1rem]">
                 {insights?.scoreGreaterThanOrEqualTo4?.map(
                   (
@@ -63,7 +63,7 @@ const StrengthWeakness = ({ type, insights }: Props) => {
         )}
         {type === "weakness" && (
           <div>
-            {insights?.scoreLessThanOrEqualTo3.length > 0 ? (
+            {insights?.scoreLessThanOrEqualTo3?.length > 0 ? (
               <div className="p-3 pt-[4rem] overflow-y-auto max-h-[290px] grid grid-cols-1 md:grid-cols-2 gap-2 mt-[1rem]">
                 {insights?.scoreLessThanOrEqualTo3?.map(
                   (
