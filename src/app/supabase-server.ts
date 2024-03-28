@@ -2,6 +2,17 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { cache } from "react";
 
+type Subtopics = {
+  totalQuestion: number;
+  totalCorrectQuestion: number;
+  easy: number;
+  medium: number;
+  hard: number;
+  easyTotal: number;
+  mediumTotal: number;
+  hardTotal: number;
+}
+
 export const createServerSupabaseClient = cache(() =>
   createServerComponentClient({ cookies })
 );
@@ -115,88 +126,172 @@ export const getNumberOfCompletedQuiz = async (userid: string) => {
   };
 };
 
-// const compareScoreDescending = (a: any, b: any) =>
-//   subtopics[b].totalScore - subtopics[a].totalScore;
 
-// export const getInsight = async (userid: string) => {
-//   const supabase = createServerSupabaseClient();
-//   const { data: allQuizes, error } = await supabase
-//     .from("quiz")
-//     .select("questions, submissions")
-//     .eq("userid", userid);
-//   let numberOfCompletedExercise = 0;
-//   const subtopics = {};
-//   const quiredQuestion = {};
-//   allQuizes?.map(async ({ submissions }) => {
-//     if (submissions) {
-//       submissions.map(async ({ questionId, isCorrected }) => {
-//         const response = await supabase
-//           .from("db_grade7_math")
-//           .select("difficulty_level", "metadata")
-//           .eq("uuid", questionId);
-//       });
-//       if (subtopics[response.metadata.subtopic]) {
-//         subtopics[response.metadata.subtopic].totalQuestion += 1;
-//         if (isCorrected)
-//           subtopics[response.metadata.subtopic].totalCorrectQuestion += 1;
-//         switch (response.difficulty_level) {
-//           case "easy":
-//             // code block
-//             subtopics[response.metadata.subtopic].easy += 1;
-//             break;
-//           case "medium":
-//             // code block
-//             subtopics[response.metadata.subtopic].medium += 1;
 
-//             break;
-//           default:
-//             // code block
-//             subtopics[response.metadata.subtopic].hard += 1;
-//         }
-//       } else {
-//         subtopics[response.metadata.subtopic] = {
-//           totalQuestion: 1,
-//           totalCorrectQuestion: isCorrected ? 1 : 0,
-//           easy: response.difficulty_level == "easy" ? 1 : 0,
-//           medium: response.difficulty_level == "medium" ? 1 : 0,
-//           hard: response.difficulty_level == "hard" ? 1 : 0,
-//         };
-//       }
-//     }
-//   });
-//   Object.keys(subtopics).map((subTopic) => {
-//     const { easy, medium, hard } = subtopics[subTopic];
-//     if (!(easy && medium && hard)) delete subtopics[subTopic];
-//   });
-//   subtopics.map(({ easy, medium, hard }) => {
-//     subtopics.totalScore = easy * 1 + medium * 2 + hard * 4;
-//   });
-//   const scoreGreaterThanOrEqualTo4 = [];
-//   const scoreLessThanOrEqualTo3 = [];
+const quizWiseScore = ({ quizes, quizNumber }: { quizes: any[], quizNumber: number }): { quizNumber: number, correctAnswers: number }[] => {
+  const reverse = quizes.reverse();
+  const score: { quizNumber: number, correctAnswers: number }[] = [];
+  reverse.forEach((quizDetails, index) => {
+    quizNumber += 1;
+    const { submissions } = quizDetails;
+    const correctAnswers = submissions.filter(({ isCorrect }: { isCorrect: boolean }) => isCorrect);
+    score.push({ quizNumber, correctAnswers: correctAnswers.length });
+  });
+  return score;
+};
 
-//   // Function to compare ages in descending order
 
-//   // Categorize students into arrays
-//   for (const topic in subtopics) {
-//     if (subtopics.hasOwnProperty(topic)) {
-//       const score = subtopics[topic].totalScore;
 
-//       if (score >= 4) {
-//         scoreGreaterThanOrEqualTo4.push(topic);
-//       } else {
-//         scoreLessThanOrEqualTo3.push(topic);
-//       }
-//     }
-//   }
+const getTopicWiseLevelScore = async (allQuizes: any[], grade: number) => {
+  const supabase = createServerSupabaseClient();
+  const subtopics: any = {
+    totalQuestion: 0,
+    totalCorrectQuestion: 0,
+    easy: 0,
+    medium: 0,
+    hard: 0,
+    easyTotal: 0,
+    mediumTotal: 0,
+    hardTotal: 0
+  }
+  await Promise.all(allQuizes?.map(async ({ submissions }) => {
+    if (submissions.length) {
+      await Promise.all(submissions.map(async ({ questionId, isCorrect }: {
+        questionId: number;
+        isCorrect: boolean
+      }) => {
+        const response = await supabase
+          .from(`db_grade${grade}_math`)
+          .select()
+          .eq("uuid", questionId)
+        if (response && response.data && !response.data[0]) return
+        const questionData = response && response.data && response.data[0]
+        const subtopic: any = JSON.parse(questionData.metadata).subtopic
+        const difficultyLevel = questionData.difficulty_level
+        if (subtopics[subtopic]) {
+          subtopics[subtopic].totalQuestion += 1
+          // if (isCorrected) subtopics[subtopic].totalCorrectQuestion += 1
+          switch (difficultyLevel) {
+            case "easy":
+              subtopics[subtopic].easy += isCorrect ? 1 : 0
+              subtopics[subtopic].easyTotal += 1
+              break;
+            case "medium":
+              subtopics[subtopic].medium += isCorrect ? 1 : 0
+              subtopics[subtopic].mediumTotal += 1
+              break;
+            default:
+              subtopics[subtopic].hard += isCorrect ? 1 : 0
+              subtopics[subtopic].hardTotal += 1
+          }
+        }
+        else {
+          subtopics[subtopic] = {
+            totalQuestion: 1,
+            totalCorrectQuestion: isCorrect ? 1 : 0,
+            easy: difficultyLevel == "easy" && isCorrect ? 1 : 0,
+            medium: difficultyLevel == "medium" && isCorrect ? 1 : 0,
+            hard: difficultyLevel == "hard" && isCorrect ? 1 : 0,
+            easyTotal: difficultyLevel == "easy" ? 1 : 0,
+            mediumTotal: difficultyLevel == "medium" ? 1 : 0,
+            hardTotal: difficultyLevel == "hard" ? 1 : 0
+          }
+        }
+      }))
+    }
+  }))
+  return subtopics
+}
 
-//   // Sort arrays by age in descending order
-//   scoreGreaterThanOrEqualTo4.sort(compareScoreDescending);
-//   scoreLessThanOrEqualTo3.sort(compareScoreDescending);
-//   if (error) {
-//     console.error(error);
-//   }
-//   return numberOfCompletedExercise;
-// };
+const pushFinalScore = (subtopics: any) => {
+  Object.keys(subtopics).map((subTopic) => {
+    const { easy, medium, hard, easyTotal, mediumTotal, hardTotal } = subtopics[subTopic]
+    // Should Answer in all category
+    if (!(easy && medium && hard)) delete subtopics[subTopic]
+    else {
+      const score = ((easy / easyTotal) * 1) + ((medium / mediumTotal) * 2) + ((hard / hardTotal) * 4)
+      subtopics[subTopic].totalScore = Math.round(((score / 7) * 10));
+    }
+  })
+}
+
+
+
+export const getInsight = async (userid: string, grade: number) => {
+  const supabase = createServerSupabaseClient();
+  const { data: allQuizes, error } = await supabase
+    .from("quiz")
+    .select()
+    .eq("userid", userid)
+    .eq("complete", "true")
+  if (error) {
+    console.error(error);
+  }
+  const quiredQuestion = {}
+  if (!allQuizes?.length) return []
+  const subtopics = await getTopicWiseLevelScore(allQuizes, grade)
+  await pushFinalScore(subtopics)
+  const scoreGreaterThanOrEqualTo4 = [];
+  const scoreLessThanOrEqualTo3 = [];
+
+  // Function to compare ages in descending order
+  // Categorize students into arrays
+  for (const topic in subtopics) {
+    if (subtopics.hasOwnProperty(topic)) {
+      const score = subtopics[topic].totalScore;
+      if (score >= 4) {
+        scoreGreaterThanOrEqualTo4.push({ topic, totalScore: subtopics[topic].totalScore });
+      } else {
+        scoreLessThanOrEqualTo3.push({ topic, totalScore: subtopics[topic].totalScore });
+      }
+    }
+  }
+
+  const compareScoreDescending = (a: any, b: any) => b.totalScore - a.totalScore;
+  // Sort arrays by age in descending order
+  scoreGreaterThanOrEqualTo4.sort(compareScoreDescending);
+  scoreLessThanOrEqualTo3.sort(compareScoreDescending);
+  return {
+    scoreGreaterThanOrEqualTo4: scoreGreaterThanOrEqualTo4.slice(0, 6),
+    scoreLessThanOrEqualTo3: scoreLessThanOrEqualTo3.slice(0, 6)
+  };
+}
+
+const getLast10Quizes = async ({ limit, userid }: { limit: any; userid: string; }) => {
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase
+    .from('quiz')
+    .select('*')
+    .eq("complete", "true")
+    .eq("userid", userid)
+    .order('created_at', { ascending: false })
+    .limit(limit);
+  return data || []
+}
+
+export const getDashboard = async (userid: string) => {
+  const supabase = createServerSupabaseClient();
+  // const { data: allQuizes, error } = await supabase
+  //   .from("quiz")
+  //   .select("questions", "submissions")
+  //   .eq("userid", userid)
+  //   .eq("complete", "true")
+
+  const quizCurrentStatus = await getNumberOfCompletedQuiz(userid)
+  const last10Quizes = await getLast10Quizes({ limit: 10, userid })
+
+  const quizNumber = quizCurrentStatus.numberOfCompletedQuiz <= 10 ? 0 : quizCurrentStatus.numberOfCompletedQuiz - 10
+  const quizWise = quizWiseScore({ quizes: last10Quizes, quizNumber })
+  // if (error) {
+  //   console.error(error);
+  // }
+  // return numberOfCompletedExercise;
+  return {
+    quizNumber,
+    quizWise,
+    quizCurrentStatus
+  }
+};
 
 export async function getInCompletedQuiz(userId: string) {
   const supabase = createServerSupabaseClient();

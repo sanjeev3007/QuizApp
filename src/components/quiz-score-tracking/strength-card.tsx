@@ -6,19 +6,22 @@ import starIcon from "@/assets/Images/starIcon.svg";
 
 import "@/components/home-page.css";
 
-type Props = {};
+type Props = {
+  strength: {
+    topic: string;
+    totalScore: number;
+  };
+};
 
-const StrengthCard = (props: Props) => {
+const StrengthCard = ({ strength }: Props) => {
   return (
-    <Card className="flex justify-around p-4 bg-[#FFFFFF]">
-      <div className="text-xs font-semibold  justify-self-center self-center text-[#5B8989]">
-        Definition, Representation and Standard Form of Rational Numbers
+    <Card className="flex justify-between p-4 bg-[#FFFFFF]">
+      <div className="text-xs font-semibold  flex justify-center items-center text-left text-[#5B8989]">
+        {strength.topic}
       </div>
-      <div className=" flex justify-self-center self-center">
-        <span className="text-sm font-semibold  text-[#5B8989]">
-          10
-        </span>
-        <Image src={starIcon} alt="star"/>
+      <div className="flex justify-center items-center text-left">
+        <span className="text-sm font-semibold  text-[#5B8989]">{strength.totalScore}</span>
+        <Image src={starIcon} alt="star" />
       </div>
     </Card>
   );
