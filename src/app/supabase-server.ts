@@ -2,6 +2,17 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { cache } from "react";
 
+type Subtopics = {
+  totalQuestion: number;
+  totalCorrectQuestion: number;
+  easy: number;
+  medium: number;
+  hard: number;
+  easyTotal: number;
+  mediumTotal: number;
+  hardTotal: number;
+}
+
 export const createServerSupabaseClient = cache(() =>
   createServerComponentClient({ cookies })
 );
@@ -133,7 +144,16 @@ const quizWiseScore = ({ quizes, quizNumber }: { quizes: any[], quizNumber: numb
 
 const getTopicWiseLevelScore = async (allQuizes:any[] ,grade: number) => {
   const supabase = createServerSupabaseClient();
-  const subtopics = {}
+  const subtopics : Subtopics = {
+    totalQuestion: 0,
+    totalCorrectQuestion: 0,
+    easy: 0,
+    medium: 0,
+    hard: 0,
+    easyTotal: 0,
+    mediumTotal: 0,
+    hardTotal: 0
+  } 
   await Promise.all(allQuizes?.map(async ({ submissions }) => {
     if (submissions.length) {
       await Promise.all(submissions.map(async ({ questionId, isCorrect }:{
@@ -144,9 +164,10 @@ const getTopicWiseLevelScore = async (allQuizes:any[] ,grade: number) => {
           .from(`db_grade${grade}_math`)
           .select()
           .eq("uuid", questionId)
-        if (!response.data[0]) return
-        const subtopic = JSON.parse(response.data[0].metadata).subtopic
-        const difficultyLevel = response.data[0].difficulty_level
+        if (response && response.data && !response.data[0]) return
+        const questionData = response && response.data && response.data[0]
+        const subtopic = JSON.parse(questionData.metadata).subtopic
+        const difficultyLevel = questionData.difficulty_level
         if (subtopics[subtopic]) {
           subtopics[subtopic].totalQuestion += 1
           // if (isCorrected) subtopics[subtopic].totalCorrectQuestion += 1
