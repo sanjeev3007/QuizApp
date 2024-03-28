@@ -2,22 +2,26 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import "./graph.css";
 
-type Props = {};
+type QuizData = {
+  quizNumber: number;
+  correctAnswers: number;
+};
+type Props = {
+  dashboardData: {
+    quizNumber: number | null;
+    quizWise: QuizData[] | never[];
+  };
+};
 
-const ScoreGraph = (props: Props) => {
-  const data = [1, 0, 4, 3, 10, 2, 6, 8, 2, 0];
-  const labels = [
-    "Quiz 1",
-    "Quiz 2",
-    "Quiz 3",
-    "Quiz 4",
-    "Quiz 5",
-    "Quiz 6",
-    "Quiz 7",
-    "Quiz 8",
-    "Quiz 9",
-    "Quiz 10",
-  ];
+const ScoreGraph = ({ dashboardData }: Props) => {
+  // Sort the quizWise data by quizNumber in ascending order
+  dashboardData.quizWise.sort((a, b) => a.quizNumber - b.quizNumber);
+
+  // Convert the sorted dashboardData.quizWise data to the desired format
+  const data = dashboardData.quizWise.map((item) => item.correctAnswers);
+  const labels = dashboardData.quizWise.map(
+    (item) => `Quiz ${item.quizNumber}`
+  );
   const maxBarHeight = 136;
   const minBarHeight = 20;
   const maxValue = Math.max(...data);
