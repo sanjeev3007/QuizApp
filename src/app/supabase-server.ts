@@ -161,12 +161,12 @@ const getTopicWiseLevelScore = async (allQuizes: any[], grade: number) => {
         isCorrect: boolean
       }) => {
         const response = await supabase
-          .from(`db_grade${grade}_math`)
+          .from(`db_grade7_math`)
           .select()
           .eq("uuid", questionId)
         if (response && response.data && !response.data[0]) return
         const questionData = response && response.data && response.data[0]
-        const subtopic: any = JSON.parse(questionData.metadata).subtopic
+        const subtopic: any = (questionData.metadata).subtopic
         const difficultyLevel = questionData.difficulty_level
         if (subtopics[subtopic]) {
           subtopics[subtopic].totalQuestion += 1
