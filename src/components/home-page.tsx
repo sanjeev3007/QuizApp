@@ -68,6 +68,7 @@ const HomePage = ({
   const mobileScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [isActive] = useState<boolean>(isActiveJourney);
   const [loader, setLoader] = useState<boolean>(false);
+  const [insightLoader, setInsightLoader] = useState<boolean>(false);
   const level = quizData?.level;
   const levelPercent =
     (quizData?.numberOfCompletedQuiz / quizData?.totalQuiz) * 100;
@@ -131,8 +132,12 @@ const HomePage = ({
   }));
 
   const viewScore = () => {
-    if (level > 9) {
-      router.push(`/yourScore`);
+    if (quizData?.numberOfCompletedQuiz > 9) {
+      setInsightLoader(true);
+      setTimeout(() => {
+        router.push(`/view-insights`);
+        setInsightLoader(false);
+      }, 400);
     }
   };
 
@@ -251,19 +256,25 @@ const HomePage = ({
               <Button
                 className={cn(
                   "w-max px-11 mt-[2rem] py-6 bg-[#B59585] text-lg font-semibold text-[#FFFFFF] hover:bg-[#B59585]",
-                  level > 10 &&
-                    "text-[#E98451] border-2 border-[#E98451] bg-[#FFF]",
+                  quizData?.numberOfCompletedQuiz > 9 &&
+                    "text-[#E98451] border-2 border-[#E98451] bg-[#FFF] hover:bg-[#FFF]",
                   mobileScreen && "px-5 py-6 w-[50%]"
                 )}
                 onClick={viewScore}
                 title={
-                  level <= 10
+                  quizData?.numberOfCompletedQuiz < 10
                     ? "Complete at least 10 quizzes to view insights"
                     : ""
                 }
               >
                 View Insights{" "}
-                {level > 10 ? (
+                {insightLoader ? (
+                  <CircularProgress
+                    color="inherit"
+                    size={25}
+                    className="ml-2"
+                  />
+                ) : quizData?.numberOfCompletedQuiz > 9 ? (
                   <Image src={redirect_arrow} alt="redirect" className="ml-3" />
                 ) : (
                   <LockOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
