@@ -1,52 +1,36 @@
 import { createServerSupabaseClient } from "@/app/supabase-server";
 
 export async function GET(req: Request) {
-  // const supabase = createServerSupabaseClient();
+  const supabase = createServerSupabaseClient();
 
-  // let db_with_grade = `fetch_rows_db_grade7_math`;
+  const { data: previousData, error } = await supabase
+    .from("db_grade7_math")
+    .select("id, uuid, metadata, options, topic, subject, grade");
 
-  // let { data: random_topics, error: topic_error } = await supabase
-  //   .from(`db_grade7_math`)
-  //   .select("topic");
+  for (let i = 0; i < previousData?.length!; i++) {
+    const updatedMetadata = JSON.parse(previousData![i].metadata);
+    // const updatedOptions = JSON.parse(previousData![i].options);
 
-  // const allTopics = Array.from(
-  //   new Set(random_topics?.map((topic) => topic.topic))
-  // );
+    const { data } = await supabase
+      .from("db_grade7_math")
+      .update({
+        metadata: updatedMetadata,
+      })
+      .eq("uuid", previousData![i].uuid)
+      .select("id, metadata, options, grade, topic, subject");
+    console.log(data);
+  }
 
-  // const randomTopics = [] as string[];
-  // for (let i = 0; i < 2; i++) {
-  //   const randomTopic = allTopics[Math.floor(Math.random() * allTopics.length)];
-  //   if (randomTopics.includes(randomTopic)) {
-  //     i--;
-  //     continue;
-  //   }
-  //   randomTopics.push(randomTopic);
-  // }
+  console.log("End.");
+  if (error) {
+    return new Response(JSON.stringify({ data: error }), {
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+  }
 
-  // console.log(randomTopics);
-  // const { data: correct_submissions } = await supabase
-  //   .from("correct_submissions")
-  //   .select("questionid")
-  //   .eq("userid", "demo_user_id_6");
-
-  // const questionIds = correct_submissions?.map((quiz) => {
-  //   return quiz.questionid;
-  // });
-
-  // console.log(questionIds);
-
-  // const { data, error } = await supabase.rpc(db_with_grade, {
-  //   level: "easy",
-  //   rows_limit: 4,
-  //   topics: randomTopics,
-  //   uuids: questionIds,
-  // });
-
-  // if (error) console.log(error);
-
-  // console.log(data);
-
-  return new Response(JSON.stringify({ data: "hello" }), {
+  return new Response(JSON.stringify({ message: "Successful" }), {
     headers: {
       "content-type": "application/json",
     },

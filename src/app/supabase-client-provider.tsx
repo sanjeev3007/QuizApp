@@ -116,10 +116,12 @@ export const fetchCorrectSubmissions = async (
   return formattedData;
 };
 
-const generateRandomTopics = async () => {
+const generateRandomTopics = async (grade: number) => {
   const supabase = createClientComponentClient();
 
-  const { data, error } = await supabase.from(`db_grade7_math`).select("topic");
+  const { data, error } = await supabase
+    .from(`db_grade${grade}_math`)
+    .select("topic");
 
   if (error) {
     console.log(error);
@@ -165,14 +167,14 @@ const fetchQuestionsByLevel = async (
 };
 
 // generating questions
-export const getQuestions = async (user_grade: number | 7, userId: string) => {
+export const getQuestions = async (user_grade: number, userId: string) => {
   let grade = user_grade;
   if (grade > 8) grade = 8;
 
   let db_with_grade = `fetch_rows_db_grade${grade}_math`;
 
   // generate two random topics
-  const topics = await generateRandomTopics();
+  const topics = await generateRandomTopics(grade);
 
   // fetching stored correct submissions
   const questionIds = await fetchCorrectSubmissions(userId, topics);
