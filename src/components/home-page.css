@@ -21,6 +21,9 @@
 .level-card {
   background: -webkit-linear-gradient(77.69deg, #f0f6fa 17.91%, #fffbeb 82.09%);
 }
+.gradient-text-1{
+  background: -webkit-linear-gradient(72deg, #4186B41F 24.69%, #FFC20A1F 75.31%);
+}
 .star {
   background: -webkit-linear-gradient(
     133.83deg,
