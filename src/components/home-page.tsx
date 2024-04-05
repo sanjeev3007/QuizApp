@@ -49,7 +49,7 @@ type Props = {
   inCompleteQuiz: any;
   userId: string;
   userName: string;
-  grade: any;
+  grade: number;
   quizData: any;
 };
 

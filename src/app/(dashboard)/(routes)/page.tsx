@@ -9,8 +9,8 @@ import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 
 const Home = async () => {
-  const userName = getCookie("userName", { cookies }) || "demo_user_id_6";
-  const user_Id = getCookie("userId", { cookies }) || "demo_user_id_6";
+  const userName = getCookie("userName", { cookies }) || "demo_user_grade_1";
+  const user_Id = getCookie("userId", { cookies }) || "demo_user_grade_1";
   const grade =
     getCookie("grade", { cookies }) ||
     Math.max(1, Math.floor(Math.random() * 8) + 1);
@@ -24,7 +24,7 @@ const Home = async () => {
         inCompleteQuiz={inCompleteQuiz![0]}
         userId={user_Id!}
         userName={userName!}
-        grade={grade}
+        grade={grade as number}
         quizData={numberOfCompletedQuizData}
       />
     </div>

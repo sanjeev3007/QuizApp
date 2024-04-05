@@ -116,10 +116,12 @@ export const fetchCorrectSubmissions = async (
   return formattedData;
 };
 
-const generateRandomTopics = async () => {
+const generateRandomTopics = async (grade: number) => {
   const supabase = createClientComponentClient();
 
-  const { data, error } = await supabase.from(`db_grade7_math`).select("topic");
+  const { data, error } = await supabase
+    .from(`db_grade${grade}_math`)
+    .select("topic");
 
   if (error) {
     console.log(error);
@@ -165,14 +167,14 @@ const fetchQuestionsByLevel = async (
 };
 
 // generating questions
-export const getQuestions = async (user_grade: number | 7, userId: string) => {
+export const getQuestions = async (user_grade: number, userId: string) => {
   let grade = user_grade;
   if (grade > 8) grade = 8;
 
   let db_with_grade = `fetch_rows_db_grade${grade}_math`;
 
   // generate two random topics
-  const topics = await generateRandomTopics();
+  const topics = await generateRandomTopics(grade);
 
   // fetching stored correct submissions
   const questionIds = await fetchCorrectSubmissions(userId, topics);
@@ -199,24 +201,7 @@ export const getQuestions = async (user_grade: number | 7, userId: string) => {
     db_with_grade
   );
 
-  // Shuffles the questions array
-  function shuffle(array: any[]) {
-    let currentIndex = array.length,
-      randomIndex;
-    while (currentIndex > 0) {
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex],
-        array[currentIndex],
-      ];
-    }
-    return array;
-  }
-
-  const questions = shuffle(
-    [...(level1 ?? []), ...(level2 ?? []), ...(level3 ?? [])] ?? []
-  );
+  const questions = [...level1, ...level2, ...level3];
   return { questions, topics: topics };
 };
 
