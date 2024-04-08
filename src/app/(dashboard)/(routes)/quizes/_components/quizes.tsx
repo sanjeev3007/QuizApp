@@ -14,7 +14,7 @@ const Quizes = (props: Props) => {
           What would you like to do today?
         </div>
       </div>
-      <div className="flex flex-col mt-2 md:grid md:grid-cols-3 gap-4 md:mt-4">
+      <div className="flex flex-col mt-2 w-full md:w-[80%] md:grid md:grid-cols-3 gap-4 md:mt-8">
         <Card type="math" />
         <Card type="gk" />
         <Card type="chat" />

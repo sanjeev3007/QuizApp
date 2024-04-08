@@ -2,11 +2,13 @@
 import React, { useState } from "react";
 import mathIcon from "@/assets/Images/mathIcon.png";
 import gkIcon from "@/assets/Images/gk-icon.png";
+import chatsIcon from "@/assets/Images/chatsIcon.png";
 import chatIcon from "@/assets/Images/chat-icon.png";
 import Image from "next/image";
 import ProgressBar from "./progress-bar";
 import CircularProgress from "@mui/material/CircularProgress";
-import EastOutlinedIcon from "@mui/icons-material/EastOutlined";
+import { useRouter } from "next/navigation";
+import FastForwardOutlinedIcon from "@mui/icons-material/FastForwardOutlined";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -16,9 +18,15 @@ type Props = {
 };
 
 const Card = ({ type }: Props) => {
+  const router = useRouter();
   const [loader, setLoader] = useState<boolean>(false);
+  const navigateTo = () => {
+    if (type === "chat") {
+      router.push("/chat-home");
+    }
+  };
   return (
-    <div className="bg-[#F0F6FA] p-4 flex flex-col justify-center content-center items-center">
+    <div className="bg-[#F0F6FA] w-full py-4 px-6 flex flex-col justify-center content-center items-center">
       <Image
         src={type === "math" ? mathIcon : type === "gk" ? gkIcon : chatIcon}
       />
@@ -36,22 +44,30 @@ const Card = ({ type }: Props) => {
           ? "General trivia. Just for fun."
           : "Ask anything. Anytime"}
       </div>
-      <div>
-        <ProgressBar />
-      </div>
+      {type === "chat" ? (
+        <div className="w-full text-[#5B8989] flex justify-center content-center items-center mt-[2rem]">
+          <Image src={chatsIcon} alt="chat" />
+          <span className="font-bold text-xl ml-1">80</span>
+          <span className="text-sm font-medium ml-1">chats done</span>
+        </div>
+      ) : (
+        <div className="w-full">
+          <ProgressBar />
+        </div>
+      )}
       <div className="flex justify-center">
         <Button
           className={cn(
-            "w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-semibold text-[#FFF] hover:bg-[#E98451]"
+            "w-max mt-[1.5rem] py-[6px] px-[12px] bg-[#E98451] text-sm font-semibold text-[#FFF] hover:bg-[#E98451]"
           )}
-          //onClick={() => onSubmit()}
+          onClick={() => navigateTo()}
           //onClick={()=> router.push("/quizes")}
         >
           Continue
           {loader ? (
             <CircularProgress color="inherit" size={25} className="ml-2" />
           ) : (
-            <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
+            <FastForwardOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
           )}
         </Button>
       </div>
