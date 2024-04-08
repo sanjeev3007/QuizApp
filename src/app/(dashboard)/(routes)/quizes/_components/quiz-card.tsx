@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import mathIcon from "@/assets/Images/mathIcon.png";
 import gkIcon from "@/assets/Images/gk-icon.png";
 import chatsIcon from "@/assets/Images/chatsIcon.png";
@@ -12,23 +12,46 @@ import FastForwardOutlinedIcon from "@mui/icons-material/FastForwardOutlined";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { createQuiz, getGKQuestions } from "@/actions/gk-quiz";
 
 type Props = {
   type: string;
+  path: string;
+  user_id: string;
 };
 
-const Card = ({ type }: Props) => {
+const Card = ({ type, path, user_id }: Props) => {
   const router = useRouter();
   const [loader, setLoader] = useState<boolean>(false);
-  const navigateTo = () => {
-    if (type === "chat") {
-      router.push("/chat-home");
+
+  const navigateTo = async () => {
+    setLoader(true);
+    if (path !== "/gk-quiz") {
+      router.push(path);
+      setLoader(false);
+    } else {
+      try {
+        const { questions, topics } = await getGKQuestions(user_id);
+        if (questions.length === 0) {
+          return;
+        }
+        const data = await createQuiz(user_id, questions, topics);
+        if (data && data.length > 0) {
+          router.push(`/gk-quiz/${data[0].id}`);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoader(false);
+      }
     }
   };
+
   return (
     <div className="bg-[#F0F6FA] w-full py-4 px-6 flex flex-col justify-center content-center items-center">
       <Image
         src={type === "math" ? mathIcon : type === "gk" ? gkIcon : chatIcon}
+        alt=""
       />
       <span className="text-[#2F4F4F] text-lg font-extrabold ">
         {type === "math"
@@ -61,7 +84,6 @@ const Card = ({ type }: Props) => {
             "w-max mt-[1.5rem] py-[6px] px-[12px] bg-[#E98451] text-sm font-semibold text-[#FFF] hover:bg-[#E98451]"
           )}
           onClick={() => navigateTo()}
-          //onClick={()=> router.push("/quizes")}
         >
           Continue
           {loader ? (

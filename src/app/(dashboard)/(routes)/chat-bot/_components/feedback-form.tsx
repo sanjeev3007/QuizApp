@@ -6,14 +6,21 @@ import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { useState } from "react";
 import FeedBackPopup from "./feedback-popup";
 
-export default function FeedBackForm({
-  answerId,
-}: {
+type FeedbackProps = {
+  answer: string;
   answerId: number;
-}) {
-  const [response, setResponse] = useState<string | null>(null);
+  chat_id: string;
+  user_id: string;
+};
+
+export default function FeedBackForm({
+  answer,
+  answerId,
+  chat_id,
+  user_id,
+}: FeedbackProps) {
+  const [response, setResponse] = useState<"good" | "bad" | null>(null);
   const [feedbackDone, setFeedbackDone] = useState<boolean>(false);
-  const [loader, setLoader] = useState<boolean>(false);
 
   const [open, setOpen] = useState<boolean>(false);
 
@@ -24,13 +31,6 @@ export default function FeedBackForm({
     setOpen(false);
   };
 
-  const handleResponse = async (res: string) => {
-    setResponse(res);
-    // if (res === "good") {
-    //   submitFeedback(res, null);
-    // }
-  };
-
   const showOptions = response === "bad" || response === "good";
 
   if (feedbackDone) return;
@@ -39,8 +39,8 @@ export default function FeedBackForm({
       <div className="flex gap-x-2 items-center">
         <ThumbsUp
           onClick={() => {
+            setResponse("good");
             handleClickOpen();
-            handleResponse("good");
           }}
           className={cn(
             "stroke-slate-500 w-4 h-4 hover:fill-slate-300 cursor-pointer",
@@ -49,8 +49,8 @@ export default function FeedBackForm({
         />
         <ThumbsDown
           onClick={() => {
+            setResponse("bad");
             handleClickOpen();
-            handleResponse("bad");
           }}
           className={cn(
             "stroke-slate-500 w-4 h-4 hover:fill-slate-300 cursor-pointer",
@@ -64,8 +64,12 @@ export default function FeedBackForm({
           handleClickOpen={handleClickOpen}
           handleClose={handleClose}
           showOptions={showOptions}
-          responses={response}
-          loader={loader}
+          response={response!}
+          setFeedbackDone={setFeedbackDone}
+          chat_id={chat_id}
+          user_id={user_id}
+          answer={answer}
+          answerId={answerId}
         />
       )}
     </div>

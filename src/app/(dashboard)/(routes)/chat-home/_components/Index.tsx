@@ -18,11 +18,17 @@ import ArrowRightOutlinedIcon from "@mui/icons-material/ArrowRightOutlined";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import "./index.css";
+import { nanoid } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
-type Props = {};
+type Props = {
+  user_Id: string;
+};
 
 const Index = (props: Props) => {
+  const id = nanoid();
   const [userInput, setUserInput] = useState("");
+  const router = useRouter();
 
   const handleUserInput = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,9 +38,10 @@ const Index = (props: Props) => {
     }
     // converting user input to lowercase and removing any extra spaces
     const optimizedAnswer: string = userInput.toLowerCase().trim();
-     
-      setUserInput("");
-    
+
+    setUserInput("");
+
+    router.push(`/chat-bot/${props.user_Id}/${id}?q=${optimizedAnswer}`);
   };
   return (
     <div className="flex flex-col justify-center content-center items-center">

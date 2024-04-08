@@ -8,61 +8,41 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
-import { Input } from "@/components/ui/input";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import CircularProgress from "@mui/material/CircularProgress";
-import { addFeedback } from "@/actions/chat-doubt";
-
-type Props = {
-  open: boolean;
-  handleClickOpen: (open: boolean) => void;
-  handleClose: any;
-  showOptions: boolean;
-  response: string;
-  setFeedbackDone: (feedbackDone: boolean) => void;
-  chat_id: string;
-  user_id: string;
-  answer: string;
-  answerId: number;
-};
 
 export default function FeedBackPopup({
-  open,
-  handleClickOpen,
-  handleClose,
-  showOptions,
-  response,
-  setFeedbackDone,
-  chat_id,
-  user_id,
-  answer,
-  answerId,
-}: Props) {
+    open,
+    handleClickOpen,
+    handleClose,
+    showOptions,
+    reasons,
+    handleReason,
+    responses,
+    loader,
+  }: {
+    open: boolean;
+    handleClickOpen: (open: boolean) => void;
+    handleClose: any;
+    showOptions: boolean;
+    reasons: Array<{ id: number; text: string }>;
+    handleReason: any;
+    responses: string | null;
+    loader: boolean;
+  }) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const [loader, setLoader] = React.useState<boolean>(false);
-  const [userInput, setUserInput] = React.useState<string>("");
-
-  const submitFeedback = async () => {
-    setLoader(true);
-    await addFeedback(user_id, chat_id, response, {
-      answerId,
-      ai_answer: answer,
-      reason: userInput,
-    });
-    setFeedbackDone(true);
-    setLoader(false);
-  };
+  const [reasonId, setReasonId] = React.useState<number | null>(null);
   return (
     <React.Fragment>
       <Dialog onClose={handleClose} open={open} fullWidth maxWidth={"sm"}>
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
           <div className="inline-flex">
             <div>
-              {response === "good" ? (
+              {responses === "good" ? (
                 <ThumbsUp
                   className={cn(
                     "stroke-slate-500 w-4 h-4 hover:fill-slate-300 cursor-pointer mt-1.5",
@@ -79,7 +59,7 @@ export default function FeedBackPopup({
               )}
             </div>
             <span className="ml-2 font-semibold text-lg text-[#2F4F4F]">
-              {response === "good"
+              {responses === "good"
                 ? "Why did you like this?"
                 : "Tell us what went wrong"}
             </span>
@@ -97,23 +77,34 @@ export default function FeedBackPopup({
         >
           <CloseIcon />
         </IconButton>
-        <DialogContent>
-          <div className="flex justify-center">
-            <Input
-              type="text"
-              placeholder="Enter your feedback"
-              className="w-[80%] "
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-            />
+        <DialogContent dividers>
+          <div className="grid grid-cols-1 gap-2">
+            {showOptions &&
+              reasons.map((reason: any, i: number) => (
+                <React.Fragment>
+                  {reason.text && (
+                    <div
+                      key={reason.id}
+                      className={cn(
+                        "py-1 px-4 rounded-md bg-white border hover:bg-slate-50 cursor-pointer text-[#5B8989]",
+                        i + 1 === reasonId &&
+                          "bg-[#5B8989] text-[#FFF] hover:bg-[#5B8989]"
+                      )}
+                      onClick={() => setReasonId(reason.id)}
+                    >
+                      <span className="text-sm font-medium">{reason.text}</span>
+                    </div>
+                  )}
+                </React.Fragment>
+              ))}
           </div>
         </DialogContent>
         <DialogActions>
-          <div className="w-full flex justify-center mt-[1rem] mb-[1rem]">
+          <div className="w-full flex justify-left mt-[1rem] mb-[1rem]">
             <Button
               className="min-w-44 ml-2 w-max px-8 py-4 bg-[#E98451] text-sm font-semibold text-[#FFF] hover:bg-[#E98451]"
-              onClick={() => submitFeedback()}
-              disabled={loader}
+              onClick={() => handleReason(reasonId)}
+              disabled={!reasonId || loader}
             >
               {loader ? (
                 <CircularProgress color="inherit" size={25} />
