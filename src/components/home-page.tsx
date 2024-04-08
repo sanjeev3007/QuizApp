@@ -142,8 +142,19 @@ const HomePage = ({
   };
 
   return (
-    <div className={`font-sans mb-[2.5rem]`}>
-      <div className="flex flex-col-reverse mt-2 md:grid md:grid-cols-2 gap-4 md:mt-4">
+    <div className={`font-sans`}>
+      <div className="w-full flex justify-center">
+        <div className="w-full text-center sm:flex justify-around items-center text-[#5B8989] p-2 bg-[#FDF2ED] sm:w-[800px]">
+          <div className="flex justify-center">
+            <div className="gradient-text-1 p-1 w-max">NEW ON <span className="gradient-text">NOAH</span></div>
+          </div>
+          <div className="">
+            Noah can now answer academic doubts and generate general trivia
+            quizzes.
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-col-reverse mt-2 sm:grid sm:grid-cols-2 gap-4 sm:mt-4">
         <div className="md:justify-self-center md:self-center grid gap-2 mt-2 md:grid-cols-1">
           <div className="tracking-normal text-xl font-bold text-wrap md:text-4xl md:leading-10">
             {isActive ? (
@@ -219,7 +230,8 @@ const HomePage = ({
                   "w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-semibold text-[#FFF] hover:bg-[#E98451]",
                   mobileScreen && "px-5 py-6 w-[50%]"
                 )}
-                onClick={() => onSubmit()}
+                //onClick={() => onSubmit()}
+                onClick={()=> router.push("/quizes")}
               >
                 Continue
                 {loader ? (
