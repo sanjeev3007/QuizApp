@@ -1,7 +1,7 @@
 "use client";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import ion_send from "@/assets/Images/ion_send.png";
 import Image from "next/image";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useChat } from "ai/react";
 import { ChatList } from "./chat-list";
 import { Message } from "ai";
+import SuggestedQuestionForm from "./suggestion-form";
 
 type ChatProps = {
   id: string;
@@ -23,6 +24,9 @@ export function Chat({
   initialMessages,
   initialQuestion,
 }: ChatProps) {
+  const [suggestions, setSuggestions] = useState<[{ question: string }] | null>(
+    null
+  );
   const {
     messages,
     append,
@@ -39,11 +43,13 @@ export function Chat({
       user_id,
     },
     async onResponse(response) {
+      setSuggestions(null);
       if (response.status === 401) {
         console.log(response);
-      } else {
-        console.log(response);
       }
+    },
+    onFinish(response) {
+      setSuggestions(JSON.parse(response.content).nextPossibleQuestions);
     },
     api: "/api/chat-doubt",
   });
@@ -51,7 +57,7 @@ export function Chat({
 
   useEffect(() => {
     bottom.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, suggestions]);
 
   useEffect(() => {
     if (messages.length === 0) {
@@ -59,6 +65,15 @@ export function Chat({
         role: "user",
         content: initialQuestion || "Hi",
       });
+    }
+
+    if (
+      suggestions == null &&
+      messages[messages.length - 1]?.role === "assistant"
+    ) {
+      setSuggestions(
+        JSON.parse(messages[messages.length - 1].content).nextPossibleQuestions
+      );
     }
   }, []);
 
@@ -74,6 +89,22 @@ export function Chat({
             setInput={setInput}
             id={id}
           />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-w-3xl w-full mx-auto">
+          {suggestions?.map((ques: { question: string }, i: number) => (
+            <SuggestedQuestionForm
+              ques={ques}
+              key={i}
+              setInput={setInput}
+              onSubmit={async (value) => {
+                await append({
+                  id,
+                  content: value,
+                  role: "user",
+                });
+              }}
+            />
+          ))}
         </div>
         <div className="" ref={bottom}></div>
         <form

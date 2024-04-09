@@ -1,11 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import FeedBackForm from "./feedback-form";
 import botIcon from "@/assets/Images/bot_icon.png";
 import userIcon from "@/assets/Images/user_icon.png";
 import { Message } from "ai";
-import SuggestedQuestionForm from "./suggestion-form";
 import { UseChatHelpers } from "ai/react";
 
 export interface ChatMessageProps
@@ -16,14 +14,7 @@ export interface ChatMessageProps
   index?: number;
   messagesLength?: number;
 }
-export default function ChatMessage({
-  message,
-  messagesLength,
-  index,
-  setInput,
-  append,
-  id,
-}: ChatMessageProps) {
+export default function ChatMessage({ message }: ChatMessageProps) {
   return (
     <div className="flex-1 relative w-full">
       <div className="flex w-full justify-start gap-x-2 mt-4">
@@ -42,39 +33,9 @@ export default function ChatMessage({
                   const parsedContent = JSON.parse(message.content);
                   return parsedContent.answer ?? message.content;
                 } catch (error) {
-                  return message.content;
+                  return <div className="">Thinking...</div>;
                 }
               })()}
-          {messagesLength &&
-            index === messagesLength - 1 &&
-            message.role === "assistant" &&
-            (() => {
-              try {
-                const parsedContent = JSON.parse(
-                  message.content
-                    .replace(/\\n/g, "\\\\n")
-                    .replace(/\\'/g, "\\'")
-                );
-                return parsedContent.nextPossibleQuestions?.map(
-                  (ques: { question: string }, i: number) => (
-                    <SuggestedQuestionForm
-                      ques={ques}
-                      key={i}
-                      setInput={setInput}
-                      onSubmit={async (value) => {
-                        await append({
-                          id,
-                          content: value,
-                          role: "user",
-                        });
-                      }}
-                    />
-                  )
-                );
-              } catch (error) {
-                return null;
-              }
-            })()}
         </div>
       </div>
     </div>

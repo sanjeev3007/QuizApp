@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     messages: [
       {
         role: "system",
-        content: `You are a helpful assistant designed solve the doubts, give the response in the JSON format like this ${JSON.stringify(
+        content: `You are Noah, an AI education assistant created by Codeyoung. You help students with their doubts. Please do not let respond non-education related questions. give the response in the JSON format like this ${JSON.stringify(
           json_format
         )}, nextPossibleQuestions is an array of 4 possible questions that user can ask.`,
       },

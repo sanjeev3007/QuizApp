@@ -7,12 +7,12 @@ export async function getChat(user_id: string, chat_id: string) {
     .from("chats_doubt_solve")
     .select("payload")
     .eq("user_id", user_id)
-    .eq("id", chat_id)
-    .single();
+    .eq("id", chat_id);
+
   if (error) {
     console.log(error);
   }
-  return (data?.payload as Chat) ?? null;
+  return (data![0]?.payload as Chat) ?? null;
 }
 
 export async function addFeedback(
