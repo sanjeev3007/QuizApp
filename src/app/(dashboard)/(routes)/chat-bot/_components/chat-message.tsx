@@ -25,7 +25,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
             <Image src={botIcon} alt="user" className="stroke-orange-300" />
           )}
         </div>
-        <div className="w-fit grid grid-cols-1 gap-2 border-2 font-medium text-sm leading-5 border-[#F0F6FA] text-[#5B8989] bg-[#F0F6FA] p-4 rounded-lg rounded-ss-none">
+        <div className="w-fit grid grid-cols-1 gap-2 border-2 font-medium text-sm leading-5 border-[#F0F6FA] text-[#5B8989] bg-[#F0F6FA] p-4 rounded-lg rounded-ss-none whitespace-pre-wrap">
           {message.role === "user"
             ? message.content
             : (() => {
@@ -33,6 +33,10 @@ export default function ChatMessage({ message }: ChatMessageProps) {
                   const parsedContent = JSON.parse(message.content);
                   return parsedContent.answer ?? message.content;
                 } catch (error) {
+                  // const formattedContent = message.content
+                  //   .replace(`{\"answer\":\"`, "")
+                  //   .replace(`\"nextPossibleQuestions\"`, "")
+                  //   .trim();
                   return <div className="">Thinking...</div>;
                 }
               })()}
