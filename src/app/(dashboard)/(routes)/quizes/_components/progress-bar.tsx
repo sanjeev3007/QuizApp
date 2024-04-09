@@ -31,7 +31,7 @@ const ProgressBar = ({ quizData }: Props) => {
   }));
   return (
     <div className="relative justify-center w-full mt-[2rem] text-[#5B8989] font-medium leading-6 text-xs">
-      <BorderLinearProgress variant="determinate" value={levelPercent} />
+      <BorderLinearProgress variant="determinate" value={levelPercent || 0} />
       <div className="flex justify-between content-center items-center mt-1">
         <span>
           Completed {quizData?.numberOfCompletedQuiz || 0} out of{" "}

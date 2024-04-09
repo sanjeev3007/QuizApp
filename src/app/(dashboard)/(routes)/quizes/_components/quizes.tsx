@@ -4,20 +4,12 @@ import Image from "next/image";
 import Card from "./quiz-card";
 
 type Props = {
-  inCompleteQuiz: any;
   userId: string;
   userName: string;
   grade: number;
-  quizData: any;
 };
 
-const Quizes = ({
-  inCompleteQuiz,
-  userId,
-  userName,
-  grade,
-  quizData,
-}: Props) => {
+const Quizes = ({ userId, userName, grade }: Props) => {
   return (
     <div className="flex flex-col justify-center content-center items-center">
       <div className="flex justify-between content-center items-center">
@@ -31,19 +23,15 @@ const Quizes = ({
           type="math"
           path={"/chat"}
           user_id={userId}
-          inCompleteQuiz={inCompleteQuiz}
           userName={userName}
           grade={grade}
-          quizData={quizData}
         />
         <Card
           type="gk"
           path={"/gk-quiz"}
           user_id={userId}
-          inCompleteQuiz={inCompleteQuiz}
           userName={userName}
           grade={grade}
-          quizData={quizData}
         />
         <Card type="chat" path={"/chat-home"} user_id={userId} />
       </div>

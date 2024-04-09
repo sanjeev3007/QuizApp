@@ -1,32 +1,23 @@
-import {
-  getInCompletedQuiz,
-  getNumberOfCompletedQuiz,
-  getDashboard,
-  getInsight,
-} from "@/app/supabase-server";
 import Quizes from "./_components/quizes";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
+import {
+  getInCompletedGKQuiz,
+  getNumberOfCompletedGKQuiz,
+} from "@/actions/gk-quiz.server";
 
 const Page = async () => {
-  const userName = getCookie("userName", { cookies }) || "aaryan_dev_1";
-  const user_Id = getCookie("userId", { cookies }) || "aaryan_dev_1";
+  const userName =
+    getCookie("userName", { cookies }) || process.env.NEXT_PUBLIC_DEMO_USER_ID;
+  const user_Id =
+    getCookie("userId", { cookies }) || process.env.NEXT_PUBLIC_DEMO_USER_ID;
   const grade =
     getCookie("grade", { cookies }) ||
     Math.max(1, Math.floor(Math.random() * 8) + 1);
 
-  const numberOfCompletedQuizData = await getNumberOfCompletedQuiz(user_Id!);
-  const inCompleteQuiz = await getInCompletedQuiz(user_Id!); // get the incompleted quiz
-
   return (
     <div className="p-5 md:px-12 w-full md:max-w-7xl mx-auto bg-[#FFF] !important">
-      <Quizes
-        inCompleteQuiz={inCompleteQuiz![0]}
-        userId={user_Id!}
-        userName={userName!}
-        grade={grade as number}
-        quizData={numberOfCompletedQuizData}
-      />
+      <Quizes userId={user_Id!} userName={userName!} grade={grade as number} />
     </div>
   );
 };

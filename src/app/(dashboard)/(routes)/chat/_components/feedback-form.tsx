@@ -1,6 +1,6 @@
 "use client";
 
-import { feedbackQuiz } from "@/app/supabase-client-provider";
+import { feedbackQuiz } from "@/actions/math";
 import { cn } from "@/lib/utils";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { useState } from "react";

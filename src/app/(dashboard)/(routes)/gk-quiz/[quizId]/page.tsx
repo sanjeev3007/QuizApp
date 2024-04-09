@@ -12,8 +12,10 @@ export default async function QuizPage({
   params: { quizId: string };
 }) {
   const quizData = await getGKQuizById(quizId);
-  const userName = getCookie("userName", { cookies }) || "aaryan_dev_1";
-  const user_Id = getCookie("userId", { cookies }) || "aaryan_dev_1";
+  const userName =
+    getCookie("userName", { cookies }) || process.env.NEXT_PUBLIC_DEMO_USER_ID;
+  const user_Id =
+    getCookie("userId", { cookies }) || process.env.NEXT_PUBLIC_DEMO_USER_ID;
   const grade =
     getCookie("grade", { cookies }) ||
     Math.max(1, Math.floor(Math.random() * 8) + 1);

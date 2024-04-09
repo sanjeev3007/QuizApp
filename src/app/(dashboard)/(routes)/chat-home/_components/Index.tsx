@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import "./index.css";
 import { nanoid } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import useChatQuery from "@/store/chat-query";
 
 type Props = {
   user_Id: string;
@@ -29,6 +30,7 @@ const Index = (props: Props) => {
   const id = nanoid();
   const [userInput, setUserInput] = useState("");
   const router = useRouter();
+  const chatQuery = useChatQuery((state) => state);
 
   const handleUserInput = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,8 +42,9 @@ const Index = (props: Props) => {
     const optimizedAnswer: string = userInput.toLowerCase().trim();
 
     setUserInput("");
+    chatQuery.setQuery(optimizedAnswer);
 
-    router.push(`/chat-bot/${props.user_Id}/${id}?q=${optimizedAnswer}`);
+    router.push(`/chat-bot/${props.user_Id}/${id}`);
   };
   return (
     <div className="flex flex-col justify-center content-center items-center">
@@ -71,7 +74,6 @@ const Index = (props: Props) => {
               type="submit"
               className="border-0 py-[4px] px-[12px] text-sm fomt-semibold text-[#FFF] bg-[#E98451] hover:bg-[#E98451]"
             >
-              {" "}
               Start Chat
               <ArrowRightOutlinedIcon fontSize="small" className="ml-2" />
             </Button>

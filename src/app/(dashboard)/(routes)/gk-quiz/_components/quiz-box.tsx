@@ -18,18 +18,13 @@ import ion_send from "@/assets/Images/ion_send.png";
 import Image from "next/image";
 import QuizScore from "./quiz-score-diloag";
 import { EndChatMessage, InitialChatMessage } from "./quiz-messages";
-import {
-  getQuestions,
-  storeCorrectSubmission,
-  storeUserSubmission,
-  updateQuizStats,
-} from "@/app/supabase-client-provider";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { QuizDataType } from "@/types/quiz.types";
 import {
-  createQuiz,
+  createGKQuiz,
+  getGKQuestions,
   storeCorrectSubmissionForGK,
   storeUserSubmissionInGKQuiz,
   updateGKQuizStats,
@@ -81,18 +76,15 @@ export default function QuizBox({
   const startNewQuiz = async () => {
     setLoader(true);
 
-    const { questions: QuestionLists, topics } = await getQuestions(
-      user.grade,
-      user.id
-    );
+    const { questions: QuestionLists, topics } = await getGKQuestions(user.id);
     if (QuestionLists.length === 0) {
       return;
     }
 
-    const data = await createQuiz(user.id, QuestionLists, topics);
+    const data = await createGKQuiz(user.id, QuestionLists, topics);
 
     if (data && data.length > 0) {
-      router.push(`/chat/${data[0].id}`);
+      router.push(`/gk-quiz/${data[0].id}`);
     }
     setLoader(false);
   };

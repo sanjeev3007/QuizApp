@@ -6,7 +6,8 @@ import { cookies } from "next/headers";
 type Props = {};
 
 const Page = (props: Props) => {
-  const user_Id = getCookie("userId", { cookies }) || "chat_doubt_123";
+  const user_Id =
+    getCookie("userId", { cookies }) || process.env.NEXT_PUBLIC_DEMO_USER_ID!;
   return (
     <div className="p-5 md:px-12 w-full md:max-w-7xl mx-auto bg-[#FFF] !important">
       <Index user_Id={user_Id} />
