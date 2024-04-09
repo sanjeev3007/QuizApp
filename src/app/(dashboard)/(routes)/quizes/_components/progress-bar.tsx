@@ -8,16 +8,15 @@ import { useTheme } from "@mui/material/styles";
 import { styled } from "@mui/material/styles";
 import "@/components/home-page.css";
 
-type Props = {};
+type Props = {
+  quizData: any;
+};
 
-const ProgressBar = (props: Props) => {
+const ProgressBar = ({ quizData }: Props) => {
   const theme = useTheme();
-  const level = 1;
-  const levelPercent = 40;
-  const quizData = {
-    numberOfCompletedQuiz: 4,
-    totalQuiz: 10,
-  };
+  const level = quizData?.level;
+  const levelPercent =
+    (quizData?.numberOfCompletedQuiz / quizData?.totalQuiz) * 100;
   const BorderLinearProgress = styled(LinearProgress)(() => ({
     height: 15,
     borderRadius: 10,
@@ -42,7 +41,7 @@ const ProgressBar = (props: Props) => {
           <span className="level-text font-medium text-xs">Level {level}</span>
         )}
         {level > 0 && (
-          <div className="absolute top-0 mt-5 -translate-y-full right-0 mr-7 translate-x-full">
+          <div className="absolute top-0 mt-5 -translate-y-full right-0 mr-6 translate-x-full">
             <Image src={levelCup} alt="cup" />
           </div>
         )}
