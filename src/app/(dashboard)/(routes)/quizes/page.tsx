@@ -9,8 +9,8 @@ import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 
 const Page = async () => {
-  const userName = getCookie("userName", { cookies }) || "gk_user_1";
-  const user_Id = getCookie("userId", { cookies }) || "gk_user_1";
+  const userName = getCookie("userName", { cookies }) || "aaryan_dev_1";
+  const user_Id = getCookie("userId", { cookies }) || "aaryan_dev_1";
   const grade =
     getCookie("grade", { cookies }) ||
     Math.max(1, Math.floor(Math.random() * 8) + 1);

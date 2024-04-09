@@ -9,8 +9,8 @@ export default async function ChatPage({
   params: { quizId: string };
 }) {
   const quizData = await getQuizById(quizId);
-  const userName = getCookie("userName", { cookies }) || "demo_user_grade_1";
-  const user_Id = getCookie("userId", { cookies }) || "demo_user_grade_1";
+  const userName = getCookie("userName", { cookies }) || "aaryan_dev_1";
+  const user_Id = getCookie("userId", { cookies }) || "aaryan_dev_1";
   const grade =
     getCookie("grade", { cookies }) ||
     Math.max(1, Math.floor(Math.random() * 8) + 1);
