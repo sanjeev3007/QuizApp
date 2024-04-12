@@ -9,7 +9,6 @@ import ProgressBar from "./progress-bar";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useRouter } from "next/navigation";
 import redirect_arrow from "@/assets/Images/redirect_arrow.png";
-import { getQuestions } from "@/app/supabase-client-provider";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import FastForwardOutlinedIcon from "@mui/icons-material/FastForwardOutlined";
 
@@ -19,12 +18,11 @@ import {
   createGKQuiz,
   getGKQuestions,
   getInCompletedGKQuiz,
-  getNumberOfCompletedGKQuiz,
 } from "@/actions/gk-quiz";
 import {
   createMathQuiz,
   getInCompletedMathQuiz,
-  getNumberOfCompletedMathQuiz,
+  getMathQuestions,
 } from "@/actions/math";
 
 type Props = {
@@ -33,10 +31,11 @@ type Props = {
   user_id: string;
   userName?: string;
   grade?: number;
+  quizData?: any;
 };
-const Card = ({ type, path, user_id, userName, grade }: Props) => {
+const Card = ({ type, path, user_id, userName, grade, quizData }: Props) => {
   const [isActive, setIsActive] = useState<boolean>(false);
-  const [quizData, setQuizData] = useState<any>(null);
+  // const [quizData, setQuizData] = useState<any>(null);
   const router = useRouter();
   const [loader, setLoader] = useState<boolean>(false);
   const [insightLoader, setInsightLoader] = useState<boolean>(false);
@@ -51,11 +50,19 @@ const Card = ({ type, path, user_id, userName, grade }: Props) => {
     }
   };
 
-  const onSubmit = async () => {
+  const generateMathQuiz = async () => {
     try {
       setLoader(true);
 
-      const { questions, topics } = await getQuestions(grade!, user_id);
+      const inCompleteQuiz = await getInCompletedMathQuiz(user_id);
+
+      if (inCompleteQuiz && inCompleteQuiz?.length! > 0) {
+        router.push(`/chat/${inCompleteQuiz[0]?.id}`);
+        setLoader(false);
+        return;
+      }
+
+      const { questions, topics } = await getMathQuestions(grade!, user_id);
       if (questions.length === 0) return;
 
       // create quiz and redirect to quiz page
@@ -70,71 +77,68 @@ const Card = ({ type, path, user_id, userName, grade }: Props) => {
     }
   };
 
-  const navigateTo = async () => {
-    setLoader(true);
-    if (path === "/chat") {
-      onSubmit();
-    } else if (path === "/chat-home") {
-      const inCompleteQuiz = await getInCompletedMathQuiz(user_id);
+  const generateGKQuiz = async () => {
+    try {
+      setLoader(true);
+
+      const inCompleteQuiz = await getInCompletedGKQuiz(user_id);
 
       if (inCompleteQuiz && inCompleteQuiz?.length! > 0) {
-        router.push(`/chat/${inCompleteQuiz[0]?.id}`);
+        router.push(`/gk-quiz/${inCompleteQuiz[0]?.id}`);
         setLoader(false);
         return;
       }
 
+      const { questions, topics } = await getGKQuestions(user_id);
+      if (questions.length === 0) {
+        return;
+      }
+
+      // create gk quiz and redirect to gk-quiz page
+      const data = await createGKQuiz(user_id, questions, topics);
+      if (!data || !data!.length) return;
+      router.push(`/gk-quiz/${data[0]?.id}`);
+    } catch (error) {
+      console.log(error);
+      return;
+    } finally {
+      setLoader(false);
+    }
+  };
+
+  const navigateTo = async () => {
+    setLoader(true);
+    if (path === "/chat") {
+      generateMathQuiz();
+    } else if (path === "/chat-home") {
       router.push(path);
       setLoader(false);
     } else {
-      try {
-        const { questions, topics } = await getGKQuestions(user_id);
-        if (questions.length === 0) {
-          return;
-        }
-
-        if (type === "gk") {
-          const inCompleteQuiz = await getInCompletedGKQuiz(user_id);
-
-          if (inCompleteQuiz && inCompleteQuiz?.length! > 0) {
-            router.push(`/gk-quiz/${inCompleteQuiz[0]?.id}`);
-            setLoader(false);
-            return;
-          }
-        }
-
-        // create gk quiz and redirect to gk-quiz page
-        const data = await createGKQuiz(user_id, questions, topics);
-        if (!data || !data!.length) return;
-        router.push(`/gk-quiz/${data[0]?.id}`);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoader(false);
-      }
+      generateGKQuiz();
     }
   };
 
   useEffect(() => {
     (async () => {
-      await getNumberOfCompletedQuizes();
+      // await getNumberOfCompletedQuizes();
     })();
   }, [isActive]);
 
-  const getNumberOfCompletedQuizes = async () => {
-    if (type === "chat") return;
-    if (type === "math") {
-      const completedMathQuiz = await getNumberOfCompletedMathQuiz(user_id!);
-      setIsActive(completedMathQuiz.numberOfCompletedQuiz > 0);
-      setQuizData(completedMathQuiz);
-      return;
-    }
-    if (type === "gk") {
-      const completedGKQuiz = await getNumberOfCompletedGKQuiz(user_id!);
-      setIsActive(completedGKQuiz.numberOfCompletedQuiz > 0);
-      setQuizData(completedGKQuiz);
-      return;
-    }
-  };
+  // const getNumberOfCompletedQuizes = async () => {
+  //   if (type === "chat") return;
+  //   if (type === "math") {
+  //     const completedMathQuiz = await getNumberOfCompletedMathQuiz(user_id!);
+  //     setIsActive(completedMathQuiz.numberOfCompletedQuiz > 0);
+  //     setQuizData(completedMathQuiz);
+  //     return;
+  //   }
+  //   if (type === "gk") {
+  //     const completedGKQuiz = await getNumberOfCompletedGKQuiz(user_id!);
+  //     setIsActive(completedGKQuiz.numberOfCompletedQuiz > 0);
+  //     setQuizData(completedGKQuiz);
+  //     return;
+  //   }
+  // };
 
   return (
     <div className="bg-[#F0F6FA] w-full py-4 px-6 flex flex-col justify-center content-center items-center">
