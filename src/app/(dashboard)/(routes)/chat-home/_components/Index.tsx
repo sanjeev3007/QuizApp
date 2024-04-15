@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import "./index.css";
 import { nanoid } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import LastInteractions from "./last-interactions";
 
 type Props = {
   user_Id: string;
@@ -78,7 +79,7 @@ const Index = (props: Props) => {
           </div>
         </form>
       </div>
-      <div className="flex-col justify-around border-2 border-[#E4E2DC] bg-[#F6F5F4] p-6 mt-[4rem]">
+      <div className="flex-col justify-around border-2 border-[#E4E2DC] bg-[#F6F5F4] p-6 mt-[3rem]">
         <div className="text-center text-sm font-bold text-[#2F4F4F]">
           Do you know?
         </div>
@@ -86,6 +87,9 @@ const Index = (props: Props) => {
           Zero is a fascinating number. It's the only even number that can't be
           represented by Roman numerals.
         </div>
+      </div>
+      <div className="w-full md:max-w-3xl mt-[3rem]">
+        <LastInteractions/>
       </div>
     </div>
   );

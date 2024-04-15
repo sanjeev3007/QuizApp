@@ -44,11 +44,7 @@ const Card = ({
 
   const viewScore = () => {
     if (quizData?.numberOfCompletedQuiz > 9) {
-      setInsightLoader(true);
-      setTimeout(() => {
-        router.push(`/view-insights`);
-        setInsightLoader(false);
-      }, 400);
+      router.push(`/view-insights`);
     }
   };
 
@@ -159,7 +155,7 @@ const Card = ({
             : "flex justify-center"
         )}
       >
-        {isActive && type !== "chat" && (
+        {isActive && type === "math" && (
           <Button
             className={cn(
               "w-max mt-[1.5rem] py-[6px] px-[12px] bg-[#B59585] text-sm font-semibold text-[#FFFFFF] hover:bg-[#B59585]",
