@@ -247,9 +247,9 @@ const getLast10Quizes = async ({
   return data || [];
 };
 
-const getCorrectAns = (submissions) => {
+const getCorrectAns = (submissions: any) => {
   let correctAnswers = 0;
-  submissions.map(({ isCorrect }) => {
+  submissions.map(({ isCorrect }: any) => {
     if (isCorrect) correctAnswers += 1
   })
   return correctAnswers

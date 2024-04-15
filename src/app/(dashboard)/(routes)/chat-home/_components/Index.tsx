@@ -36,7 +36,7 @@ import useChatQuery from "@/store/chat-query";
 
 type Props = {
   user_Id: string;
-  recentChats: chatData[];
+  recentChats: chatData[] | null;
 };
 
 const Index = ({ user_Id, recentChats }: Props) => {

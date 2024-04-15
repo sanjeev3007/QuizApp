@@ -29,8 +29,6 @@ type Props = {
   type: string;
   path: string;
   user_id: string;
-  inCompleteQuiz: any;
-  userName: string;
   grade: number;
   quizData: any;
   gkQuiz: {
@@ -43,8 +41,6 @@ const Card = ({
   type,
   path,
   user_id,
-  inCompleteQuiz,
-  userName,
   grade,
   quizData,
   gkQuiz,

@@ -9,7 +9,6 @@ type Props = {
   userId: string;
   userName: string;
   grade: number;
-  quizData: any;
   gkQuiz: {
     accuracy: number;
     totalQuiz: number;
@@ -18,13 +17,11 @@ type Props = {
 };
 
 const Quizes = async ({
-  inCompleteQuiz,
   userId,
   userName,
   grade,
-  quizData,
   gkQuiz,
-  totalChats
+  totalChats,
 }: Props) => {
   const completedMathQuiz = await getNumberOfCompletedMathQuiz(userId!);
   const completedGKQuiz = await getNumberOfCompletedGKQuiz(userId!);
@@ -41,20 +38,29 @@ const Quizes = async ({
           type="math"
           path={"/chat"}
           user_id={userId}
-          userName={userName}
           grade={grade}
           quizData={completedMathQuiz}
+          gkQuiz={gkQuiz}
+          totalChats={totalChats}
         />
         <Card
           type="gk"
           path={"/gk-quiz"}
           user_id={userId}
-          userName={userName}
           grade={grade}
           quizData={completedGKQuiz}
           gkQuiz={gkQuiz}
+          totalChats={totalChats}
         />
-        <Card type="chat" path={"/chat-home"} user_id={userId} totalChats={totalChats}/>
+        <Card
+          type="chat"
+          path={"/chat-home"}
+          user_id={userId}
+          grade={grade}
+          quizData={completedGKQuiz}
+          gkQuiz={gkQuiz}
+          totalChats={totalChats}
+        />
       </div>
     </div>
   );
