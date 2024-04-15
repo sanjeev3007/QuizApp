@@ -43,6 +43,7 @@ export async function POST(req: Request) {
       const title = json.messages[0].content.substring(0, 100);
       const id = json.id ?? nanoid();
       const createdAt = Date.now();
+      const stringDate = new Date(createdAt).toISOString();
       const path = `/chat-bot/${user_id}/${id}`;
       const payload = {
         id,
@@ -61,7 +62,7 @@ export async function POST(req: Request) {
       // Insert chat into database.
       await supabase
         .from("chats_doubt_solve")
-        .upsert({ id, payload, user_id })
+        .upsert({ id, payload, user_id, createdAt: stringDate })
         .throwOnError();
     },
   });
