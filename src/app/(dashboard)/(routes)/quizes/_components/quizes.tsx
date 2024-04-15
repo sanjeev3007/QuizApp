@@ -2,9 +2,10 @@ import React from "react";
 import noahSmallIcon from "@/assets/Images/noahSmallIcon.png";
 import Image from "next/image";
 import Card from "./quiz-card";
+import { getNumberOfCompletedMathQuiz } from "@/actions/math.server";
+import { getNumberOfCompletedGKQuiz } from "@/actions/gk-quiz.server";
 
 type Props = {
-  inCompleteQuiz: any;
   userId: string;
   userName: string;
   grade: number;
@@ -16,7 +17,7 @@ type Props = {
   totalChats: number;
 };
 
-const Quizes = ({
+const Quizes = async ({
   inCompleteQuiz,
   userId,
   userName,
@@ -25,6 +26,8 @@ const Quizes = ({
   gkQuiz,
   totalChats
 }: Props) => {
+  const completedMathQuiz = await getNumberOfCompletedMathQuiz(userId!);
+  const completedGKQuiz = await getNumberOfCompletedGKQuiz(userId!);
   return (
     <div className="flex flex-col justify-center content-center items-center">
       <div className="flex justify-between content-center items-center">
@@ -38,18 +41,17 @@ const Quizes = ({
           type="math"
           path={"/chat"}
           user_id={userId}
-          inCompleteQuiz={inCompleteQuiz}
           userName={userName}
           grade={grade}
-          quizData={quizData}
+          quizData={completedMathQuiz}
         />
         <Card
           type="gk"
           path={"/gk-quiz"}
           user_id={userId}
-          inCompleteQuiz={inCompleteQuiz}
           userName={userName}
           grade={grade}
+          quizData={completedGKQuiz}
           gkQuiz={gkQuiz}
         />
         <Card type="chat" path={"/chat-home"} user_id={userId} totalChats={totalChats}/>

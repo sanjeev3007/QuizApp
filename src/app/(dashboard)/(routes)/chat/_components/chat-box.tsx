@@ -18,16 +18,17 @@ import ion_send from "@/assets/Images/ion_send.png";
 import Image from "next/image";
 import QuizScore from "./quiz-score-diloag";
 import { EndChatMessage, InitialChatMessage } from "./chat-messages";
-import {
-  getQuestions,
-  storeCorrectSubmission,
-  storeUserSubmission,
-  updateQuizStats,
-} from "@/app/supabase-client-provider";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { QuizDataType } from "@/types/quiz.types";
+import {
+  createMathQuiz,
+  getMathQuestions,
+  storeCorrectSubmission,
+  storeUserSubmission,
+  updateQuizStats,
+} from "@/actions/math";
 
 type SubmissionType = {
   questionId: string;
@@ -74,9 +75,8 @@ export default function Chat({
 
   const startNewQuiz = async () => {
     setLoader(true);
-    const supabase = createClientComponentClient();
 
-    const { questions: QuestionLists, topics } = await getQuestions(
+    const { questions: QuestionLists, topics } = await getMathQuestions(
       user.grade,
       user.id
     );
@@ -84,28 +84,17 @@ export default function Chat({
       return;
     }
 
-    const metadata = {
-      grade: user.grade,
-      topics: topics,
-    };
-
-    const { data: assessment_data, error } = await supabase
-      .from("quiz")
-      .insert({
-        userid: user.id,
-        multiple_topics: topics,
-        questions: QuestionLists,
-        start: true,
-        metadata: metadata,
-      })
-      .select();
-
-    if (error) {
-      console.error(error);
+    const data = await createMathQuiz(
+      user.id,
+      QuestionLists,
+      topics,
+      user.grade
+    );
+    if (!data || !data.length) {
+      setLoader(false);
+      return;
     }
-    if (assessment_data && assessment_data.length > 0) {
-      router.push(`/chat/${assessment_data[0].id}`);
-    }
+    router.push(`/chat/${data[0].id}`);
     setLoader(false);
   };
 
@@ -235,7 +224,7 @@ export default function Chat({
   useEffect(() => {
     // If the quiz is complete, redirect to the home page
     if (isComplete) {
-      // router.push("/");
+      router.push("/");
     }
     setIsMounted(true);
   }, []);

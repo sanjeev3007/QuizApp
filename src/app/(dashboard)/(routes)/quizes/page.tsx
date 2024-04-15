@@ -5,14 +5,20 @@ import {
   gkQuiz,
   doubtSolveDashboard,
 } from "@/app/supabase-server";
+import {
+  getInCompletedGKQuiz,
+  getNumberOfCompletedGKQuiz,
+} from "@/actions/gk-quiz.server";
 import Quizes from "./_components/quizes";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 import CircularProgress from "@mui/material/CircularProgress";
 
 const PageContent = async () => {
-  const userName = getCookie("userName", { cookies }) || "gk_user_1";
-  const user_Id = getCookie("userId", { cookies }) || "gk_user_1";
+  const userName =
+  getCookie("userName", { cookies }) || process.env.NEXT_PUBLIC_DEMO_USER_ID;
+const user_Id =
+  getCookie("userId", { cookies }) || process.env.NEXT_PUBLIC_DEMO_USER_ID;
   const grade =
     getCookie("grade", { cookies }) ||
     Math.max(1, Math.floor(Math.random() * 8) + 1);

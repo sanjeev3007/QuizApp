@@ -8,7 +8,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 type Props = {};
 
 const PageContent = async (props: Props) => {
-  const user_Id = getCookie("userId", { cookies }) || "demo_userId_5";
+  const user_Id = getCookie("userId", { cookies }) || process.env.NEXT_PUBLIC_DEMO_USER_ID!;
   const grade =
     Number(getCookie("grade", { cookies })) ||
     Math.max(1, Math.floor(Math.random() * 8) + 1);

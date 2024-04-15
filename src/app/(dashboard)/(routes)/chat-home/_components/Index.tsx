@@ -32,6 +32,7 @@ type chatData = {
     user_id: string;
   };
 };
+import useChatQuery from "@/store/chat-query";
 
 type Props = {
   user_Id: string;
@@ -77,6 +78,7 @@ const Index = ({ user_Id, recentChats }: Props) => {
     "Your ears and nose continue growing throughout your entire life.",
     "The tongue of a blue whale can weigh as much as an elephant.",
   ];
+  const chatQuery = useChatQuery((state) => state);
 
   const handleUserInput = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -88,8 +90,9 @@ const Index = ({ user_Id, recentChats }: Props) => {
     const optimizedAnswer: string = userInput.toLowerCase().trim();
 
     setUserInput("");
+    chatQuery.setQuery(optimizedAnswer);
 
-    router.push(`/chat-bot/${user_Id}/${id}?q=${optimizedAnswer}`);
+    router.push(`/chat-bot/${user_Id}/${id}`);
   };
   return (
     <div className="flex flex-col justify-center content-center items-center">
@@ -119,7 +122,6 @@ const Index = ({ user_Id, recentChats }: Props) => {
               type="submit"
               className="border-0 py-[4px] px-[12px] text-sm fomt-semibold text-[#FFF] bg-[#E98451] hover:bg-[#E98451]"
             >
-              {" "}
               Start Chat
               <ArrowRightOutlinedIcon fontSize="small" className="ml-2" />
             </Button>

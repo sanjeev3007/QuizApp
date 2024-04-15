@@ -115,7 +115,6 @@ const HomePage = ({
     } finally {
       setLoader(false);
     }
-    setLoader(false);
   };
 
   const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({

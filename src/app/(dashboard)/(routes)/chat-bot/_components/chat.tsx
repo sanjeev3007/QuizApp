@@ -10,20 +10,15 @@ import { useChat } from "ai/react";
 import { ChatList } from "./chat-list";
 import { Message } from "ai";
 import SuggestedQuestionForm from "./suggestion-form";
+import useChatQuery from "@/store/chat-query";
 
 type ChatProps = {
   id: string;
   user_id: string;
   initialMessages: Message[];
-  initialQuestion?: string;
 };
 
-export function Chat({
-  id,
-  user_id,
-  initialMessages,
-  initialQuestion,
-}: ChatProps) {
+export function Chat({ id, user_id, initialMessages }: ChatProps) {
   const [suggestions, setSuggestions] = useState<[{ question: string }] | null>(
     null
   );
@@ -54,6 +49,7 @@ export function Chat({
     api: "/api/chat-doubt",
   });
   const bottom = useRef<HTMLDivElement>(null);
+  const chatQuery = useChatQuery((state) => state);
 
   useEffect(() => {
     bottom.current?.scrollIntoView({ behavior: "smooth" });
@@ -63,7 +59,7 @@ export function Chat({
     if (messages.length === 0) {
       append({
         role: "user",
-        content: initialQuestion || "Hi",
+        content: chatQuery.query || "Hi",
       });
     }
 

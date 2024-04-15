@@ -1,11 +1,47 @@
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { redirect } from "next/navigation";
 
-// generating questions
-export const getGKQuestions = async (userId: string) => {
-  let db = "fetch_rows_db_gk";
+// create quiz
+export async function createMathQuiz(
+  userid: string,
+  questions: any,
+  topics: string[],
+  grade: number
+) {
+  const supabase = createClientComponentClient();
+
+  const metadata = {
+    grade: grade,
+    topics: topics,
+  };
+
+  const { data, error } = await supabase
+    .from("quiz")
+    .insert({
+      userid: userid,
+      questions: questions,
+      start: true,
+      multiple_topics: topics,
+      metadata: metadata,
+    })
+    .select();
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  return data;
+}
+
+// generating questions// generating questions
+export const getMathQuestions = async (user_grade: number, userId: string) => {
+  let grade = user_grade;
+  if (grade > 8) grade = 8;
+
+  let db_with_grade = `fetch_rows_db_grade${grade}_math`;
+
   // generate two random topics
-  const topics = await generateRandomTopics();
+  const topics = await generateRandomTopics(grade);
 
   // fetching stored correct submissions
   const questionIds = await fetchCorrectSubmissions(userId, topics);
@@ -15,21 +51,21 @@ export const getGKQuestions = async (userId: string) => {
     4,
     topics,
     questionIds,
-    db
+    db_with_grade
   );
   const level2 = await fetchQuestionsByLevel(
     "medium",
     4,
     topics,
     questionIds,
-    db
+    db_with_grade
   );
   const level3 = await fetchQuestionsByLevel(
     "hard",
     2,
     topics,
     questionIds,
-    db
+    db_with_grade
   );
 
   const questions = [...level1, ...level2, ...level3];
@@ -61,10 +97,12 @@ const fetchQuestionsByLevel = async (
 };
 
 //   generating random topics
-const generateRandomTopics = async () => {
+const generateRandomTopics = async (grade: number) => {
   const supabase = createClientComponentClient();
 
-  const { data, error } = await supabase.from("db_gk_quiz").select("topic");
+  const { data, error } = await supabase
+    .from(`db_grade${grade}_math`)
+    .select("topic");
 
   if (error) {
     console.log(error);
@@ -85,6 +123,25 @@ const generateRandomTopics = async () => {
   return randomTopics;
 };
 
+// update quiz stats to complete
+export const updateQuizStats = async (quizId: string, userId: string) => {
+  const supabase = createClientComponentClient();
+  const { error } = await supabase
+    .from("quiz")
+    .update({
+      complete: true,
+    })
+    .eq("id", quizId)
+    .eq("userid", userId)
+    .select();
+  if (error) {
+    console.error(error);
+    return { success: false };
+  }
+  return { success: true };
+};
+
+// ---------- submissions actions ------------
 // fetching correct submissions
 export const fetchCorrectSubmissions = async (
   userId: string,
@@ -93,7 +150,7 @@ export const fetchCorrectSubmissions = async (
   const supabase = createClientComponentClient();
 
   const { data } = await supabase
-    .from("correct_submissions_gk")
+    .from("correct_submissions")
     .select("questionid")
     .eq("userid", userId)
     .in("topic", topics);
@@ -109,66 +166,8 @@ export const fetchCorrectSubmissions = async (
   return formattedData;
 };
 
-// create quiz
-export async function createGKQuiz(
-  userId: string,
-  questions: any,
-  topics: string[]
-) {
-  const supabase = createClientComponentClient();
-
-  const { data, error } = await supabase
-    .from("quiz_gk")
-    .insert({
-      userid: userId,
-      questions: questions,
-      start: true,
-      multiple_topics: topics,
-    })
-    .select();
-
-  if (error) {
-    console.error(error);
-  }
-
-  return data;
-}
-
-// get quiz stats
-export const getGKQuizStats = async (quizId: string) => {
-  const supabase = createClientComponentClient();
-  const { data, error } = await supabase
-    .from("quiz_gk")
-    .select("*")
-    .eq("id", quizId)
-    .single();
-
-  if (error) {
-    console.error(error);
-  }
-  return data;
-};
-
-// update quiz
-export const updateGKQuizStats = async (quizId: string, userId: string) => {
-  const supabase = createClientComponentClient();
-  const { error } = await supabase
-    .from("quiz_gk")
-    .update({
-      complete: true,
-    })
-    .eq("id", quizId)
-    .eq("userid", userId)
-    .select();
-  if (error) {
-    console.error(error);
-    return { success: false };
-  }
-  return { success: true };
-};
-
 // store user submission
-export async function storeUserSubmissionInGKQuiz(
+export async function storeUserSubmission(
   quizId: string,
   userId: string,
   submission: any
@@ -176,7 +175,7 @@ export async function storeUserSubmissionInGKQuiz(
   const supabase = createClientComponentClient();
 
   const { data } = await supabase
-    .from("quiz_gk")
+    .from("quiz")
     .update({
       submissions: submission,
     })
@@ -188,19 +187,21 @@ export async function storeUserSubmissionInGKQuiz(
 }
 
 // storing correct submission
-export async function storeCorrectSubmissionForGK(
+export async function storeCorrectSubmission(
   userId: string,
   questionId: string,
   quizId: number,
-  multiple_topics: string[]
+  multiple_topics: string[],
+  grade: number
 ) {
   const supabase = createClientComponentClient();
 
-  const { error } = await supabase.from("correct_submissions_gk").insert({
+  const { error } = await supabase.from("correct_submissions").insert({
     userid: userId,
     questionid: questionId,
     quizid: quizId,
     multiple_topics: multiple_topics,
+    grade: grade,
   });
 
   if (error) {
@@ -211,8 +212,8 @@ export async function storeCorrectSubmissionForGK(
   return { success: true };
 }
 
-// add feedback in gk quiz
-export const feedbackGKQuiz = async ({
+// feedback quiz
+export const feedbackQuiz = async ({
   questionId,
   userId,
   response,
@@ -225,7 +226,7 @@ export const feedbackGKQuiz = async ({
 }) => {
   const supabase = createClientComponentClient();
   const { error } = await supabase
-    .from("quiz_gk_feedback")
+    .from("quiz_feedback")
     .insert({
       questionId: questionId,
       userId: userId,
@@ -238,29 +239,10 @@ export const feedbackGKQuiz = async ({
   return;
 };
 
-// Get the incompleted quiz to continue it
-export async function getInCompletedGKQuiz(userId: string) {
-  const supabase = createClientComponentClient();
-  const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000); // Calculate the timestamp for 2 hours ago
-  const { data, error } = await supabase
-    .from("quiz_gk")
-    .select("*")
-    .eq("userid", userId)
-    .eq("start", true)
-    .eq("complete", false)
-    .gte("created_at", twoHoursAgo.toISOString())
-    .limit(1); // Filter quizzes created within the last 2 hours
-
-  if (error) {
-    console.error("incomplete quiz error", error);
-  }
-  return data;
-}
-
-export const getNumberOfCompletedGKQuiz = async (userid: string) => {
+export const getNumberOfCompletedMathQuiz = async (userid: string) => {
   const supabase = createClientComponentClient();
   const { data: allQuizes, error } = await supabase
-    .from("quiz_gk")
+    .from("quiz")
     .select("questions, submissions")
     .eq("userid", userid)
     .eq("complete", "True");
@@ -281,3 +263,20 @@ export const getNumberOfCompletedGKQuiz = async (userid: string) => {
     totalQuiz,
   };
 };
+
+export async function getInCompletedMathQuiz(userId: string) {
+  const supabase = createClientComponentClient();
+  const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000); // Calculate the timestamp for 2 hours ago
+  const { data, error } = await supabase
+    .from("quiz")
+    .select("*")
+    .eq("userid", userId)
+    .eq("start", true)
+    .eq("complete", false)
+    .gte("created_at", twoHoursAgo.toISOString()); // Filter quizzes created within the last 2 hours
+
+  if (error) {
+    console.error("incomplete quiz error", error);
+  }
+  return data;
+}

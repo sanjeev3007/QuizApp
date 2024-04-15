@@ -116,21 +116,22 @@ const getTopicWiseLevelScore = async (allQuizes: any[], grade: number) => {
               questionId,
               isCorrect,
             }: {
-              questionId: number;
+              questionId: string;
               isCorrect: boolean;
             }) => {
               const response = await supabase
-                .from(`db_grade7_math`)
+                .from(`db_math`)
                 .select()
                 .eq("uuid", questionId);
               if (response && response.data && !response.data[0]) return;
               const questionData =
                 response && response.data && response.data[0];
-              const subtopic: any = questionData.metadata.subtopic;
-              const difficultyLevel = questionData.difficulty_level;
+              const subtopic: any = questionData?.metadata.subtopic;
+              const difficultyLevel =
+                questionData?.difficulty_level?.toLowerCase();
               if (subtopics[subtopic]) {
                 subtopics[subtopic].totalQuestion += 1;
-                // if (isCorrected) subtopics[subtopic].totalCorrectQuestion += 1
+                if (isCorrect) subtopics[subtopic].totalCorrectQuestion += 1;
                 switch (difficultyLevel) {
                   case "easy":
                     subtopics[subtopic].easy += isCorrect ? 1 : 0;
@@ -187,7 +188,7 @@ export const getInsight = async (userid: string, grade: number) => {
     .from("quiz")
     .select()
     .eq("userid", userid)
-    .eq("complete", "true");
+    .eq("complete", true);
   if (error) {
     console.error(error);
   }
