@@ -246,6 +246,36 @@ const getLast10Quizes = async ({
   return data || [];
 };
 
+const getCorrectAns = (submissions) => {
+  let correctAnswers = 0;
+  submissions.map(({ isCorrect }) => {
+    if (isCorrect) correctAnswers += 1
+  })
+  return correctAnswers
+}
+
+const getAccuracy = (completedQuizes: any[]) => {
+  let totalQuestion = 0
+  let totalQuiz = completedQuizes.length
+  let totalCorrectQuestion = 0
+  completedQuizes.map(({ questions, submissions }) => {
+    totalQuestion += questions.length
+    totalCorrectQuestion += getCorrectAns(submissions)
+  })
+  if (totalQuestion && totalCorrectQuestion) {
+    const accuracy = (Math.floor((totalCorrectQuestion / totalQuestion) * 100))
+    return {
+      accuracy,
+      totalQuiz
+    }
+  }
+  return {
+    accuracy: 0,
+    totalQuiz
+  }
+
+}
+
 export const getDashboard = async (userid: string) => {
   const supabase = createServerSupabaseClient();
   // const { data: allQuizes, error } = await supabase
@@ -289,3 +319,50 @@ export async function getInCompletedQuiz(userId: string) {
   }
   return data;
 }
+
+
+export async function gkQuiz(userId: string) {
+  const supabase = createServerSupabaseClient();
+  const { data: completedQuizes, error } = await supabase
+    .from("quiz_gk")
+    .select("*")
+    .eq("userid", userId)
+    .eq("start", true)
+    .eq("complete", true)
+  if (!completedQuizes?.length) return { accuracy: 0, totalQuiz: 0 };
+  const { accuracy, totalQuiz } = getAccuracy(completedQuizes)
+  return {
+    accuracy, totalQuiz
+  }
+
+}
+
+export async function doubtSolveDashboard(userId: string) {
+  const supabase = createServerSupabaseClient();
+  const { data: chats, error } = await supabase
+    .from("chats_doubt_solve")
+    .select("*")
+    .eq("user_id", userId)
+  return chats?.length || 0
+}
+
+export async function recentChat(userId: string) {
+  const supabase = createServerSupabaseClient();
+  const { data: chats, error } = await supabase
+    .from("chats_doubt_solve")
+    .select("*")
+    .eq("user_id", userId)
+    // .order('createdAt', { ascending: false })
+    .limit(5);
+
+  return chats
+}
+
+
+
+
+
+
+
+
+
