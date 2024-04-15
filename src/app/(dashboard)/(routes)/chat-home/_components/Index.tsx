@@ -22,14 +22,61 @@ import { nanoid } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import LastInteractions from "./last-interactions";
 
-type Props = {
-  user_Id: string;
+type chatData = {
+  id: string;
+  user_id: string;
+  payload: {
+    id: string;
+    path: string;
+    title: string;
+    user_id: string;
+  };
 };
 
-const Index = (props: Props) => {
+type Props = {
+  user_Id: string;
+  recentChats: chatData[];
+};
+
+const Index = ({ user_Id, recentChats }: Props) => {
   const id = nanoid();
   const [userInput, setUserInput] = useState("");
   const router = useRouter();
+  const [randomFact, setRandomFact] = useState("");
+
+  useEffect(() => {
+    // Set a random fact when the component mounts
+    const randomIndex = Math.floor(Math.random() * facts.length);
+    setRandomFact(facts[randomIndex]);
+  }, []);
+  const facts = [
+    "A single strand of human hair can support up to 100 grams in weight.",
+    "The Eiffel Tower can be 15 cm taller during the summer due to thermal expansion.",
+    "The average person spends about six months of their life waiting for red lights to turn green.",
+    "A single drop of seawater contains thousands of different types of bacteria.",
+    "Lightning is five times hotter than the surface of the sun.",
+    "The blue whale, the largest animal on Earth, has a heart the size of a small car.",
+    "The human body contains about 0.2 milligrams of gold, most of which is in our blood.",
+    "The average person's skin completely renews itself about every 27 days.",
+    "An octopus has three hearts and blue blood because its blood is copper-based rather than iron-based like ours.",
+    "The DNA in your body, if uncoiled, would stretch about 10 billion miles, from Earth to Pluto and back.",
+    "The human eye is capable of distinguishing about 10 million different colors.",
+    "While seeing a bright sky and if you see white dots, those are white blood cells that you see.",
+    "Fingernails grow faster when our body is cold.",
+    "Dogs’ hearing capacity is 10 times better and can smell 100,000 times better than humans.",
+    "The Egyptians were using a form of toothpaste over 5000 years ago, made from crushed eggshells and animal hooves.",
+    "Saturn’s rings are mostly composed of ice particles with a smaller amount of rocky debris and dust.",
+    "The shortest complete sentence in the English language is I am.",
+    "The concept of zero as a number was first developed in ancient India by mathematicians around the 5th century.",
+    "There are more atoms in a single glass of water than glasses of water in all the oceans on Earth.",
+    "The human eye can distinguish about 10 million different colors.",
+    "Every hour, the universe expands by a billion miles in all directions.",
+    "Venus is the only planet that rotates clockwise.",
+    "Humans are born with 300 bones, but by adulthood, we only have 206, as some bones fuse together over time.",
+    "Your stomach lining replaces itself every three to four days to avoid digesting itself.",
+    "Your ears and nose continue growing throughout your entire life.",
+    "The tongue of a blue whale can weigh as much as an elephant.",
+  ];
 
   const handleUserInput = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -42,7 +89,7 @@ const Index = (props: Props) => {
 
     setUserInput("");
 
-    router.push(`/chat-bot/${props.user_Id}/${id}?q=${optimizedAnswer}`);
+    router.push(`/chat-bot/${user_Id}/${id}?q=${optimizedAnswer}`);
   };
   return (
     <div className="flex flex-col justify-center content-center items-center">
@@ -84,13 +131,14 @@ const Index = (props: Props) => {
           Do you know?
         </div>
         <div className="w-full text-center text-sm font-medium text-[#5B8989] mt-3 md:max-w-lg">
-          Zero is a fascinating number. It's the only even number that can't be
-          represented by Roman numerals.
+          {randomFact}
         </div>
       </div>
-      <div className="w-full md:max-w-3xl mt-[3rem]">
-        <LastInteractions/>
-      </div>
+      {recentChats && recentChats.length > 0 && (
+        <div className="w-full md:max-w-3xl mt-[3rem]">
+          <LastInteractions recentChats={recentChats} />
+        </div>
+      )}
     </div>
   );
 };

@@ -2,8 +2,8 @@ import { Suspense } from "react";
 import {
   getInCompletedQuiz,
   getNumberOfCompletedQuiz,
-  getDashboard,
-  getInsight,
+  gkQuiz,
+  doubtSolveDashboard,
 } from "@/app/supabase-server";
 import Quizes from "./_components/quizes";
 import { getCookie } from "cookies-next";
@@ -19,6 +19,8 @@ const PageContent = async () => {
 
   const numberOfCompletedQuizData = await getNumberOfCompletedQuiz(user_Id!);
   const inCompleteQuiz = await getInCompletedQuiz(user_Id!);
+  const gk_quiz = await gkQuiz(user_Id!);
+  const total_chats = await doubtSolveDashboard(user_Id!);
 
   return (
     <Quizes
@@ -27,6 +29,8 @@ const PageContent = async () => {
       userName={userName!}
       grade={grade as number}
       quizData={numberOfCompletedQuizData}
+      totalChats={total_chats}
+      gkQuiz={gk_quiz}
     />
   );
 };

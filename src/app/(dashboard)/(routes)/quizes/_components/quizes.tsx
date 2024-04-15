@@ -9,6 +9,11 @@ type Props = {
   userName: string;
   grade: number;
   quizData: any;
+  gkQuiz: {
+    accuracy: number;
+    totalQuiz: number;
+  };
+  totalChats: number;
 };
 
 const Quizes = ({
@@ -17,6 +22,8 @@ const Quizes = ({
   userName,
   grade,
   quizData,
+  gkQuiz,
+  totalChats
 }: Props) => {
   return (
     <div className="flex flex-col justify-center content-center items-center">
@@ -43,9 +50,9 @@ const Quizes = ({
           inCompleteQuiz={inCompleteQuiz}
           userName={userName}
           grade={grade}
-          quizData={quizData}
+          gkQuiz={gkQuiz}
         />
-        <Card type="chat" path={"/chat-home"} user_id={userId} />
+        <Card type="chat" path={"/chat-home"} user_id={userId} totalChats={totalChats}/>
       </div>
     </div>
   );

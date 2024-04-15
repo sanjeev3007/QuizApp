@@ -26,6 +26,11 @@ type Props = {
   userName: string;
   grade: number;
   quizData: any;
+  gkQuiz: {
+    accuracy: number;
+    totalQuiz: number;
+  };
+  totalChats: number;
 };
 const Card = ({
   type,
@@ -35,6 +40,8 @@ const Card = ({
   userName,
   grade,
   quizData,
+  gkQuiz,
+  totalChats
 }: Props) => {
   const isActiveJourney = quizData?.numberOfCompletedQuiz == 0 ? false : true;
   const [isActive] = useState<boolean>(isActiveJourney);
@@ -140,12 +147,12 @@ const Card = ({
       {type === "chat" ? (
         <div className="w-full text-[#5B8989] flex justify-center content-center items-center mt-[2rem]">
           <Image src={chatsIcon} alt="chat" />
-          <span className="font-bold text-xl ml-1">80</span>
+          <span className="font-bold text-xl ml-1">{totalChats}</span>
           <span className="text-sm font-medium ml-1">chats done</span>
         </div>
       ) : (
         <div className="w-full">
-          <ProgressBar quizData={quizData} />
+          <ProgressBar type={type} quizData={quizData} gkQuiz={gkQuiz}/>
         </div>
       )}
       <div

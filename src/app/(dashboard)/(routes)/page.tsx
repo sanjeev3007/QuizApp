@@ -1,8 +1,6 @@
 import {
   getInCompletedQuiz,
   getNumberOfCompletedQuiz,
-  getDashboard,
-  getInsight
 } from "@/app/supabase-server";
 import HomePage from "@/components/home-page";
 import { getCookie } from "cookies-next";
