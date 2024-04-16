@@ -16,7 +16,6 @@ export default async function ChatPage({
   //     Math.max(1, Math.floor(Math.random() * 8) + 1);
 
   const chat = await getChat(userid, chatid);
-
   return (
     <div className="h-[calc(100vh-4rem)] pb-[5rem] left-0 w-full">
       <Chat id={chatid} user_id={userid} initialMessages={chat?.messages} />

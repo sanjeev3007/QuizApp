@@ -195,7 +195,7 @@ export const getInsight = async (userid: string, grade: number) => {
   const quiredQuestion = {};
   if (!allQuizes?.length) return [];
   const subtopics = await getTopicWiseLevelScore(allQuizes, grade);
-  await pushFinalScore(subtopics);
+  pushFinalScore(subtopics);
   const scoreGreaterThanOrEqualTo4 = [];
   const scoreLessThanOrEqualTo3 = [];
 
@@ -250,32 +250,31 @@ const getLast10Quizes = async ({
 const getCorrectAns = (submissions: any) => {
   let correctAnswers = 0;
   submissions.map(({ isCorrect }: any) => {
-    if (isCorrect) correctAnswers += 1
-  })
-  return correctAnswers
-}
+    if (isCorrect) correctAnswers += 1;
+  });
+  return correctAnswers;
+};
 
 const getAccuracy = (completedQuizes: any[]) => {
-  let totalQuestion = 0
-  let totalQuiz = completedQuizes.length
-  let totalCorrectQuestion = 0
+  let totalQuestion = 0;
+  let totalQuiz = completedQuizes.length;
+  let totalCorrectQuestion = 0;
   completedQuizes.map(({ questions, submissions }) => {
-    totalQuestion += questions.length
-    totalCorrectQuestion += getCorrectAns(submissions)
-  })
+    totalQuestion += questions.length;
+    totalCorrectQuestion += getCorrectAns(submissions);
+  });
   if (totalQuestion && totalCorrectQuestion) {
-    const accuracy = (Math.floor((totalCorrectQuestion / totalQuestion) * 100))
+    const accuracy = Math.floor((totalCorrectQuestion / totalQuestion) * 100);
     return {
       accuracy,
-      totalQuiz
-    }
+      totalQuiz,
+    };
   }
   return {
     accuracy: 0,
-    totalQuiz
-  }
-
-}
+    totalQuiz,
+  };
+};
 
 export const getDashboard = async (userid: string) => {
   const supabase = createServerSupabaseClient();
@@ -321,7 +320,6 @@ export async function getInCompletedQuiz(userId: string) {
   return data;
 }
 
-
 export async function gkQuiz(userId: string) {
   const supabase = createServerSupabaseClient();
   const { data: completedQuizes, error } = await supabase
@@ -329,13 +327,13 @@ export async function gkQuiz(userId: string) {
     .select("*")
     .eq("userid", userId)
     .eq("start", true)
-    .eq("complete", true)
+    .eq("complete", true);
   if (!completedQuizes?.length) return { accuracy: 0, totalQuiz: 0 };
-  const { accuracy, totalQuiz } = getAccuracy(completedQuizes)
+  const { accuracy, totalQuiz } = getAccuracy(completedQuizes);
   return {
-    accuracy, totalQuiz
-  }
-
+    accuracy,
+    totalQuiz,
+  };
 }
 
 export async function doubtSolveDashboard(userId: string) {
@@ -343,8 +341,8 @@ export async function doubtSolveDashboard(userId: string) {
   const { data: chats, error } = await supabase
     .from("chats_doubt_solve")
     .select("*")
-    .eq("user_id", userId)
-  return chats?.length || 0
+    .eq("user_id", userId);
+  return chats?.length || 0;
 }
 
 export async function recentChat(userId: string) {
@@ -356,14 +354,5 @@ export async function recentChat(userId: string) {
     // .order('createdAt', { ascending: false })
     .limit(5);
 
-  return chats
+  return chats;
 }
-
-
-
-
-
-
-
-
-

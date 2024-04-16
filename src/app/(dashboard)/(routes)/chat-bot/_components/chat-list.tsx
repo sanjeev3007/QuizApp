@@ -10,6 +10,7 @@ export interface ChatList {
   append: UseChatHelpers["append"];
   chat_id: string;
   user_id: string;
+  isLoading?: boolean;
   id?: string;
 }
 
@@ -20,6 +21,7 @@ export function ChatList({
   setInput,
   append,
   id,
+  isLoading,
 }: ChatList) {
   if (!messages.length) {
     return null;
@@ -35,6 +37,7 @@ export function ChatList({
             setInput={setInput}
             append={append}
             id={id}
+            isLoading={isLoading}
           />
           {index == messages.length - 1 && message.role === "assistant" && (
             <FeedBackForm

@@ -57,10 +57,12 @@ export function Chat({ id, user_id, initialMessages }: ChatProps) {
 
   useEffect(() => {
     if (messages.length === 0) {
-      append({
-        role: "user",
-        content: chatQuery.query || "Hi",
-      });
+      if (chatQuery.query) {
+        append({
+          role: "user",
+          content: chatQuery.query,
+        });
+      }
     }
 
     if (
@@ -71,7 +73,7 @@ export function Chat({ id, user_id, initialMessages }: ChatProps) {
         JSON.parse(messages[messages.length - 1].content).nextPossibleQuestions
       );
     }
-  }, []);
+  }, [initialMessages]);
 
   return (
     <ScrollArea className="h-full w-full flex flex-col">
@@ -84,6 +86,7 @@ export function Chat({ id, user_id, initialMessages }: ChatProps) {
             append={append}
             setInput={setInput}
             id={id}
+            isLoading={isLoading}
           />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-w-3xl w-full mx-auto">
@@ -93,6 +96,7 @@ export function Chat({ id, user_id, initialMessages }: ChatProps) {
               key={i}
               setInput={setInput}
               onSubmit={async (value) => {
+                setSuggestions(null);
                 await append({
                   id,
                   content: value,

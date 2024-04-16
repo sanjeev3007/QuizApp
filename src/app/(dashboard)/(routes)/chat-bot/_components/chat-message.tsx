@@ -13,8 +13,9 @@ export interface ChatMessageProps
   id?: string;
   index?: number;
   messagesLength?: number;
+  isLoading?: boolean;
 }
-export default function ChatMessage({ message }: ChatMessageProps) {
+export default function ChatMessage({ message, isLoading }: ChatMessageProps) {
   return (
     <div className="flex-1 relative w-full">
       <div className="flex w-full justify-start gap-x-2 mt-4">
@@ -31,13 +32,9 @@ export default function ChatMessage({ message }: ChatMessageProps) {
             : (() => {
                 try {
                   const parsedContent = JSON.parse(message.content);
-                  return parsedContent.answer ?? message.content;
+                  return parsedContent.answer || "Sorry, can't answer this!";
                 } catch (error) {
-                  // const formattedContent = message.content
-                  //   .replace(`{\"answer\":\"`, "")
-                  //   .replace(`\"nextPossibleQuestions\"`, "")
-                  //   .trim();
-                  return <div className="">Thinking...</div>;
+                  if (isLoading) return "Loading...";
                 }
               })()}
         </div>

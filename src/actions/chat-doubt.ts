@@ -1,18 +1,20 @@
 import { Chat } from "@/types/chat.types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-export async function getChat(user_id: string, chat_id: string) {
+export async function getChat(userid: string, chat_id: string) {
   const supabase = createClientComponentClient();
   const { data, error } = await supabase
     .from("chats_doubt_solve")
-    .select("payload")
-    .eq("user_id", user_id)
-    .eq("id", chat_id);
+    .select("*")
+    .eq("user_id", userid)
+    .eq("id", chat_id)
+    .single();
 
   if (error) {
     console.log(error);
   }
-  return (data![0]?.payload as Chat) ?? null;
+
+  return (data?.payload as Chat) ?? null;
 }
 
 export async function addFeedback(

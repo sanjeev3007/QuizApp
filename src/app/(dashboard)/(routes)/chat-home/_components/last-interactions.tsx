@@ -1,6 +1,7 @@
 import React from "react";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
+import Link from "next/link";
 type chatData = {
   id: string;
   user_id: string;
@@ -34,7 +35,8 @@ const LastInteractions = ({ recentChats }: Props) => {
       <div className="grid grid-cols-1 gap-2 max-h-96 overflow-y-auto">
         {recentChats.map((data, index) => {
           return (
-            <div
+            <Link
+              href={data.payload.path}
               key={index}
               className="bg-[#F0F6FA] p-[12px] flex justify-between"
             >
@@ -47,7 +49,7 @@ const LastInteractions = ({ recentChats }: Props) => {
                 fontSize="small"
                 className="text-[#5B8989]"
               />
-            </div>
+            </Link>
           );
         })}
       </div>
