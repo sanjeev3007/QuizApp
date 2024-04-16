@@ -5,6 +5,7 @@ import botIcon from "@/assets/Images/bot_icon.png";
 import userIcon from "@/assets/Images/user_icon.png";
 import { Message } from "ai";
 import { UseChatHelpers } from "ai/react";
+import { cn } from "@/lib/utils";
 
 export interface ChatMessageProps
   extends Pick<UseChatHelpers, "append" | "setInput"> {
@@ -26,7 +27,13 @@ export default function ChatMessage({ message, isLoading }: ChatMessageProps) {
             <Image src={botIcon} alt="user" className="stroke-orange-300" />
           )}
         </div>
-        <div className="w-fit grid grid-cols-1 gap-2 border-2 font-medium text-sm leading-5 border-[#F0F6FA] text-[#5B8989] bg-[#F0F6FA] p-4 rounded-lg rounded-ss-none whitespace-pre-wrap">
+        <div
+          className={cn(
+            message.role === "user"
+              ? "w-fit grid grid-cols-1 gap-2 border-2 font-medium text-sm leading-5 border-[#F9F4EC] text-[#5B8989] bg-[#F9F4EC] p-4 rounded-lg rounded-ss-none whitespace-pre-wrap"
+              : "w-fit grid grid-cols-1 gap-2 border-2 font-medium text-sm leading-5 border-[#F0F6FA] text-[#5B8989] bg-[#F0F6FA] p-4 rounded-lg rounded-ss-none whitespace-pre-wrap"
+          )}
+        >
           {message.role === "user"
             ? message.content
             : (() => {

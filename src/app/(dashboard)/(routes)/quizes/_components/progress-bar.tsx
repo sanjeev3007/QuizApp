@@ -38,7 +38,7 @@ const ProgressBar = ({ type, quizData, gkQuiz }: Props) => {
     },
   }));
   return (
-    <div className="relative justify-center w-full mt-[2rem] text-[#5B8989] font-medium leading-6 text-xs">
+    <div className="relative justify-center w-full mt-[1.5rem] text-[#5B8989] font-medium leading-6 text-xs">
       <BorderLinearProgress
         variant="determinate"
         value={type === "gk" ? gkQuiz.accuracy : levelPercent}
@@ -55,12 +55,12 @@ const ProgressBar = ({ type, quizData, gkQuiz }: Props) => {
             {quizData?.totalQuiz} quizzes
           </span>
         )}
-        {level > 0 && (
+        {level > 0 && type !== "gk" && (
           <span className="level-text font-medium text-xs">Level {level}</span>
         )}
-        {level > 0 && (
-          <div className="absolute top-0 mt-5 -translate-y-full right-0 mr-6 translate-x-full">
-            <Image src={levelCup} alt="cup" />
+        {level > 0 && type !== "gk" && (
+          <div className="absolute top-0 mt-4 -translate-y-full right-0 mr-2 translate-x-full">
+            <Image src={levelCup} alt="cup" className="h-[24px] w-[24px]"/>
           </div>
         )}
       </div>

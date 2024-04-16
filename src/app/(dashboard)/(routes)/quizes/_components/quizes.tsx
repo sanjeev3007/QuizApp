@@ -29,11 +29,11 @@ const Quizes = async ({
     <div className="flex flex-col justify-center content-center items-center">
       <div className="flex justify-between content-center items-center">
         <Image src={noahSmallIcon} alt="noah" className="h-[54px] w-[54px]" />
-        <div className="ml-4 text-4xl text-[#2F4F4F] font-extrabold">
+        <div className="ml-4 text-2xl md:text-4xl text-[#2F4F4F] font-extrabold">
           What would you like to do today?
         </div>
       </div>
-      <div className="flex flex-col mt-2 w-full md:w-[80%] md:grid md:grid-cols-3 gap-4 md:mt-8">
+      <div className="flex flex-col mt-4 w-full sm:w-[80%] lg:grid lg:grid-cols-3 gap-4 lg:mt-8">
         <Card
           type="math"
           path={"/chat"}

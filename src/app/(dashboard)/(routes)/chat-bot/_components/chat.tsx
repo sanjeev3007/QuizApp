@@ -4,6 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import ion_send from "@/assets/Images/ion_send.png";
+import stars_icon from "@/assets/Images/stars_icon.png";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useChat } from "ai/react";
@@ -89,6 +90,14 @@ export function Chat({ id, user_id, initialMessages }: ChatProps) {
             isLoading={isLoading}
           />
         </div>
+        {suggestions && (
+          <div className="flex items-center max-w-3xl w-full mx-auto mt-[2rem] mb-2 text-[#2F4F4F] text-sm font-medium">
+            Suggestions for you
+            <div className="ml-1">
+              <Image src={stars_icon} alt=""/>
+            </div>
+          </div>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-w-3xl w-full mx-auto">
           {suggestions?.map((ques: { question: string }, i: number) => (
             <SuggestedQuestionForm
@@ -111,7 +120,7 @@ export function Chat({ id, user_id, initialMessages }: ChatProps) {
           onSubmit={handleSubmit}
           className="bg-white h-[4rem] border-t px-4 flex items-center justify-center gap-x-2 fixed left-0 bottom-0 w-full shadow-md z-10"
         >
-          <div className="w-full rounded-lg md:ml-[-7rem] md:max-w-3xl flex bg-[#FFF] border-2 border-[#95B2B2]">
+          <div className="w-full rounded-lg md:max-w-3xl flex bg-[#FFF] border-2 border-[#95B2B2]">
             <Input
               type="text"
               placeholder="Enter your answer e.g. 'A'"
