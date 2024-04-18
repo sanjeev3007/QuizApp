@@ -351,7 +351,7 @@ export async function recentChat(userId: string) {
     .from("chats_doubt_solve")
     .select("*")
     .eq("user_id", userId)
-    // .order('createdAt', { ascending: false })
+    .order("createdAt", { ascending: false })
     .limit(5);
 
   return chats;
