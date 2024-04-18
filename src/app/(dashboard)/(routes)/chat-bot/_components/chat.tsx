@@ -99,8 +99,10 @@ export function Chat({ id, user_id, initialMessages }: ChatProps) {
           </div>
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-w-3xl w-full mx-auto">
-          {suggestions?.map((ques: { question: string }, i: number) => (
-            <SuggestedQuestionForm
+          {suggestions?.map((ques: { question: string }, i: number) => {
+            if(i > 1) return
+            return (
+              <SuggestedQuestionForm
               ques={ques}
               key={i}
               setInput={setInput}
@@ -113,7 +115,8 @@ export function Chat({ id, user_id, initialMessages }: ChatProps) {
                 });
               }}
             />
-          ))}
+            )
+          })}
         </div>
         <div className="" ref={bottom}></div>
         <form
