@@ -17,13 +17,6 @@ type Props = {
 };
 
 const LastInteractions = ({ recentChats }: Props) => {
-  const arr = [
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    "Why do we need to learn algebra in maths?",
-    "Why stars are infinite in the sky?",
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    "Why do we need to learn algebra in maths?",
-  ];
   return (
     <div>
       <div className="flex items-center mb-[1rem]">
@@ -38,7 +31,7 @@ const LastInteractions = ({ recentChats }: Props) => {
             <Link
               href={data.payload.path}
               key={index}
-              className="bg-[#F0F6FA] p-[12px] flex justify-between"
+              className="bg-[#F0F6FA] p-[12px] flex justify-between rounded-lg"
             >
               <span className="text-[#5B8989] text-sm font-medium">
                 {data.payload.title.length > 100

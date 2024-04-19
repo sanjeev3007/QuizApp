@@ -13,14 +13,14 @@ import noahSmallIcon from "@/assets/Images/noahSmallIcon.png";
 import { toast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { Input } from "@/components/ui/input";
-import ion_send from "@/assets/Images/ion_send.png";
-import ArrowRightOutlinedIcon from "@mui/icons-material/ArrowRightOutlined";
+import ion_send_white from "@/assets/Images/ion_send_white.png";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import "./index.css";
 import { nanoid } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import LastInteractions from "./last-interactions";
+import useChatQuery from "@/store/chat-query";
 
 type chatData = {
   id: string;
@@ -32,7 +32,6 @@ type chatData = {
     user_id: string;
   };
 };
-import useChatQuery from "@/store/chat-query";
 
 type Props = {
   user_Id: string;
@@ -98,7 +97,7 @@ const Index = ({ user_Id, recentChats }: Props) => {
     <div className="flex flex-col justify-center content-center items-center">
       <div className="flex justify-between content-center items-center">
         <Image src={noahSmallIcon} alt="noah" className="h-[54px] w-[54px]" />
-        <div className="ml-4 text-4xl text-[#2F4F4F] font-extrabold">
+        <div className="ml-4 w-full text-2xl md:text-4xl text-[#2F4F4F] font-extrabold">
           Lets <span className="headerClrTxt">smash doubts</span> together!
         </div>
       </div>
@@ -108,7 +107,7 @@ const Index = ({ user_Id, recentChats }: Props) => {
       <div className="w-full mt-8 md:max-w-3xl">
         <form
           onSubmit={handleUserInput}
-          className="bg-white h-[4rem] px-4 flex items-center justify-center gap-x-2 w-full"
+          className="bg-white h-[4rem] md:px-4 flex items-center justify-center gap-x-2 w-full"
         >
           <div className="w-full p-1 rounded-lg flex bg-[#FFF] border-2 border-[#95B2B2]">
             <Input
@@ -120,15 +119,15 @@ const Index = ({ user_Id, recentChats }: Props) => {
             />
             <Button
               type="submit"
-              className="border-0 py-[4px] px-[12px] text-sm fomt-semibold text-[#FFF] bg-[#E98451] hover:bg-[#E98451]"
+              className="border-0 py-[4px]  text-sm fomt-semibold text-[#FFF] bg-[#E98451] hover:bg-[#E98451]"
             >
-              Start Chat
-              <ArrowRightOutlinedIcon fontSize="small" className="ml-2" />
+              <span className="hidden sm:block">Start Chat</span>
+              <Image src={ion_send_white} alt="" className="sm:ml-2"/>
             </Button>
           </div>
         </form>
       </div>
-      <div className="flex-col justify-around border-2 border-[#E4E2DC] bg-[#F6F5F4] p-6 mt-[3rem]">
+      <div className="flex-col justify-around border-2 border-[#E4E2DC] bg-[#F6F5F4] p-6 mt-[3rem] rounded-lg">
         <div className="text-center text-sm font-bold text-[#2F4F4F]">
           Do you know?
         </div>

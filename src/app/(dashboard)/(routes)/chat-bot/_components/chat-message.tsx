@@ -5,6 +5,7 @@ import botIcon from "@/assets/Images/bot_icon.png";
 import userIcon from "@/assets/Images/user_icon.png";
 import { Message } from "ai";
 import { UseChatHelpers } from "ai/react";
+import { cn } from "@/lib/utils";
 
 export interface ChatMessageProps
   extends Pick<UseChatHelpers, "append" | "setInput"> {
@@ -14,8 +15,9 @@ export interface ChatMessageProps
   index?: number;
   messagesLength?: number;
   isLoading?: boolean;
+  doubtSolveStatus?: boolean;
 }
-export default function ChatMessage({ message, isLoading }: ChatMessageProps) {
+export default function ChatMessage({ message, isLoading, doubtSolveStatus }: ChatMessageProps) {
   return (
     <div className="flex-1 relative w-full">
       <div className="flex w-full justify-start gap-x-2 mt-4">
@@ -26,11 +28,18 @@ export default function ChatMessage({ message, isLoading }: ChatMessageProps) {
             <Image src={botIcon} alt="user" className="stroke-orange-300" />
           )}
         </div>
-        <div className="w-fit grid grid-cols-1 gap-2 border-2 font-medium text-sm leading-5 border-[#F0F6FA] text-[#5B8989] bg-[#F0F6FA] p-4 rounded-lg rounded-ss-none whitespace-pre-wrap">
+        <div
+          className={cn(
+            message.role === "user"
+              ? "w-fit grid grid-cols-1 gap-2 border-2 font-medium text-sm leading-5 border-[#F9F4EC] text-[#5B8989] bg-[#F9F4EC] p-4 rounded-lg rounded-ss-none whitespace-pre-wrap"
+              : "w-fit grid grid-cols-1 gap-2 border-2 font-medium text-sm leading-5 border-[#F0F6FA] text-[#5B8989] bg-[#F0F6FA] p-4 rounded-lg rounded-ss-none whitespace-pre-wrap"
+          )}
+        >
           {message.role === "user"
             ? message.content
             : (() => {
                 try {
+                  if(doubtSolveStatus) return "Your doubt is solved"
                   const parsedContent = JSON.parse(message.content);
                   return parsedContent.answer || "Sorry, can't answer this!";
                 } catch (error) {

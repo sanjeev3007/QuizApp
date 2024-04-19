@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import mathIcon from "@/assets/Images/mathIcon.png";
 import gkIcon from "@/assets/Images/gk-icon.png";
 import chatsIcon from "@/assets/Images/chatsIcon.png";
+import start_chat_icon from "@/assets/Images/start_chat_icon.png";
 import chatIcon from "@/assets/Images/chat-icon.png";
 import Image from "next/image";
 import ProgressBar from "./progress-bar";
@@ -11,6 +12,7 @@ import { useRouter } from "next/navigation";
 import redirect_arrow from "@/assets/Images/redirect_arrow.png";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import FastForwardOutlinedIcon from "@mui/icons-material/FastForwardOutlined";
+import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -44,7 +46,7 @@ const Card = ({
   grade,
   quizData,
   gkQuiz,
-  totalChats
+  totalChats,
 }: Props) => {
   const isActiveJourney = quizData?.numberOfCompletedQuiz == 0 ? false : true;
   const [isActive] = useState<boolean>(isActiveJourney);
@@ -149,40 +151,49 @@ const Card = ({
   // };
 
   return (
-    <div className="bg-[#F0F6FA] w-full py-4 px-6 flex flex-col justify-center content-center items-center">
+    <div className="bg-[#F0F6FA] w-full py-4 px-6 flex flex-col justify-center content-center items-center rounded-lg">
       <Image
         src={type === "math" ? mathIcon : type === "gk" ? gkIcon : chatIcon}
         alt=""
       />
-      <span className="text-[#2F4F4F] text-lg font-extrabold ">
+      <span className="text-[#2F4F4F] text-lg font-extrabold mt-2">
         {type === "math"
           ? "Math Quiz"
           : type === "gk"
           ? "General Quiz"
           : "Doubt Solving"}
       </span>
-      <div className="text-[#5B8989] text-sm font-medium">
-        {type === "math"
+      <div className="text-center text-[#5B8989] text-sm font-medium mt-2">
+        {type === "math" && isActive
           ? "Get better. One quiz at a time"
-          : type === "gk"
+          : type === "math" && !isActive
+          ? "Explore math topic based quizzes which are adaptive and personalised for you"
+          : type === "gk" && isActive
           ? "General trivia. Just for fun."
-          : "Ask anything. Anytime"}
+          : type === "gk" && !isActive
+          ? "Explore quizzes around diverse topics to test your general knowledge"
+          : type === "chat" && totalChats > 0
+          ? "Ask anything. Anytime"
+          : "Chat with Noah to get your academic doubts resolved for any subject"}
       </div>
-      {type === "chat" ? (
+      {type === "chat" && totalChats > 0 ? (
         <div className="w-full text-[#5B8989] flex justify-center content-center items-center mt-[2rem]">
           <Image src={chatsIcon} alt="chat" />
           <span className="font-bold text-xl ml-1">{totalChats}</span>
-          <span className="text-sm font-medium ml-1">chats done</span>
+          <span className="text-sm font-medium mt-1 ml-1">chats done</span>
         </div>
       ) : (
-        <div className="w-full">
-          <ProgressBar type={type} quizData={quizData} gkQuiz={gkQuiz}/>
-        </div>
+        isActive && (
+          <div className="w-[70%] sm:w-[55%] lg:w-full">
+            <ProgressBar type={type} quizData={quizData} gkQuiz={gkQuiz} />
+          </div>
+        )
       )}
       <div
         className={cn(
-          isActive && type !== "chat"
-            ? "w-full flex justify-around"
+          "w-[70%] sm:w-[55%] lg:w-full",
+          isActive && type === "math"
+            ? "flex justify-between"
             : "flex justify-center"
         )}
       >
@@ -205,9 +216,9 @@ const Card = ({
             {insightLoader ? (
               <CircularProgress color="inherit" size={25} className="ml-2" />
             ) : quizData?.numberOfCompletedQuiz > 9 ? (
-              <Image src={redirect_arrow} alt="redirect" className="ml-3" />
+              <Image src={redirect_arrow} alt="redirect" className="ml-2" />
             ) : (
-              <LockOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
+              <LockOutlinedIcon className="ml-2" fontSize="small" />
             )}
           </Button>
         )}
@@ -219,14 +230,16 @@ const Card = ({
             )}
             onClick={() => navigateTo()}
           >
-            Continue
+            {type !== "chat" ? "Continue" : "Start Chat"}
             {loader ? (
               <CircularProgress color="inherit" size={25} className="ml-2" />
-            ) : (
+            ) : type !== "chat" ? (
               <FastForwardOutlinedIcon
                 className="ml-[0.5rem]"
                 fontSize="small"
               />
+            ) : (
+              <Image src={start_chat_icon} alt="chat" className="ml-[0.5rem]" />
             )}
           </Button>
         ) : (
@@ -237,14 +250,21 @@ const Card = ({
             )}
             onClick={() => navigateTo()}
           >
-            Get Started
+            {type !== "chat" ? "Get Started" : "Start Chat"}
             {loader ? (
               <CircularProgress color="inherit" size={25} className="ml-2" />
-            ) : (
+            ) : isActive && totalChats > 0 ? (
               <FastForwardOutlinedIcon
                 className="ml-[0.5rem]"
                 fontSize="small"
               />
+            ) : !isActive && type !== "chat" ? (
+              <ArrowForwardOutlinedIcon
+                className="ml-[0.5rem]"
+                fontSize="small"
+              />
+            ) : (
+              <Image src={start_chat_icon} alt="chat" className="ml-[0.5rem]" />
             )}
           </Button>
         )}

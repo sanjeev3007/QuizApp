@@ -19,7 +19,7 @@ const Home = async () => {
   const inCompleteQuiz = await getInCompletedQuiz(user_Id!); // get the incompleted quiz
 
   return (
-    <div className="p-5 md:px-12 w-full md:max-w-7xl mx-auto bg-[#FFF] !important">
+    <div className="p-5 lg:px-12 w-full md:max-w-7xl mx-auto bg-[#FFF] !important">
       <HomePage
         inCompleteQuiz={inCompleteQuiz && inCompleteQuiz![0]}
         userId={user_Id!}
