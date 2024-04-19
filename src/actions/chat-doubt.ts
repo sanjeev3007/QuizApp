@@ -10,10 +10,6 @@ export async function getChat(userid: string, chat_id: string) {
     .eq("id", chat_id)
     .single();
 
-  if (error) {
-    console.log(error);
-  }
-
   return (data?.payload as Chat) ?? null;
 }
 
