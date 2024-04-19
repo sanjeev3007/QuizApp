@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import redirect_arrow from "@/assets/Images/redirect_arrow.png";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import FastForwardOutlinedIcon from "@mui/icons-material/FastForwardOutlined";
-import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined';
+import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -230,14 +230,16 @@ const Card = ({
             )}
             onClick={() => navigateTo()}
           >
-            Continue
+            {type !== "chat" ? "Continue" : "Start Chat"}
             {loader ? (
               <CircularProgress color="inherit" size={25} className="ml-2" />
-            ) : (
+            ) : type !== "chat" ? (
               <FastForwardOutlinedIcon
                 className="ml-[0.5rem]"
                 fontSize="small"
               />
+            ) : (
+              <Image src={start_chat_icon} alt="chat" className="ml-[0.5rem]" />
             )}
           </Button>
         ) : (

@@ -13,7 +13,7 @@ type Props = {};
 const NoahQuiz = (props: Props) => {
   const [loader, setLoader] = useState<boolean>(false);
   const sandboxUrl =
-    process.env.NEXT_SANDBOX_URL || "https://sandbox.codeyoung.com";
+    process.env.NEXT_PUBLIC_SANDBOX_URL || "https://sandbox.codeyoung.com";
   const router = useRouter();
   const goToHomePage = () => {
     setLoader(true);

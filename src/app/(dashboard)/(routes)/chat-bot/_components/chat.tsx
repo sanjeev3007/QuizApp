@@ -23,6 +23,7 @@ export function Chat({ id, user_id, initialMessages }: ChatProps) {
   const [suggestions, setSuggestions] = useState<[{ question: string }] | null>(
     null
   );
+  const [doubtSolveStatus, setDoubtSolveStatus] = useState<boolean>(false);
   const {
     messages,
     append,
@@ -88,59 +89,72 @@ export function Chat({ id, user_id, initialMessages }: ChatProps) {
             setInput={setInput}
             id={id}
             isLoading={isLoading}
+            setDoubtSolveStatus={setDoubtSolveStatus}
+            doubtSolveStatus={doubtSolveStatus}
+            onSubmit={async (value) => {
+              await append({
+                id,
+                content: value,
+                role: "user",
+              });
+            }}
           />
         </div>
-        {suggestions && (
+        {suggestions && !doubtSolveStatus && (
           <div className="flex items-center max-w-3xl w-full mx-auto mt-[2rem] mb-2 text-[#2F4F4F] text-sm font-medium">
             Suggestions for you
             <div className="ml-1">
-              <Image src={stars_icon} alt=""/>
+              <Image src={stars_icon} alt="" />
             </div>
           </div>
         )}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-w-3xl w-full mx-auto">
-          {suggestions?.map((ques: { question: string }, i: number) => {
-            if(i > 1) return
-            return (
-              <SuggestedQuestionForm
-              ques={ques}
-              key={i}
-              setInput={setInput}
-              onSubmit={async (value) => {
-                setSuggestions(null);
-                await append({
-                  id,
-                  content: value,
-                  role: "user",
-                });
-              }}
-            />
-            )
-          })}
-        </div>
-        <div className="" ref={bottom}></div>
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white h-[4rem] border-t px-4 flex items-center justify-center gap-x-2 fixed left-0 bottom-0 w-full shadow-md z-10"
-        >
-          <div className="w-full rounded-lg md:max-w-3xl flex bg-[#FFF] border-2 border-[#95B2B2]">
-            <Input
-              type="text"
-              placeholder="Enter your answer e.g. 'A'"
-              className="w-full border-0 focus-visible:outline-none focus-visible:border-0 focus-visible:ring-0"
-              value={input}
-              onChange={handleInputChange}
-              disabled={isLoading}
-            />
-            <Button
-              type="submit"
-              className="border-0 bg-[#FFF] hover:bg-[#FFF]"
-              disabled={isLoading}
-            >
-              <Image src={ion_send} alt="" />
-            </Button>
+        {!doubtSolveStatus && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-w-3xl w-full mx-auto">
+            {suggestions?.map((ques: { question: string }, i: number) => {
+              if (i > 1) return;
+              return (
+                <SuggestedQuestionForm
+                  ques={ques}
+                  key={i}
+                  setInput={setInput}
+                  onSubmit={async (value) => {
+                    setSuggestions(null);
+                    await append({
+                      id,
+                      content: value,
+                      role: "user",
+                    });
+                  }}
+                />
+              );
+            })}
           </div>
-        </form>
+        )}
+        <div className="" ref={bottom}></div>
+        {!doubtSolveStatus && (
+          <form
+            onSubmit={handleSubmit}
+            className="bg-white h-[5rem] border-t px-4 flex items-center justify-center gap-x-2 fixed left-0 bottom-0 w-full shadow-md z-10"
+          >
+            <div className="w-full p-1 rounded-lg md:max-w-3xl flex bg-[#FFF] border-2 border-[#95B2B2]">
+              <Input
+                type="text"
+                placeholder="Ask anything ..."
+                className="w-full border-0 focus-visible:outline-none focus-visible:border-0 focus-visible:ring-0"
+                value={input}
+                onChange={handleInputChange}
+                disabled={isLoading}
+              />
+              <Button
+                type="submit"
+                className="border-0 bg-[#FFF] hover:bg-[#FFF]"
+                disabled={isLoading}
+              >
+                <Image src={ion_send} alt="" />
+              </Button>
+            </div>
+          </form>
+        )}
       </div>
     </ScrollArea>
   );
