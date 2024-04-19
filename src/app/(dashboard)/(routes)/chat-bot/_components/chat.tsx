@@ -79,9 +79,6 @@ export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
     }
   }, [initialMessages]);
 
-  console.log(doubtSolved);
-  console.log(doubtSolveStatus);
-
   return (
     <ScrollArea className="h-full w-full flex flex-col">
       <div className="flex-1 px-2 md:px-8">

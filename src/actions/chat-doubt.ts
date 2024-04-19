@@ -1,4 +1,3 @@
-"use server";
 import { Chat } from "@/types/chat.types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
@@ -9,8 +8,6 @@ export async function getChat(userid: string, chat_id: string) {
     .select("*")
     .eq("id", chat_id)
     .single();
-
-  console.log(data);
 
   return {
     chat: (data?.payload as Chat) ?? null,
