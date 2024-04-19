@@ -15,10 +15,16 @@ export default async function ChatPage({
   //     getCookie("grade", { cookies }) ||
   //     Math.max(1, Math.floor(Math.random() * 8) + 1);
 
-  const chat = await getChat(userid, chatid);
+  const { chat, doubtSolved } = await getChat(userid, chatid);
+  console.log(doubtSolved);
   return (
     <div className="h-[calc(100vh-4rem)] pb-[5rem] left-0 w-full">
-      <Chat id={chatid} user_id={userid} initialMessages={chat?.messages} />
+      <Chat
+        id={chatid}
+        user_id={userid}
+        initialMessages={chat?.messages}
+        doubtSolved={doubtSolved}
+      />
     </div>
   );
 }

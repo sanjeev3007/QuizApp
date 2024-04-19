@@ -4,6 +4,8 @@ import ChatMessage from "./chat-message";
 import FeedBackForm from "./feedback-form";
 import { UseChatHelpers } from "ai/react";
 import ChatSolved from "./chat-cta";
+import { doubtSolved } from "@/actions/chat-doubt";
+import { useRouter } from "next/navigation";
 
 export interface ChatList {
   messages: UseChatHelpers["messages"];
@@ -28,8 +30,9 @@ export function ChatList({
   isLoading,
   setDoubtSolveStatus,
   doubtSolveStatus,
-  onSubmit
+  onSubmit,
 }: ChatList) {
+  const router = useRouter();
   if (!messages.length) {
     return null;
   }
@@ -51,20 +54,27 @@ export function ChatList({
             <div>
               {!doubtSolveStatus && (
                 <FeedBackForm
-                key={index}
-                answerId={index + 1}
-                answer={message.content}
-                chat_id={chat_id}
-                user_id={user_id}
-              />
+                  key={index}
+                  answerId={index + 1}
+                  answer={message.content}
+                  chat_id={chat_id}
+                  user_id={user_id}
+                />
               )}
-              <ChatSolved setInput={setInput} onSubmit={async (value) => {
+              {!doubtSolveStatus && (
+                <ChatSolved
+                  setInput={setInput}
+                  onSubmit={async (value) => {
                     await append({
                       id,
                       content: value,
                       role: "user",
                     });
-                  }}/>
+                    setDoubtSolveStatus(true);
+                    doubtSolved(user_id, chat_id);
+                  }}
+                />
+              )}
             </div>
           )}
         </div>

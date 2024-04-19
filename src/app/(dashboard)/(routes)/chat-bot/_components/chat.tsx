@@ -17,13 +17,15 @@ type ChatProps = {
   id: string;
   user_id: string;
   initialMessages: Message[];
+  doubtSolved: boolean;
 };
 
-export function Chat({ id, user_id, initialMessages }: ChatProps) {
+export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
   const [suggestions, setSuggestions] = useState<[{ question: string }] | null>(
     null
   );
-  const [doubtSolveStatus, setDoubtSolveStatus] = useState<boolean>(false);
+  const [doubtSolveStatus, setDoubtSolveStatus] =
+    useState<boolean>(doubtSolved);
   const {
     messages,
     append,
@@ -76,6 +78,9 @@ export function Chat({ id, user_id, initialMessages }: ChatProps) {
       );
     }
   }, [initialMessages]);
+
+  console.log(doubtSolved);
+  console.log(doubtSolveStatus);
 
   return (
     <ScrollArea className="h-full w-full flex flex-col">
