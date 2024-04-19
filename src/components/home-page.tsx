@@ -115,7 +115,6 @@ const HomePage = ({
     } finally {
       setLoader(false);
     }
-    setLoader(false);
   };
 
   const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
@@ -133,41 +132,50 @@ const HomePage = ({
 
   const viewScore = () => {
     if (quizData?.numberOfCompletedQuiz > 9) {
-      setInsightLoader(true);
-      setTimeout(() => {
-        router.push(`/view-insights`);
-        setInsightLoader(false);
-      }, 400);
+      router.push(`/view-insights`);
     }
   };
 
   return (
-    <div className={`font-sans mb-[2.5rem]`}>
-      <div className="flex flex-col-reverse mt-2 md:grid md:grid-cols-2 gap-4 md:mt-4">
-        <div className="md:justify-self-center md:self-center grid gap-2 mt-2 md:grid-cols-1">
+    <div className={`font-sans`}>
+      <div className="w-full flex justify-center">
+        <div className="w-full p-2 text-center  md:flex items-center text-[#5B8989] md:px-1 md:py-2 lg:p-2 bg-[#FDF2ED] lg:w-fit">
+          <div className="flex justify-center">
+            <div className="gradient-text-1 p-1 w-max">
+              NEW ON <span className="gradient-text">NOAH</span>
+            </div>
+          </div>
+          <div className="md:ml-2 lg:ml-3 md:font-medium md:text-base">
+            Noah can now answer academic doubts and generate general trivia
+            quizzes.
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-col-reverse mt-2 lg:grid lg:grid-cols-2 gap-4 lg:mt-4">
+        <div className="lg:justify-self-center lg:self-center grid gap-2 md:mt-2 lg:grid-cols-1">
           <div className="tracking-normal text-xl font-bold text-wrap md:text-4xl md:leading-10">
             {isActive ? (
-              <div className="flex flex-col">
+              <div className="md:flex lg:flex-col">
                 <span className="text-[#2F4F4F]">Continue your journey</span>
-                <span className="text-[#2F4F4F] mt-2">
+                <span className="text-[#2F4F4F] md:ml-1 lg:ml-0">
                   {" "}
-                  with <span className="gradient-text mt-2">Noah</span>
+                  with <span className="gradient-text">Noah</span>
                 </span>
               </div>
             ) : (
               <div>
                 <span className="text-[#2F4F4F]">Introducing </span>
-                <span className="gradient-text mt-2 ml-1">Noah</span>
+                <span className="gradient-text">Noah</span>
               </div>
             )}
           </div>
           {isActive ? (
-            <div className="relative justify-center w-full mt-[2rem] text-[#5B8989] font-medium leading-6 text-lg">
+            <div className="relative justify-center w-full md:w-[50%] lg:w-full mt-[2rem] text-[#5B8989] text-sm font-medium leading-6 md:text-lg">
               <BorderLinearProgress
                 variant="determinate"
                 value={levelPercent}
               />
-              <div className="flex justify-between mt-[10px]">
+              <div className="flex items-center justify-between mt-[10px]">
                 <span>
                   Completed {quizData?.numberOfCompletedQuiz || 0} out of{" "}
                   {quizData?.totalQuiz} quizzes
@@ -190,14 +198,14 @@ const HomePage = ({
                   </div>
                   <div className="justify-self-center self-center ml-2">
                     <div className="flex">
-                      <span className="text-sm font-bold text-[#5B8989]">
+                      <span className="text-sm font-medium text-[#5B8989]">
                         You are on
                       </span>
                       <span className="text-sm font-bold red-level-text ml-1">
                         "Level {level}"
                       </span>
                     </div>
-                    <div className="text-sm font-bold text-[#5B8989]">
+                    <div className="text-sm font-medium text-[#5B8989]">
                       Answer{" "}
                       {quizData?.totalQuiz - quizData?.numberOfCompletedQuiz}{" "}
                       more quizzes to level up!
@@ -212,14 +220,15 @@ const HomePage = ({
               learning
             </div>
           )}
-          <div className="flex justify-between gap-2 md:grid md:gap-2 md:grid-cols-2">
+          <div className="flex gap-2">
             {isActive ? (
               <Button
                 className={cn(
                   "w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-semibold text-[#FFF] hover:bg-[#E98451]",
                   mobileScreen && "px-5 py-6 w-[50%]"
                 )}
-                onClick={() => onSubmit()}
+                // onClick={() => onSubmit()}
+                onClick={() => router.push("/quizes")}
               >
                 Continue
                 {loader ? (
@@ -238,7 +247,7 @@ const HomePage = ({
                   "w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-semibold text-[#FFF] hover:bg-[#E98451]",
                   mobileScreen && "fixed bottom-3 w-[90%]" // Conditionally apply 'fixed bottom-0' for mobile screens
                 )}
-                onClick={() => onSubmit()}
+                onClick={() => router.push("/quizes")}
               >
                 Get Started
                 {loader ? (
@@ -255,9 +264,9 @@ const HomePage = ({
             {isActive && (
               <Button
                 className={cn(
-                  "w-max px-11 mt-[2rem] py-6 bg-[#B59585] text-lg font-semibold text-[#FFFFFF] hover:bg-[#B59585]",
+                  "w-max px-9 mt-[2rem] py-6 bg-[#B59585] text-lg font-semibold text-[#FFFFFF] hover:bg-[#B59585]",
                   quizData?.numberOfCompletedQuiz > 9 &&
-                    "text-[#E98451] border-2 border-[#E98451] bg-[#FFF] hover:bg-[#FFF]",
+                    "text-[#E98451] border border-[#E98451] bg-[#FFF] hover:bg-[#FFF]",
                   mobileScreen && "px-5 py-6 w-[50%]"
                 )}
                 onClick={viewScore}
@@ -283,16 +292,16 @@ const HomePage = ({
             )}
           </div>
         </div>
-        <div>
+        <div className="flex justify-center">
           <Image src={quizIcon} alt="quiz" style={{ height: "350px" }} />
         </div>
       </div>
-      <div className="mt-[2rem] md:mt-[5rem] grid gap-8 md:grid-cols-2">
+      <div className="mt-[2rem] lg:mt-[5rem] grid gap-8 md:grid-cols-2">
         <Card className="flex p-4 bg-[#F0F6FA]">
           <div className="justify-self-center	self-center	">
             <Image src={calculator} alt="topics" />
           </div>
-          <div className=" ml-[1.5rem] text-sm font-medium md:text-lg leading-6 justify-self-center	self-center	text-[#5B8989]">
+          <div className=" ml-[1.5rem] text-sm font-medium lg:text-lg leading-6 justify-self-center	self-center	text-[#5B8989]">
             Noah specializes in Math quizzes which are adaptive to your learning
           </div>
         </Card>
@@ -300,7 +309,7 @@ const HomePage = ({
           <div className="justify-self-center self-center	">
             <Image src={podium} alt="cup" />
           </div>
-          <div className="ml-[1.5rem] text-sm font-medium  md:text-lg leading-6 justify-self-center	self-center	text-[#5B8989]">
+          <div className="ml-[1.5rem] text-sm font-medium  lg:text-lg leading-6 justify-self-center	self-center	text-[#5B8989]">
             {level < 10
               ? "Complete at least 10 quizzes so Noah can share insights on your knowledge"
               : "Keep leveling up with more quizzes to help Noah assist you better"}

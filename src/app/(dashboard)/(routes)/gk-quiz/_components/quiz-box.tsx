@@ -17,18 +17,18 @@ import { Input } from "@/components/ui/input";
 import ion_send from "@/assets/Images/ion_send.png";
 import Image from "next/image";
 import QuizScore from "./quiz-score-diloag";
-import { EndChatMessage, InitialChatMessage } from "./chat-messages";
+import { EndChatMessage, InitialChatMessage } from "./quiz-messages";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { QuizDataType } from "@/types/quiz.types";
 import {
-  createMathQuiz,
-  getMathQuestions,
-  storeCorrectSubmission,
-  storeUserSubmission,
-  updateQuizStats,
-} from "@/actions/math";
+  createGKQuiz,
+  getGKQuestions,
+  storeCorrectSubmissionForGK,
+  storeUserSubmissionInGKQuiz,
+  updateGKQuizStats,
+} from "@/actions/gk-quiz";
 
 type SubmissionType = {
   questionId: string;
@@ -36,7 +36,7 @@ type SubmissionType = {
   isCorrect: boolean;
 };
 
-type ChatProps = {
+type Props = {
   quizData: QuizDataType;
   quizId: string;
   user: {
@@ -47,12 +47,12 @@ type ChatProps = {
   numberOfCompletedQuizData: any;
 };
 
-export default function Chat({
+export default function QuizBox({
   quizData,
   quizId,
   user,
   numberOfCompletedQuizData,
-}: ChatProps) {
+}: Props) {
   const bottom = useRef<HTMLDivElement>(null);
   const [questionIndex, setQuestionIndex] = useState(
     quizData.submissions?.length || 0
@@ -76,25 +76,16 @@ export default function Chat({
   const startNewQuiz = async () => {
     setLoader(true);
 
-    const { questions: QuestionLists, topics } = await getMathQuestions(
-      user.grade,
-      user.id
-    );
+    const { questions: QuestionLists, topics } = await getGKQuestions(user.id);
     if (QuestionLists.length === 0) {
       return;
     }
 
-    const data = await createMathQuiz(
-      user.id,
-      QuestionLists,
-      topics,
-      user.grade
-    );
-    if (!data || !data.length) {
-      setLoader(false);
-      return;
+    const data = await createGKQuiz(user.id, QuestionLists, topics);
+
+    if (data && data.length > 0) {
+      router.push(`/gk-quiz/${data[0].id}`);
     }
-    router.push(`/chat/${data[0].id}`);
     setLoader(false);
   };
 
@@ -118,7 +109,7 @@ export default function Chat({
   // End the quiz
   const endGame = async () => {
     // Update the quiz stats
-    const { success } = await updateQuizStats(quizId, user.id);
+    const { success } = await updateGKQuizStats(quizId, user.id);
     if (!success) {
       toast({ title: "Something went wrong!", duration: 3000 });
     }
@@ -133,14 +124,13 @@ export default function Chat({
   useEffect(() => {
     // Store the user submission to the db
     (async () => {
-      await storeUserSubmission(quizId, user.id, submissions);
+      await storeUserSubmissionInGKQuiz(quizId, user.id, submissions);
       if (currentSubmission?.isCorrect) {
-        await storeCorrectSubmission(
+        await storeCorrectSubmissionForGK(
           user.id,
           currentSubmission.questionId,
           quizData.id,
-          quizData.multiple_topics,
-          user.grade
+          quizData.multiple_topics
         );
       }
       router.refresh();

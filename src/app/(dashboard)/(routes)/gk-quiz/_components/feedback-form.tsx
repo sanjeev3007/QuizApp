@@ -1,10 +1,10 @@
 "use client";
 
-import { feedbackQuiz } from "@/actions/math";
 import { cn } from "@/lib/utils";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { useState } from "react";
 import FeedBackPopup from "./feedback-popup";
+import { feedbackGKQuiz } from "@/actions/gk-quiz";
 
 export default function FeedBackForm({
   questionId,
@@ -77,7 +77,7 @@ export default function FeedBackForm({
     const userId = user.id;
     if (!userId) return;
     setLoader(true);
-    await feedbackQuiz({
+    await feedbackGKQuiz({
       questionId: questionId,
       userId: userId,
       reason: reason,

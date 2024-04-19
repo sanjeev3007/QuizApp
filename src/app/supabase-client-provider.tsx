@@ -42,7 +42,7 @@ export const feedbackQuiz = async ({
   reason: string | null;
 }) => {
   const supabase = createClientComponentClient();
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("quiz_feedback")
     .insert({
       questionId: questionId,
@@ -53,7 +53,6 @@ export const feedbackQuiz = async ({
     .select();
 
   if (error) console.log(error);
-  else console.log(data);
   return;
 };
 
