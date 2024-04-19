@@ -1,44 +1,20 @@
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { redirect } from "next/navigation";
 
 // generating questions
 export const getGKQuestions = async (userId: string) => {
-  let db = "fetch_rows_db_gk";
+  let db = "fetch_rows_db_gk_easy";
   // generate two random topics
   const topics = await generateRandomTopics();
 
   // fetching stored correct submissions
   const questionIds = await fetchCorrectSubmissions(userId, topics);
 
-  const level1 = await fetchQuestionsByLevel(
-    "easy",
-    4,
-    topics,
-    questionIds,
-    db
-  );
-  const level2 = await fetchQuestionsByLevel(
-    "medium",
-    4,
-    topics,
-    questionIds,
-    db
-  );
-  const level3 = await fetchQuestionsByLevel(
-    "hard",
-    2,
-    topics,
-    questionIds,
-    db
-  );
-
-  const questions = [...level1, ...level2, ...level3];
+  const questions = await fetchQuestionsForGK(10, topics, questionIds, db);
   return { questions, topics: topics };
 };
 
 // fetching question function
-const fetchQuestionsByLevel = async (
-  level: "easy" | "medium" | "hard",
+const fetchQuestionsForGK = async (
   limit: number,
   topics: string[],
   questionIds: string[],
@@ -47,7 +23,6 @@ const fetchQuestionsByLevel = async (
   const supabase = createClientComponentClient();
 
   const { data, error } = await supabase.rpc(db_url, {
-    level: level,
     rows_limit: limit,
     topics: topics,
     uuids: questionIds,
@@ -64,7 +39,7 @@ const fetchQuestionsByLevel = async (
 const generateRandomTopics = async () => {
   const supabase = createClientComponentClient();
 
-  const { data, error } = await supabase.from("db_gk_quiz").select("topic");
+  const { data, error } = await supabase.from("db_gk_quiz2").select("topic");
 
   if (error) {
     console.log(error);
@@ -73,7 +48,7 @@ const generateRandomTopics = async () => {
   const allTopics = Array.from(new Set(data?.map((topic) => topic.topic)));
 
   const randomTopics = [] as string[];
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < 3; i++) {
     const randomTopic = allTopics[Math.floor(Math.random() * allTopics.length)];
     if (randomTopics.includes(randomTopic)) {
       i--;

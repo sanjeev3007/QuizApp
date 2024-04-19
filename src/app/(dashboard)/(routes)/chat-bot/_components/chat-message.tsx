@@ -6,6 +6,7 @@ import userIcon from "@/assets/Images/user_icon.png";
 import { Message } from "ai";
 import { UseChatHelpers } from "ai/react";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 export interface ChatMessageProps
   extends Pick<UseChatHelpers, "append" | "setInput"> {
@@ -15,8 +16,14 @@ export interface ChatMessageProps
   index?: number;
   messagesLength?: number;
   isLoading?: boolean;
+  doubtSolveStatus?: boolean;
 }
-export default function ChatMessage({ message, isLoading }: ChatMessageProps) {
+export default function ChatMessage({
+  message,
+  isLoading,
+  doubtSolveStatus,
+}: ChatMessageProps) {
+  const router = useRouter();
   return (
     <div className="flex-1 relative w-full">
       <div className="flex w-full justify-start gap-x-2 mt-4">
@@ -38,6 +45,7 @@ export default function ChatMessage({ message, isLoading }: ChatMessageProps) {
             ? message.content
             : (() => {
                 try {
+                  // if (doubtSolveStatus) return "Your doubt is solved";
                   const parsedContent = JSON.parse(message.content);
                   return parsedContent.answer || "Sorry, can't answer this!";
                 } catch (error) {

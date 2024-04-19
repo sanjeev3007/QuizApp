@@ -6,15 +6,13 @@ export async function getChat(userid: string, chat_id: string) {
   const { data, error } = await supabase
     .from("chats_doubt_solve")
     .select("*")
-    .eq("user_id", userid)
     .eq("id", chat_id)
     .single();
 
-  if (error) {
-    console.log(error);
-  }
-
-  return (data?.payload as Chat) ?? null;
+  return {
+    chat: (data?.payload as Chat) ?? null,
+    doubtSolved: data?.solved ?? false,
+  };
 }
 
 export async function addFeedback(
@@ -31,4 +29,16 @@ export async function addFeedback(
     console.log(error);
   }
   console.log(data);
+}
+
+export async function doubtSolved(userid: string, chatid: string) {
+  const supabase = createClientComponentClient();
+  const { data, error } = await supabase
+    .from("chats_doubt_solve")
+    .update({ solved: true })
+    .eq("user_id", userid)
+    .eq("id", chatid);
+  if (error) {
+    console.log(error);
+  }
 }

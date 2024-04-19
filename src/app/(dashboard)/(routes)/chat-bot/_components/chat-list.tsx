@@ -3,6 +3,9 @@ import { type Message } from "ai";
 import ChatMessage from "./chat-message";
 import FeedBackForm from "./feedback-form";
 import { UseChatHelpers } from "ai/react";
+import ChatSolved from "./chat-cta";
+import { doubtSolved } from "@/actions/chat-doubt";
+import { useRouter } from "next/navigation";
 
 export interface ChatList {
   messages: UseChatHelpers["messages"];
@@ -12,6 +15,9 @@ export interface ChatList {
   user_id: string;
   isLoading?: boolean;
   id?: string;
+  setDoubtSolveStatus: any;
+  doubtSolveStatus: boolean;
+  onSubmit: (value: string) => Promise<void>;
 }
 
 export function ChatList({
@@ -22,7 +28,11 @@ export function ChatList({
   append,
   id,
   isLoading,
+  setDoubtSolveStatus,
+  doubtSolveStatus,
+  onSubmit,
 }: ChatList) {
+  const router = useRouter();
   if (!messages.length) {
     return null;
   }
@@ -38,15 +48,34 @@ export function ChatList({
             append={append}
             id={id}
             isLoading={isLoading}
+            doubtSolveStatus={doubtSolveStatus}
           />
           {index == messages.length - 1 && message.role === "assistant" && (
-            <FeedBackForm
-              key={index}
-              answerId={index + 1}
-              answer={message.content}
-              chat_id={chat_id}
-              user_id={user_id}
-            />
+            <div>
+              {!doubtSolveStatus && (
+                <FeedBackForm
+                  key={index}
+                  answerId={index + 1}
+                  answer={message.content}
+                  chat_id={chat_id}
+                  user_id={user_id}
+                />
+              )}
+              {!doubtSolveStatus && (
+                <ChatSolved
+                  setInput={setInput}
+                  onSubmit={async (value) => {
+                    await append({
+                      id,
+                      content: value,
+                      role: "user",
+                    });
+                    setDoubtSolveStatus(true);
+                    doubtSolved(user_id, chat_id);
+                  }}
+                />
+              )}
+            </div>
           )}
         </div>
       ))}

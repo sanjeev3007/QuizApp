@@ -28,12 +28,12 @@ export default function SuggestedQuestionForm({
     >
       <button
         type="submit"
-        className="flex items-center w-full h-full cursor-pointer rounded-md border border-[#E4E2DC] bg-[#F6F5F4] px-4 py-2 text-sm text-[#5B8989] hover:bg-[#E4E2DC]"
+        className="flex items-center w-full h-full cursor-pointer rounded-md border border-[#E4E2DC] bg-[#F6F5F4] px-3 py-2 text-sm text-[#5B8989] hover:bg-[#E4E2DC]"
       >
         <div className="mr-1">
           <Image src={stars_icon} alt="" />
         </div>
-        {ques.question}
+        <div className="text-left ml-2">{ques.question}</div>
       </button>
     </form>
   );
