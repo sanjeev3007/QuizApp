@@ -3,7 +3,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export async function getChat(userid: string, chat_id: string) {
   const supabase = createClientComponentClient();
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from("chats_doubt_solve")
     .select("*")
     .eq("id", chat_id)
@@ -33,7 +33,7 @@ export async function addFeedback(
 
 export async function doubtSolved(userid: string, chatid: string) {
   const supabase = createClientComponentClient();
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("chats_doubt_solve")
     .update({ solved: true })
     .eq("user_id", userid)
