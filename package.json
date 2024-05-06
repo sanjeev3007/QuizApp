@@ -11,7 +11,10 @@
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
+    "@google/generative-ai": "^0.9.0",
     "@hookform/resolvers": "^3.3.4",
+    "@langchain/core": "^0.1.61",
+    "@langchain/openai": "^0.0.28",
     "@mui/icons-material": "^5.15.10",
     "@mui/material": "^5.15.10",
     "@newrelic/next": "^0.8.0",
@@ -43,6 +46,7 @@
     "cookies-next": "^4.1.1",
     "date-fns": "^3.3.1",
     "dotenv": "^16.4.5",
+    "langchain": "^0.1.36",
     "lucide-react": "^0.320.0",
     "mini-svg-data-uri": "^1.4.4",
     "nanoid": "^5.0.7",
