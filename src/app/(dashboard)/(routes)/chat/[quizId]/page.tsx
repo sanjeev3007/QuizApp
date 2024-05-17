@@ -14,8 +14,7 @@ export default async function ChatPage({
   const user_Id =
     getCookie("userId", { cookies }) || process.env.NEXT_PUBLIC_DEMO_USER_ID;
   const grade =
-    getCookie("grade", { cookies }) ||
-    Math.max(1, Math.floor(Math.random() * 8) + 1);
+    getCookie("grade", { cookies }) || process.env.NEXT_PUBLIC_DEMO_USER_GRADE!;
 
   const numberOfCompletedQuizData = await getNumberOfCompletedQuiz(user_Id!);
 
@@ -28,7 +27,7 @@ export default async function ChatPage({
         quizId={quizId}
         user={{
           name: userName!,
-          grade: grade as number, // TODO: Type Fix
+          grade: parseInt(grade),
           id: user_Id!,
         }}
         numberOfCompletedQuizData={numberOfCompletedQuizData}
