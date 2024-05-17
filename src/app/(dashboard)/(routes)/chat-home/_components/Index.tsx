@@ -48,6 +48,14 @@ const Index = ({ user_Id, recentChats }: Props) => {
     // Set a random fact when the component mounts
     const randomIndex = Math.floor(Math.random() * facts.length);
     setRandomFact(facts[randomIndex]);
+
+    // Update the random fact every 5 seconds
+    const intervalId = setInterval(() => {
+      const newIndex = Math.floor(Math.random() * facts.length);
+      setRandomFact(facts[newIndex]);
+    }, 5000);
+
+    return () => clearInterval(intervalId); // Cleanup the interval on component unmount
   }, []);
   const facts = [
     "A single strand of human hair can support up to 100 grams in weight.",
