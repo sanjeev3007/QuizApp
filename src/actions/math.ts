@@ -1,10 +1,38 @@
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 // create quiz
-export async function createMathQuiz(
+export async function createMathQuiz(userid: string, grade: number) {
+  const supabase = createClientComponentClient();
+
+  const metadata = {
+    grade: grade,
+    // topics: topics,
+  };
+
+  const { data, error } = await supabase
+    .from("quiz")
+    .insert({
+      userid: userid,
+      // questions: questions,
+      // start: true,
+      // multiple_topics: topics,
+      metadata: metadata,
+    })
+    .select();
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  return data;
+}
+
+export async function updateMathQuiz(
   userid: string,
-  questions: any,
-  topics: string[],
+  questions: Array<any>,
+  topics: Array<string>,
+  quizId: string,
   grade: number
 ) {
   const supabase = createClientComponentClient();
@@ -16,13 +44,14 @@ export async function createMathQuiz(
 
   const { data, error } = await supabase
     .from("quiz")
-    .insert({
-      userid: userid,
+    .update({
       questions: questions,
       start: true,
       multiple_topics: topics,
       metadata: metadata,
     })
+    .eq("id", quizId)
+    .eq("userid", userid)
     .select();
 
   if (error) {

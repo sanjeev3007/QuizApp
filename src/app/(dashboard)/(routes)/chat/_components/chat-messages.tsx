@@ -10,6 +10,7 @@ import EastOutlinedIcon from "@mui/icons-material/EastOutlined";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import { useRouter } from "next/navigation";
+import { getMathQuestions, updateMathQuiz } from "@/actions/math";
 
 if (typeof window !== "undefined") {
 }
@@ -17,10 +18,32 @@ if (typeof window !== "undefined") {
 export function InitialChatMessage({
   setStart,
   user,
+  setQuestionList,
+  quizId,
 }: {
   setStart: Dispatch<SetStateAction<boolean>>;
   user: { name: string; grade: number; id: string };
+  setQuestionList: Dispatch<SetStateAction<any[]>>;
+  quizId: string;
 }) {
+  const [loading, setLoading] = useState(false);
+  const generateWithRandomTopics = async () => {
+    try {
+      setLoading(true);
+      const { questions, topics } = await getMathQuestions(
+        user.grade!,
+        user.id
+      );
+      if (questions.length === 0) return;
+      setQuestionList(questions);
+      await updateMathQuiz(user.id, questions, topics, quizId, user.grade!);
+      setStart(true);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="max-w-3xl my-2 flex items-start w-full gap-x-2">
       <div className="bg-orange-300 w-10 h-10 rounded-full grid place-items-center">
@@ -34,14 +57,18 @@ export function InitialChatMessage({
               Are you ready for the quiz? Click on ‘Start’ button to begin.
             </p>
           </div>
-          <Button
+          {/* <Button
             className="font-sans font-medium text-sm leading-5 mt-2 bg-[#E98451] text-[#FFF] min-w-36 hover:bg-[#E98451]"
             onClick={() => setStart(true)}
           >
             Start <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
-          </Button>
+          </Button> */}
         </div>
       </div>
+      <Button className="">Selected by Teacher</Button>
+      <Button className="" onClick={generateWithRandomTopics}>
+        {loading ? "Generating..." : "Generate Random"}
+      </Button>
     </div>
   );
 }

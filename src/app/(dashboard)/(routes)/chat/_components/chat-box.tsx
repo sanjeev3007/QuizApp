@@ -71,7 +71,8 @@ export default function Chat({
 
   const router = useRouter();
 
-  const { questions: questionList, complete: isComplete } = quizData;
+  const { questions: qList, complete: isComplete } = quizData;
+  const [questionList, setQuestionList] = useState<any>(qList);
 
   const startNewQuiz = async () => {
     setLoader(true);
@@ -86,8 +87,7 @@ export default function Chat({
 
     const data = await createMathQuiz(
       user.id,
-      QuestionLists,
-      topics,
+      // topics,
       user.grade
     );
     if (!data || !data.length) {
@@ -100,6 +100,7 @@ export default function Chat({
 
   // Get the current question
   const currentQuestion = useMemo(() => {
+    if (!questionList) return null;
     return questionList[questionIndex];
   }, [questionIndex, questionList]);
 
@@ -157,7 +158,7 @@ export default function Chat({
       const isCorrect = checkAnswer(index);
 
       setCurrentSubmission({
-        questionId: currentQuestion?.uuid,
+        questionId: currentQuestion?.uuid!,
         selected: options[index!],
         isCorrect,
       });
@@ -180,6 +181,7 @@ export default function Chat({
 
   // Check if all questions have been answered
   const allQuestionsAnswered = useMemo(() => {
+    if (!questionList) return false;
     return submissions.length === questionList.length;
   }, [submissions, questionList]);
 
@@ -208,7 +210,7 @@ export default function Chat({
       setUserInput("");
     } else {
       // Check if the user input is in the options text
-      const optionTexts = options.map((option) =>
+      const optionTexts = options.map((option: any) =>
         option.text.toLowerCase().trim()
       );
       const index = optionTexts.indexOf(optimizedAnswer);
@@ -224,7 +226,7 @@ export default function Chat({
   useEffect(() => {
     // If the quiz is complete, redirect to the home page
     if (isComplete) {
-      router.push("/");
+      // router.push("/");
     }
     setIsMounted(true);
   }, []);
@@ -236,20 +238,29 @@ export default function Chat({
       <div className="flex-1 px-2 md:px-8">
         <div className="pb-4 max-w-4xl mx-auto h-full w-full">
           <Toaster />
-          <InitialChatMessage setStart={setStart} user={user} />
+          <InitialChatMessage
+            setStart={setStart}
+            user={user}
+            setQuestionList={setQuestionList}
+            quizId={quizId}
+          />
           {start &&
-            questionList.slice(0, questionIndex + 1).map((question, i) => (
-              <div className="grid" key={i}>
-                <MCQBox
-                  currentQuestion={question}
-                  handleNext={handleNext}
-                  submissions={submissions}
-                  questionIndex={i + 1}
-                  user={user}
-                />
-                <SelectedAnswer submissions={submissions} index={i} />
-              </div>
-            ))}
+            questionList
+              ?.slice(0, questionIndex + 1)
+              .map((question: any, i: number) => (
+                <div className="grid" key={i}>
+                  <MCQBox
+                    currentQuestion={question}
+                    handleNext={handleNext}
+                    submissions={submissions}
+                    questionIndex={i + 1}
+                    user={user}
+                    hasEnded={hasEnded}
+                    explanation={question.explanation}
+                  />
+                  <SelectedAnswer submissions={submissions} index={i} />
+                </div>
+              ))}
           {hasEnded && (
             <EndChatMessage
               showQuizScore={showQuizScore}

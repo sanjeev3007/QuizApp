@@ -50,7 +50,7 @@ export default function QuizScore({
     );
     setTotalCorrect(totalCorrect);
 
-    const questionLength = quiz_stats.questions.length;
+    const questionLength = quiz_stats.questions?.length;
     setTotalQuestions(questionLength);
     accuracy = (totalCorrect / questionLength) * 100;
     setAccuracy(accuracy);

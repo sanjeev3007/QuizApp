@@ -13,6 +13,8 @@ export default function MCQBox({
   submissions,
   questionIndex,
   user,
+  hasEnded,
+  explanation,
 }: {
   currentQuestion: any;
   handleNext: any;
@@ -23,6 +25,8 @@ export default function MCQBox({
     grade: number;
     id: string;
   };
+  hasEnded: boolean;
+  explanation: string;
 }) {
   const correctAnswer = currentQuestion?.options.find(
     (option: any) => option.correct == "true"
@@ -47,7 +51,13 @@ export default function MCQBox({
           completedQuestion={completedQuestion}
           question={currentQuestion?.question}
           answer={correctAnswer}
+          hasEnded={hasEnded}
         />
+        {hasEnded && (
+          <p className="border border-[#DAE7E7] text-[#5B8989] bg-[#F9FBFB] text-sm p-4 rounded-lg mt-2">
+            <b>Explanation:</b> {explanation}
+          </p>
+        )}
         <FeedBackForm questionId={currentQuestion?.uuid} user={user} />
       </div>
     </div>
