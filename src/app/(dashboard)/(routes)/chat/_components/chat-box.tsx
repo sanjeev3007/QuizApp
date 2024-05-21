@@ -29,6 +29,7 @@ import {
   storeUserSubmission,
   updateQuizStats,
 } from "@/actions/math";
+import { getQuizStats } from "@/app/supabase-client-provider";
 
 type SubmissionType = {
   questionId: string;
@@ -62,12 +63,13 @@ export default function Chat({
     quizData?.submissions || []
   );
   const [quizScore, showQuizScore] = useState(false);
-  const [start, setStart] = useState(!!quizData.submissions?.length);
+  const [started, setStart] = useState(!!quizData.submissions?.length);
   const [userInput, setUserInput] = useState("");
   const [isMounted, setIsMounted] = useState(false);
   const [loader, setLoader] = useState<boolean>(false);
   const [currentSubmission, setCurrentSubmission] =
     useState<SubmissionType | null>(null);
+  const [score, setScore] = useState(0);
 
   const router = useRouter();
 
@@ -120,9 +122,25 @@ export default function Chat({
   const endGame = async () => {
     // Update the quiz stats
     const { success } = await updateQuizStats(quizId, user.id);
+    await checkScore();
     if (!success) {
       toast({ title: "Something went wrong!", duration: 3000 });
     }
+  };
+
+  const checkScore = async () => {
+    const quiz_stats = await getQuizStats(quizId);
+
+    let totalCorrect = quiz_stats.submissions?.reduce(
+      (acc: any, question: any) => {
+        if (question.isCorrect) {
+          return acc + 1;
+        }
+        return acc;
+      },
+      0
+    );
+    setScore(totalCorrect);
   };
 
   // Check if the selected answer is correct
@@ -240,11 +258,12 @@ export default function Chat({
           <Toaster />
           <InitialChatMessage
             setStart={setStart}
+            started={started}
             user={user}
             setQuestionList={setQuestionList}
             quizId={quizId}
           />
-          {start &&
+          {started &&
             questionList
               ?.slice(0, questionIndex + 1)
               .map((question: any, i: number) => (
@@ -267,6 +286,8 @@ export default function Chat({
               user={user}
               startNewQuiz={startNewQuiz}
               loader={loader}
+              score={score}
+              questionLength={questionList.length}
             />
           )}
         </div>

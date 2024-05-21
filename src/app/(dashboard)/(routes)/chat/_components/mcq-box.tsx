@@ -53,11 +53,6 @@ export default function MCQBox({
           answer={correctAnswer}
           hasEnded={hasEnded}
         />
-        {hasEnded && (
-          <p className="border border-[#DAE7E7] text-[#5B8989] bg-[#F9FBFB] text-sm p-4 rounded-lg mt-2">
-            <b>Explanation:</b> {explanation}
-          </p>
-        )}
         <FeedBackForm questionId={currentQuestion?.uuid} user={user} />
       </div>
     </div>

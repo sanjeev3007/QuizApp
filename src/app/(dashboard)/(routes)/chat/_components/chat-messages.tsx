@@ -17,22 +17,27 @@ if (typeof window !== "undefined") {
 
 export function InitialChatMessage({
   setStart,
+  started,
   user,
   setQuestionList,
   quizId,
 }: {
   setStart: Dispatch<SetStateAction<boolean>>;
+  started: boolean;
   user: { name: string; grade: number; id: string };
   setQuestionList: Dispatch<SetStateAction<any[]>>;
   quizId: string;
 }) {
   const [loading, setLoading] = useState(false);
-  const generateWithRandomTopics = async () => {
+  const selectedTopics = [];
+
+  const generateQuestions = async (defineTopics?: string[]) => {
     try {
       setLoading(true);
       const { questions, topics } = await getMathQuestions(
         user.grade!,
-        user.id
+        user.id,
+        defineTopics
       );
       if (questions.length === 0) return;
       setQuestionList(questions);
@@ -45,30 +50,41 @@ export function InitialChatMessage({
     }
   };
   return (
-    <div className="max-w-3xl my-2 flex items-start w-full gap-x-2">
-      <div className="bg-orange-300 w-10 h-10 rounded-full grid place-items-center">
-        <Image src={botIcon} alt="bot" className="stroke-white" />
-      </div>
-      <div className="flex-1 ">
-        <div className="border-2 font-medium text-sm leading-5 border-[#DAE7E7] text-[#5B8989] bg-[#F9FBFB] p-4 rounded-lg rounded-ss-none">
-          <div>
-            <p className="text-sm py-0.5">{user && `Hi ${user.name}!`}</p>
-            <p className="mt-2">
-              Are you ready for the quiz? Click on ‘Start’ button to begin.
-            </p>
+    <div className="max-w-3xl w-full space-y-3">
+      <div className="flex items-start gap-x-2">
+        <div className="bg-orange-300 w-10 h-10 rounded-full grid place-items-center">
+          <Image src={botIcon} alt="bot" className="stroke-white" />
+        </div>
+        <div className="flex-1 ">
+          <div className="border-2 font-medium text-sm leading-5 border-[#DAE7E7] text-[#5B8989] bg-[#F9FBFB] p-4 rounded-lg rounded-ss-none">
+            <div>
+              <p className="text-sm py-0.5">{user && `Hello ${user.name}!`}</p>
+              <p className="mt-2">
+                Hope you are having a great day! Lets start the quiz with by
+                going ahead with one of the available options.
+              </p>
+            </div>
           </div>
-          {/* <Button
-            className="font-sans font-medium text-sm leading-5 mt-2 bg-[#E98451] text-[#FFF] min-w-36 hover:bg-[#E98451]"
-            onClick={() => setStart(true)}
-          >
-            Start <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
-          </Button> */}
         </div>
       </div>
-      <Button className="">Selected by Teacher</Button>
-      <Button className="" onClick={generateWithRandomTopics}>
-        {loading ? "Generating..." : "Generate Random"}
-      </Button>
+      {started ? null : (
+        <div className="pl-12 grid gap-3">
+          <Button
+            onClick={() => generateQuestions()}
+            disabled={loading}
+            className="justify-start max-w-sm border-2 border-[#fde8d8] text-[#e9834e] bg-[#fef3ec] hover:bg-[#fef3ec] p-4 rounded-sm"
+          >
+            <span>Start with topic chosen by your teacher</span>
+          </Button>
+          <Button
+            className="justify-start max-w-sm border-2 border-[#fde8d8] text-[#e9834e] bg-[#fef3ec] hover:bg-[#fef3ec] p-4 rounded-sm"
+            onClick={() => generateQuestions()}
+            disabled={loading}
+          >
+            <span>Start a random topic quiz based on your skill</span>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
@@ -78,11 +94,15 @@ export function EndChatMessage({
   user,
   startNewQuiz,
   loader,
+  score,
+  questionLength,
 }: {
   showQuizScore: Dispatch<SetStateAction<boolean>>;
   user: { name: string; grade: number; id: string };
   startNewQuiz: any;
   loader: boolean;
+  score: number;
+  questionLength: number;
 }) {
   const router = useRouter();
   return (
@@ -91,30 +111,18 @@ export function EndChatMessage({
         <Image src={botIcon} alt="bot" className="stroke-white" />
       </div>
       <div className="w-full">
-        <div className="flex flex-col gap-x-2 justify-between border-2 font-medium text-sm leading-5 border-[#DAE7E7] text-[#5B8989] bg-[#F9FBFB] p-4 rounded-lg rounded-ss-none">
-          <p className="text-sm py-0.5">
-            {user ? (
-              <span className="mb-2">
-                Great {user.name}! <br /> You have completed the quiz.
-              </span>
-            ) : (
-              "Great, You have completed the quiz. Click on the button to see your score."
-            )}
+        <div className="flex flex-col gap-y-4 justify-between border-2 font-medium text-sm leading-5 border-[#DAE7E7] text-[#5B8989] bg-[#F9FBFB] p-4 rounded-lg rounded-ss-none">
+          <p className="text-sm py-0.5">Great work {user.name}!</p>
+          <p>
+            Your have scored '{score}' from out of {questionLength}
           </p>
-          <div className="mt-[1rem] flex-col md:flex-row">
+          <p>
+            The correct and wrong answers are highlighted above. You can click
+            on the O icon for the wrong answers to see the explanation.
+          </p>
+          <div className="flex-col md:flex-row">
             <Button
-              className="min-w-[164px] mt-2 bg-[#E98451] text-[#FFF] hover:bg-[#E98451]"
-              onClick={() => showQuizScore(true)}
-            >
-              View Score
-              <Image
-                src={lucide_trophy}
-                alt="trophy"
-                className="w-4 h-4 ml-2"
-              />
-            </Button>
-            <Button
-              className="min-w-[164px] mt-2 border-2 border-[#E98451] bg-transparent text-[#E98451] hover:bg-transparent md:ml-2"
+              className="min-w-[164px] mt-2 border-2 border-[#E98451] bg-transparent text-[#E98451] hover:bg-transparent"
               onClick={() => startNewQuiz()}
             >
               Start New Quiz{" "}

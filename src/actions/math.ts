@@ -63,14 +63,20 @@ export async function updateMathQuiz(
 }
 
 // generating questions// generating questions
-export const getMathQuestions = async (user_grade: number, userId: string) => {
+export const getMathQuestions = async (
+  user_grade: number,
+  userId: string,
+  defineTopics?: string[]
+) => {
   let grade = user_grade;
   if (grade > 8) grade = 8;
 
   let db_with_grade = `fetch_rows_db_grade${grade}_math`;
 
+  let topics = defineTopics || (await generateRandomTopics(grade));
+
   // generate two random topics
-  const topics = await generateRandomTopics(grade);
+  // const topics = await generateRandomTopics(grade);
 
   // fetching stored correct submissions
   const questionIds = await fetchCorrectSubmissions(userId, topics);
