@@ -32,7 +32,27 @@ export function InitialChatMessage({
 }) {
   const [loading, setLoading] = useState(false);
 
+  const getTopicByTeacher = async () => {
+    try {
+      const res = await fetch(
+        `https://sandbox-api.dev.codeyoung.com/noah/topic/assigned?studentId=${user.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json();
+      const { topic } = data;
+      return topic;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const generateQuestions = async (defineTopic?: string) => {
+    console.log(defineTopic);
     try {
       setLoading(true);
       const { questions, topic } = await getMathQuestions(
@@ -40,6 +60,7 @@ export function InitialChatMessage({
         user.id,
         defineTopic
       );
+      console.log(questions, topic);
       if (questions.length === 0) return;
       setQuestionList(questions);
       setQuizTopic(topic);
@@ -72,7 +93,9 @@ export function InitialChatMessage({
       {started ? null : (
         <div className="pl-12 grid gap-3">
           <Button
-            onClick={() => generateQuestions()}
+            onClick={() => {
+              getTopicByTeacher().then((topic) => generateQuestions(topic));
+            }}
             disabled={loading}
             className="justify-start max-w-sm border-2 border-[#fde8d8] text-[#e9834e] bg-[#fef3ec] hover:bg-[#fef3ec] p-4 rounded-sm"
           >
@@ -161,7 +184,7 @@ export function TopicMessage({ topic }: { topic: string }) {
                 The topic in this quiz will be {topic}
               </p>
               <p className="mt-2">
-                This quiz has IO questions and your score will be shown in the
+                This quiz has 10 questions and your score will be shown in the
                 end of the quiz.
               </p>
             </div>

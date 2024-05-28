@@ -58,7 +58,6 @@ export async function updateMathQuiz(
   return data;
 }
 
-// generating questions// generating questions
 export const getMathQuestions = async (
   user_grade: number,
   userId: string,
@@ -97,6 +96,7 @@ export const getMathQuestions = async (
   );
 
   const questions = [...level1, ...level2, ...level3];
+  console.log(questions, topic);
   return { questions, topic };
 };
 
