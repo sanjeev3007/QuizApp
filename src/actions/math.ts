@@ -96,7 +96,6 @@ export const getMathQuestions = async (
   );
 
   const questions = [...level1, ...level2, ...level3];
-  console.log(questions, topic);
   return { questions, topic };
 };
 

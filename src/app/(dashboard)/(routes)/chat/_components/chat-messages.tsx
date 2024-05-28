@@ -52,7 +52,6 @@ export function InitialChatMessage({
   };
 
   const generateQuestions = async (defineTopic?: string) => {
-    console.log(defineTopic);
     try {
       setLoading(true);
       const { questions, topic } = await getMathQuestions(
@@ -60,7 +59,7 @@ export function InitialChatMessage({
         user.id,
         defineTopic
       );
-      console.log(questions, topic);
+
       if (questions.length === 0) return;
       setQuestionList(questions);
       setQuizTopic(topic);
@@ -120,14 +119,14 @@ export function EndChatMessage({
   startNewQuiz,
   loader,
   score,
-  questionLength,
+  questionsLength,
 }: {
   showQuizScore: Dispatch<SetStateAction<boolean>>;
   user: { name: string; grade: number; id: string };
   startNewQuiz: any;
   loader: boolean;
   score: number;
-  questionLength: number;
+  questionsLength: number;
 }) {
   const router = useRouter();
   return (
@@ -139,7 +138,7 @@ export function EndChatMessage({
         <div className="flex flex-col gap-y-4 justify-between border-2 font-medium text-sm leading-5 border-[#DAE7E7] text-[#5B8989] bg-[#F9FBFB] p-4 rounded-lg rounded-ss-none">
           <p className="text-sm py-0.5">Great work {user.name}!</p>
           <p>
-            Your have scored '{score}' from out of {questionLength}
+            Your have scored '{score}' from out of {questionsLength}
           </p>
           <p>
             The correct and wrong answers are highlighted above. You can click
@@ -170,7 +169,13 @@ export function EndChatMessage({
   );
 }
 
-export function TopicMessage({ topic }: { topic: string }) {
+export function TopicMessage({
+  topic,
+  questionsLength,
+}: {
+  topic: string;
+  questionsLength: number;
+}) {
   return (
     <div className="max-w-3xl w-full space-y-3 my-2">
       <div className="flex items-start gap-x-2">
@@ -184,8 +189,8 @@ export function TopicMessage({ topic }: { topic: string }) {
                 The topic in this quiz will be {topic}
               </p>
               <p className="mt-2">
-                This quiz has 10 questions and your score will be shown in the
-                end of the quiz.
+                This quiz has {questionsLength} questions and your score will be
+                shown in the end of the quiz.
               </p>
             </div>
           </div>

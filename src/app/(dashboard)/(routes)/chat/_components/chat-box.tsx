@@ -256,7 +256,12 @@ export default function Chat({
             quizId={quizId}
             setQuizTopic={setQuizTopic}
           />
-          {quizTopic && <TopicMessage topic={quizTopic} />}
+          {quizTopic && (
+            <TopicMessage
+              topic={quizTopic}
+              questionsLength={questionList.length}
+            />
+          )}
           {started &&
             questionList
               ?.slice(0, questionIndex + 1)
@@ -281,7 +286,7 @@ export default function Chat({
               startNewQuiz={startNewQuiz}
               loader={loader}
               score={score}
-              questionLength={questionList.length}
+              questionsLength={questionList.length}
             />
           )}
         </div>
