@@ -21,27 +21,29 @@ export function InitialChatMessage({
   user,
   setQuestionList,
   quizId,
+  setQuizTopic,
 }: {
   setStart: Dispatch<SetStateAction<boolean>>;
   started: boolean;
   user: { name: string; grade: number; id: string };
   setQuestionList: Dispatch<SetStateAction<any[]>>;
   quizId: string;
+  setQuizTopic: Dispatch<SetStateAction<string | null>>;
 }) {
   const [loading, setLoading] = useState(false);
-  const selectedTopics = [];
 
-  const generateQuestions = async (defineTopics?: string[]) => {
+  const generateQuestions = async (defineTopic?: string) => {
     try {
       setLoading(true);
-      const { questions, topics } = await getMathQuestions(
+      const { questions, topic } = await getMathQuestions(
         user.grade!,
         user.id,
-        defineTopics
+        defineTopic
       );
       if (questions.length === 0) return;
       setQuestionList(questions);
-      await updateMathQuiz(user.id, questions, topics, quizId, user.grade!);
+      setQuizTopic(topic);
+      await updateMathQuiz(user.id, questions, topic, quizId, user.grade!);
       setStart(true);
     } catch (error) {
       console.log(error);
@@ -138,6 +140,31 @@ export function EndChatMessage({
             >
               End Quiz & Exit{" "}
             </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function TopicMessage({ topic }: { topic: string }) {
+  return (
+    <div className="max-w-3xl w-full space-y-3 my-2">
+      <div className="flex items-start gap-x-2">
+        <div className="bg-orange-300 w-10 h-10 rounded-full grid place-items-center">
+          <Image src={botIcon} alt="bot" className="stroke-white" />
+        </div>
+        <div className="flex-1 ">
+          <div className="border-2 font-medium text-sm leading-5 border-[#DAE7E7] text-[#5B8989] bg-[#F9FBFB] p-4 rounded-lg rounded-ss-none">
+            <div>
+              <p className="text-sm py-0.5">
+                The topic in this quiz will be {topic}
+              </p>
+              <p className="mt-2">
+                This quiz has IO questions and your score will be shown in the
+                end of the quiz.
+              </p>
+            </div>
           </div>
         </div>
       </div>

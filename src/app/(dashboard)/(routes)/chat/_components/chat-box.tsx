@@ -17,7 +17,11 @@ import { Input } from "@/components/ui/input";
 import ion_send from "@/assets/Images/ion_send.png";
 import Image from "next/image";
 import QuizScore from "./quiz-score-diloag";
-import { EndChatMessage, InitialChatMessage } from "./chat-messages";
+import {
+  EndChatMessage,
+  InitialChatMessage,
+  TopicMessage,
+} from "./chat-messages";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -63,13 +67,14 @@ export default function Chat({
     quizData?.submissions || []
   );
   const [quizScore, showQuizScore] = useState(false);
-  const [started, setStart] = useState(!!quizData.submissions?.length);
+  const [started, setStart] = useState(quizData.start);
   const [userInput, setUserInput] = useState("");
   const [isMounted, setIsMounted] = useState(false);
   const [loader, setLoader] = useState<boolean>(false);
   const [currentSubmission, setCurrentSubmission] =
     useState<SubmissionType | null>(null);
   const [score, setScore] = useState(0);
+  const [quizTopic, setQuizTopic] = useState<string | null>(quizData.topic);
 
   const router = useRouter();
 
@@ -79,19 +84,7 @@ export default function Chat({
   const startNewQuiz = async () => {
     setLoader(true);
 
-    const { questions: QuestionLists, topics } = await getMathQuestions(
-      user.grade,
-      user.id
-    );
-    if (QuestionLists.length === 0) {
-      return;
-    }
-
-    const data = await createMathQuiz(
-      user.id,
-      // topics,
-      user.grade
-    );
+    const data = await createMathQuiz(user.id, user.grade);
     if (!data || !data.length) {
       setLoader(false);
       return;
@@ -117,16 +110,6 @@ export default function Chat({
   useEffect(() => {
     bottom.current?.scrollIntoView({ behavior: "smooth" });
   }, [bottom.current, currentQuestion, submissions, hasEnded]);
-
-  // End the quiz
-  const endGame = async () => {
-    // Update the quiz stats
-    const { success } = await updateQuizStats(quizId, user.id);
-    await checkScore();
-    if (!success) {
-      toast({ title: "Something went wrong!", duration: 3000 });
-    }
-  };
 
   const checkScore = async () => {
     const quiz_stats = await getQuizStats(quizId);
@@ -158,7 +141,7 @@ export default function Chat({
           user.id,
           currentSubmission.questionId,
           quizData.id,
-          quizData.multiple_topics,
+          quizData.topic,
           user.grade
         );
       }
@@ -241,6 +224,15 @@ export default function Chat({
     }
   };
 
+  const endGame = async () => {
+    // Update the quiz stats
+    await checkScore();
+    const { success } = await updateQuizStats(quizId, user.id);
+    if (!success) {
+      toast({ title: "Something went wrong!", duration: 3000 });
+    }
+  };
+
   useEffect(() => {
     // If the quiz is complete, redirect to the home page
     if (isComplete) {
@@ -262,7 +254,9 @@ export default function Chat({
             user={user}
             setQuestionList={setQuestionList}
             quizId={quizId}
+            setQuizTopic={setQuizTopic}
           />
+          {quizTopic && <TopicMessage topic={quizTopic} />}
           {started &&
             questionList
               ?.slice(0, questionIndex + 1)
