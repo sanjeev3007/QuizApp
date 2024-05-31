@@ -1,20 +1,11 @@
 "use client";
-import AccuracyCard from "@/components/accuracy-card";
-import ResultsCard from "@/components/results-card";
 import { useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { getQuizStats } from "@/app/supabase-client-provider";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import levelCupStraight from "@/assets/Images/levelCupStraight.png";
 import "@/components/home-page.css";
-import { useRouter } from "next/navigation";
 
 export default function QuizScore({
   quizId,
@@ -50,7 +41,7 @@ export default function QuizScore({
     );
     setTotalCorrect(totalCorrect);
 
-    const questionLength = quiz_stats.questions.length;
+    const questionLength = quiz_stats.questions?.length;
     setTotalQuestions(questionLength);
     accuracy = (totalCorrect / questionLength) * 100;
     setAccuracy(accuracy);
