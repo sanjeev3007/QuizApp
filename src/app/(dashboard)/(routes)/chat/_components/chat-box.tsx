@@ -50,6 +50,7 @@ type ChatProps = {
     id: string;
   };
   numberOfCompletedQuizData: any;
+  assignStatus: boolean;
 };
 
 export default function Chat({
@@ -57,6 +58,7 @@ export default function Chat({
   quizId,
   user,
   numberOfCompletedQuizData,
+  assignStatus,
 }: ChatProps) {
   const bottom = useRef<HTMLDivElement>(null);
   const [questionIndex, setQuestionIndex] = useState(
@@ -255,6 +257,7 @@ export default function Chat({
             setQuestionList={setQuestionList}
             quizId={quizId}
             setQuizTopic={setQuizTopic}
+            assignStatus={assignStatus}
           />
           {quizTopic && (
             <TopicMessage
