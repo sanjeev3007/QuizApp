@@ -30,11 +30,12 @@ export async function updateMathQuiz(
   topic: string,
   quizId: string,
   grade: number,
-  assignedData?: any | null
+  assignedData?: any
 ) {
   const supabase = createClientComponentClient();
 
   let metadata;
+  let isAssigned = !!assignedData?.topic; // grade == assignedData?.topic?.grade;
 
   if (assignedData) {
     metadata = {
@@ -56,7 +57,7 @@ export async function updateMathQuiz(
       start: true,
       topic: topic,
       metadata: metadata,
-      assigned: !!assignedData?.topic,
+      assigned: isAssigned,
     })
     .eq("id", quizId)
     .eq("userid", userid)
@@ -73,19 +74,20 @@ export async function updateMathQuiz(
 export const getMathQuestions = async (
   user_grade: number,
   userId: string,
-  selectedTopic?: string
+  selectedTopic?: any
 ) => {
-  let grade = user_grade;
-  if (grade > 8) grade = 8;
+  let grade;
 
-  let db_name, topic;
+  let db_name = "db_math_rpc";
+  let topic;
 
-  if (!!selectedTopic) {
-    topic = selectedTopic;
-    db_name = "db_math_by_topic";
+  if (!!selectedTopic?.topic) {
+    topic = selectedTopic.topic?.topic;
+    grade = selectedTopic.topic?.grade;
   } else {
+    grade = user_grade;
+    if (grade > 8) grade = 8;
     topic = await generateRandomTopic(grade);
-    db_name = "db_math_by_grade";
   }
 
   const questionIds = await fetchCorrectSubmissions(userId, topic);
@@ -130,34 +132,19 @@ const fetchQuestionsByLevel = async (
 ) => {
   const supabase = createClientComponentClient();
 
-  if (db_name === "db_math_by_grade") {
-    const { data, error } = await supabase.rpc(db_name, {
-      level: level,
-      rows_limit: limit,
-      subject_topic: topic,
-      uuids: questionIds,
-      student_grade: grade,
-    });
+  const { data, error } = await supabase.rpc(db_name, {
+    level: level,
+    rows_limit: limit,
+    subject_topic: topic,
+    uuids: questionIds,
+    selected_grade: grade,
+  });
 
-    if (error) {
-      console.log(error);
-    }
-
-    return data;
-  } else {
-    const { data, error } = await supabase.rpc(db_name, {
-      level: level,
-      rows_limit: limit,
-      subject_topic: topic,
-      uuids: questionIds,
-    });
-
-    if (error) {
-      console.log(error);
-    }
-
-    return data;
+  if (error) {
+    console.log(error);
   }
+
+  return data;
 };
 
 //   generating random topics

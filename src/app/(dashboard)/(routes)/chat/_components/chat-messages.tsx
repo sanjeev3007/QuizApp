@@ -44,7 +44,6 @@ export function InitialChatMessage({
         }
       );
       const data = await res.json();
-      console.log(data);
       if (!!data.topic) return data;
       return null;
     } catch (error) {
@@ -75,7 +74,7 @@ export function InitialChatMessage({
       const { questions, topic } = await getMathQuestions(
         user.grade!,
         user.id,
-        assignedData?.topic?.topic
+        assignedData
       );
       setQuestionList(questions);
       setQuizTopic(topic);
