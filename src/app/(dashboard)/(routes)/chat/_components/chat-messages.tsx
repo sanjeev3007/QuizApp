@@ -22,6 +22,7 @@ export function InitialChatMessage({
   setQuestionList,
   quizId,
   setQuizTopic,
+  assignStatus,
 }: {
   setStart: Dispatch<SetStateAction<boolean>>;
   started: boolean;
@@ -29,6 +30,7 @@ export function InitialChatMessage({
   setQuestionList: Dispatch<SetStateAction<any[]>>;
   quizId: string;
   setQuizTopic: Dispatch<SetStateAction<string | null>>;
+  assignStatus: boolean;
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -113,13 +115,16 @@ export function InitialChatMessage({
       </div>
       {started ? null : (
         <div className="pl-12 grid gap-3">
-          <Button
-            onClick={quizOnMentorTopic}
-            disabled={loading}
-            className="justify-start max-w-sm border-2 border-[#fde8d8] text-[#e9834e] bg-[#fef3ec] hover:bg-[#fef3ec] p-4 rounded-sm"
-          >
-            <span>Start with topic chosen by your teacher</span>
-          </Button>
+          {assignStatus && (
+            <Button
+              onClick={quizOnMentorTopic}
+              disabled={loading}
+              className="justify-start max-w-sm border-2 border-[#fde8d8] text-[#e9834e] bg-[#fef3ec] hover:bg-[#fef3ec] p-4 rounded-sm"
+            >
+              <span>Start with topic chosen by your teacher</span>
+            </Button>
+          )}
+
           <Button
             className="justify-start max-w-sm border-2 border-[#fde8d8] text-[#e9834e] bg-[#fef3ec] hover:bg-[#fef3ec] p-4 rounded-sm"
             onClick={quizOnRandomTopic}

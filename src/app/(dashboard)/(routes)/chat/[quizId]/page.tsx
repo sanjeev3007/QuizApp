@@ -2,6 +2,7 @@ import { getNumberOfCompletedQuiz, getQuizById } from "@/app/supabase-server";
 import Chat from "../_components/chat-box";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
+import { getAssignStatus } from "@/lib/utils";
 
 export default async function ChatPage({
   params: { quizId },
@@ -15,6 +16,7 @@ export default async function ChatPage({
     getCookie("userId", { cookies }) || process.env.NEXT_PUBLIC_DEMO_USER_ID;
   const grade =
     getCookie("grade", { cookies }) || process.env.NEXT_PUBLIC_DEMO_USER_GRADE!;
+  const assignStatus = await getAssignStatus(user_Id!);
 
   const numberOfCompletedQuizData = await getNumberOfCompletedQuiz(user_Id!);
 
@@ -31,6 +33,7 @@ export default async function ChatPage({
           id: user_Id!,
         }}
         numberOfCompletedQuizData={numberOfCompletedQuizData}
+        assignStatus={assignStatus}
       />
     </div>
   );
