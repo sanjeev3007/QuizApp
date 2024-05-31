@@ -39,7 +39,7 @@ export async function updateMathQuiz(
 
   if (assignedData) {
     metadata = {
-      grade: assignedData?.currentGrade,
+      grade: grade,
       topic: topic,
       assignedGrade: assignedData?.topic?.grade,
     };
