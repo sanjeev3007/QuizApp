@@ -32,7 +32,7 @@ export function InitialChatMessage({
 }) {
   const [loading, setLoading] = useState(false);
 
-  const getTopicByTeacher = async () => {
+  const getTopicByMentor = async () => {
     try {
       const res = await fetch(
         `https://sandbox-api.dev.codeyoung.com/noah/topic/assigned?studentId=${user.id}`,
@@ -44,27 +44,55 @@ export function InitialChatMessage({
         }
       );
       const data = await res.json();
-      const { topic } = data;
-      return topic;
+      console.log(data);
+      if (!!data.topic) return data;
+      return null;
     } catch (error) {
       console.log(error);
     }
   };
 
-  const generateQuestions = async (defineTopic?: string) => {
+  const quizOnRandomTopic = async () => {
     try {
       setLoading(true);
+      const { questions, topic } = await getMathQuestions(user.grade!, user.id);
+      setQuestionList(questions);
+      setQuizTopic(topic);
+      setStart(true);
+      await updateMathQuiz(user.id, questions, topic, quizId, user.grade!);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const quizOnMentorTopic = async () => {
+    try {
+      setLoading(true);
+      const assignedData = await getTopicByMentor();
+      const testData = {
+        msg: "Topic fetched.",
+        topic: { topic: "Perimeter and Area", grade: 8 },
+        currentGrade: 7,
+      };
+      console.log(assignedData);
       const { questions, topic } = await getMathQuestions(
         user.grade!,
         user.id,
-        defineTopic
+        testData?.topic?.topic
       );
-
-      if (questions.length === 0) return;
       setQuestionList(questions);
       setQuizTopic(topic);
-      await updateMathQuiz(user.id, questions, topic, quizId, user.grade!);
       setStart(true);
+      await updateMathQuiz(
+        user.id,
+        questions,
+        topic,
+        quizId,
+        user.grade!,
+        testData
+      );
     } catch (error) {
       console.log(error);
     } finally {
@@ -92,9 +120,7 @@ export function InitialChatMessage({
       {started ? null : (
         <div className="pl-12 grid gap-3">
           <Button
-            onClick={() => {
-              getTopicByTeacher().then((topic) => generateQuestions(topic));
-            }}
+            onClick={quizOnMentorTopic}
             disabled={loading}
             className="justify-start max-w-sm border-2 border-[#fde8d8] text-[#e9834e] bg-[#fef3ec] hover:bg-[#fef3ec] p-4 rounded-sm"
           >
@@ -102,7 +128,7 @@ export function InitialChatMessage({
           </Button>
           <Button
             className="justify-start max-w-sm border-2 border-[#fde8d8] text-[#e9834e] bg-[#fef3ec] hover:bg-[#fef3ec] p-4 rounded-sm"
-            onClick={() => generateQuestions()}
+            onClick={quizOnRandomTopic}
             disabled={loading}
           >
             <span>Start a random topic quiz based on your skill</span>

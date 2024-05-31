@@ -33,7 +33,9 @@ export default function MCQBox({
   )?.text;
 
   const completedQuestion = submissions.find(
-    (option: any) => option.questionId === currentQuestion?.uuid
+    (option: any) =>
+      option.questionId === currentQuestion?.uuid &&
+      submissions.length !== questionIndex - 1
   );
   return (
     <div className="max-w-3xl my-2 flex items-start w-full gap-x-2">

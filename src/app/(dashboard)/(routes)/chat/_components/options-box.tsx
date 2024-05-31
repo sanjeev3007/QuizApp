@@ -28,6 +28,8 @@ export default function OptionsBox({
     handleNext(index);
   };
 
+  console.log(completedQuestion);
+
   const alphabet = ["A", "B", "C", "D"];
 
   return (

@@ -29,14 +29,25 @@ export async function updateMathQuiz(
   questions: Array<any>,
   topic: string,
   quizId: string,
-  grade: number
+  grade: number,
+  assignedData?: any | null
 ) {
   const supabase = createClientComponentClient();
 
-  const metadata = {
-    grade: grade,
-    topic: topic,
-  };
+  let metadata;
+
+  if (assignedData) {
+    metadata = {
+      grade: grade,
+      topic: topic,
+      assignedGrade: assignedData?.topic?.grade,
+    };
+  } else {
+    metadata = {
+      grade: grade,
+      topic: topic,
+    };
+  }
 
   const { data, error } = await supabase
     .from("quiz")
@@ -45,6 +56,7 @@ export async function updateMathQuiz(
       start: true,
       topic: topic,
       metadata: metadata,
+      assigned: !!assignedData?.topic,
     })
     .eq("id", quizId)
     .eq("userid", userid)
@@ -61,16 +73,21 @@ export async function updateMathQuiz(
 export const getMathQuestions = async (
   user_grade: number,
   userId: string,
-  defineTopic?: string
+  selectedTopic?: string
 ) => {
   let grade = user_grade;
   if (grade > 8) grade = 8;
 
-  let db_with_grade = `new_db_math_grade${grade}`;
+  let db_name, topic;
 
-  let topic = defineTopic || (await generateRandomTopic(grade));
+  if (!!selectedTopic) {
+    topic = selectedTopic;
+    db_name = "db_math_by_topic";
+  } else {
+    topic = await generateRandomTopic(grade);
+    db_name = "db_math_by_grade";
+  }
 
-  // fetching stored correct submissions
   const questionIds = await fetchCorrectSubmissions(userId, topic);
 
   const level1 = await fetchQuestionsByLevel(
@@ -78,21 +95,24 @@ export const getMathQuestions = async (
     4,
     topic,
     questionIds,
-    db_with_grade
+    db_name,
+    grade
   );
   const level2 = await fetchQuestionsByLevel(
     "medium",
     4,
     topic,
     questionIds,
-    db_with_grade
+    db_name,
+    grade
   );
   const level3 = await fetchQuestionsByLevel(
     "hard",
     2,
     topic,
     questionIds,
-    db_with_grade
+    db_name,
+    grade
   );
 
   const questions = [...level1, ...level2, ...level3];
@@ -105,22 +125,39 @@ const fetchQuestionsByLevel = async (
   limit: number,
   topic: string,
   questionIds: string[],
-  db_url: string
+  db_name: string,
+  grade: number
 ) => {
   const supabase = createClientComponentClient();
 
-  const { data, error } = await supabase.rpc(db_url, {
-    level: level,
-    rows_limit: limit,
-    subject_topic: topic,
-    uuids: questionIds,
-  });
+  if (db_name === "db_math_by_grade") {
+    const { data, error } = await supabase.rpc(db_name, {
+      level: level,
+      rows_limit: limit,
+      subject_topic: topic,
+      uuids: questionIds,
+      student_grade: grade,
+    });
 
-  if (error) {
-    console.log(error);
+    if (error) {
+      console.log(error);
+    }
+
+    return data;
+  } else {
+    const { data, error } = await supabase.rpc(db_name, {
+      level: level,
+      rows_limit: limit,
+      subject_topic: topic,
+      uuids: questionIds,
+    });
+
+    if (error) {
+      console.log(error);
+    }
+
+    return data;
   }
-
-  return data;
 };
 
 //   generating random topics
