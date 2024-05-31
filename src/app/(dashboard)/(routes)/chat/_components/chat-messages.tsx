@@ -71,16 +71,11 @@ export function InitialChatMessage({
     try {
       setLoading(true);
       const assignedData = await getTopicByMentor();
-      const testData = {
-        msg: "Topic fetched.",
-        topic: { topic: "Perimeter and Area", grade: 8 },
-        currentGrade: 7,
-      };
-      console.log(assignedData);
+
       const { questions, topic } = await getMathQuestions(
         user.grade!,
         user.id,
-        testData?.topic?.topic
+        assignedData?.topic?.topic
       );
       setQuestionList(questions);
       setQuizTopic(topic);
@@ -91,7 +86,7 @@ export function InitialChatMessage({
         topic,
         quizId,
         user.grade!,
-        testData
+        assignedData
       );
     } catch (error) {
       console.log(error);
