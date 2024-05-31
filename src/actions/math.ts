@@ -35,7 +35,7 @@ export async function updateMathQuiz(
   const supabase = createClientComponentClient();
 
   let metadata;
-  let isAssigned = !!assignedData?.topic; // grade == assignedData?.topic?.grade;
+  let isAssigned = grade == assignedData?.topic?.grade || !!assignedData?.topic;
 
   if (assignedData) {
     metadata = {
