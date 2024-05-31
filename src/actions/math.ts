@@ -35,11 +35,11 @@ export async function updateMathQuiz(
   const supabase = createClientComponentClient();
 
   let metadata;
-  let isAssigned = grade == assignedData?.topic?.grade || !!assignedData?.topic;
+  let isAssigned = !!assignedData?.topic;
 
   if (assignedData) {
     metadata = {
-      grade: grade,
+      grade: assignedData?.currentGrade,
       topic: topic,
       assignedGrade: assignedData?.topic?.grade,
     };
