@@ -72,11 +72,8 @@ const Card = ({
         return;
       }
 
-      const { questions, topics } = await getMathQuestions(grade!, user_id);
-      if (questions.length === 0) return;
-
       // create quiz and redirect to quiz page
-      const data = await createMathQuiz(user_id, questions, topics, grade!);
+      const data = await createMathQuiz(user_id, grade!);
       if (!data) return;
       router.push(`/chat/${data[0]?.id}`);
     } catch (error) {

@@ -12,12 +12,14 @@ export default function OptionsBox({
   completedQuestion,
   question,
   answer,
+  hasEnded,
 }: {
   options: any;
   handleNext: any;
   completedQuestion: any;
   question: string;
   answer: string;
+  hasEnded: boolean;
 }) {
   const handleOptionClick = (index: number) => {
     if (completedQuestion) {
@@ -31,51 +33,53 @@ export default function OptionsBox({
   return (
     <div className="space-y-2 mt-2">
       <div className="grid grid-cols-2 gap-2">
-        {options.map((option: any, i: number) => (
-          <button
-            type="button"
-            key={i}
-            onClick={() => handleOptionClick(i)}
-            className={cn(
-              "flex relative items-center gap-2 p-2 rounded-lg border-2 font-medium text-sm leading-5 border-[#DAE7E7] text-[#5B8989] bg-[#F9FBFB] cursor-pointer transition-all",
-              completedQuestion?.selected.text === option.text &&
-                option.correct === "true"
-                ? "bg-[#70C29C] text-[#FFF]"
-                : completedQuestion?.selected.text === option.text &&
-                  option.correct === "false"
-                ? "bg-[#E88272] text-[#FFF]"
-                : ""
-            )}
-          >
-            <div
+        {options.map((option: any, i: number) => {
+          const isSelected = completedQuestion?.selected.text === option.text;
+          const showCorrect =
+            hasEnded && isSelected && option.correct === "true";
+          const showIncorrect =
+            hasEnded && isSelected && option.correct === "false";
+          return (
+            <button
+              type="button"
+              key={i}
+              onClick={() => handleOptionClick(i)}
               className={cn(
-                "rounded-full bg-[#E6EFEF] w-6 h-6 flex items-center justify-center text-sm font-semibold",
-                completedQuestion?.selected.text === option.text &&
-                  option.correct === "true"
-                  ? "bg-[#9BD4B6] text-[#FFF]"
-                  : completedQuestion?.selected.text === option.text &&
-                    option.correct === "false"
-                  ? "bg-[#F1B1A7] text-[#FFF]"
+                "flex relative items-center gap-2 p-2 rounded-lg border-2 font-medium text-sm leading-5 border-[#DAE7E7] text-[#5B8989] bg-[#F9FBFB] cursor-pointer transition-all",
+                showCorrect
+                  ? "bg-[#70C29C] text-[#FFF]"
+                  : showIncorrect
+                  ? "bg-[#E88272] text-[#FFF]"
+                  : isSelected
+                  ? "bg-gray-200"
                   : ""
               )}
             >
-              {option.correct === "true" &&
-              completedQuestion?.selected.text === option.text ? (
-                <DoneOutlinedIcon fontSize="small" />
-              ) : option.correct === "false" &&
-                completedQuestion?.selected.text === option.text ? (
-                <CloseOutlinedIcon fontSize="small" />
-              ) : (
-                alphabet[i]
-              )}
-            </div>
-            <p className="text-sm">{option.text}</p>
-            {completedQuestion?.selected.text === option.text &&
-              option.correct === "false" && (
+              <div
+                className={cn(
+                  "rounded-full bg-[#E6EFEF] w-6 h-6 flex items-center justify-center text-sm font-semibold",
+                  showCorrect
+                    ? "bg-[#9BD4B6] text-[#FFF]"
+                    : showIncorrect
+                    ? "bg-[#F1B1A7] text-[#FFF]"
+                    : ""
+                )}
+              >
+                {showCorrect ? (
+                  <DoneOutlinedIcon fontSize="small" />
+                ) : showIncorrect ? (
+                  <CloseOutlinedIcon fontSize="small" />
+                ) : (
+                  alphabet[i]
+                )}
+              </div>
+              <p className="text-sm">{option.text}</p>
+              {showIncorrect && (
                 <ExplainationPopover question={question} answer={answer} />
               )}
-          </button>
-        ))}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

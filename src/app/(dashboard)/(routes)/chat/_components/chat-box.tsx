@@ -17,7 +17,11 @@ import { Input } from "@/components/ui/input";
 import ion_send from "@/assets/Images/ion_send.png";
 import Image from "next/image";
 import QuizScore from "./quiz-score-diloag";
-import { EndChatMessage, InitialChatMessage } from "./chat-messages";
+import {
+  EndChatMessage,
+  InitialChatMessage,
+  TopicMessage,
+} from "./chat-messages";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -29,6 +33,7 @@ import {
   storeUserSubmission,
   updateQuizStats,
 } from "@/actions/math";
+import { getQuizStats } from "@/app/supabase-client-provider";
 
 type SubmissionType = {
   questionId: string;
@@ -45,6 +50,7 @@ type ChatProps = {
     id: string;
   };
   numberOfCompletedQuizData: any;
+  assignStatus: boolean;
 };
 
 export default function Chat({
@@ -52,6 +58,7 @@ export default function Chat({
   quizId,
   user,
   numberOfCompletedQuizData,
+  assignStatus,
 }: ChatProps) {
   const bottom = useRef<HTMLDivElement>(null);
   const [questionIndex, setQuestionIndex] = useState(
@@ -62,34 +69,24 @@ export default function Chat({
     quizData?.submissions || []
   );
   const [quizScore, showQuizScore] = useState(false);
-  const [start, setStart] = useState(!!quizData.submissions?.length);
+  const [started, setStart] = useState(quizData.start);
   const [userInput, setUserInput] = useState("");
   const [isMounted, setIsMounted] = useState(false);
   const [loader, setLoader] = useState<boolean>(false);
   const [currentSubmission, setCurrentSubmission] =
     useState<SubmissionType | null>(null);
+  const [score, setScore] = useState(0);
+  const [quizTopic, setQuizTopic] = useState<string | null>(quizData.topic);
 
   const router = useRouter();
 
-  const { questions: questionList, complete: isComplete } = quizData;
+  const { questions: qList, complete: isComplete } = quizData;
+  const [questionList, setQuestionList] = useState<any>(qList);
 
   const startNewQuiz = async () => {
     setLoader(true);
 
-    const { questions: QuestionLists, topics } = await getMathQuestions(
-      user.grade,
-      user.id
-    );
-    if (QuestionLists.length === 0) {
-      return;
-    }
-
-    const data = await createMathQuiz(
-      user.id,
-      QuestionLists,
-      topics,
-      user.grade
-    );
+    const data = await createMathQuiz(user.id, user.grade);
     if (!data || !data.length) {
       setLoader(false);
       return;
@@ -100,6 +97,7 @@ export default function Chat({
 
   // Get the current question
   const currentQuestion = useMemo(() => {
+    if (!questionList) return null;
     return questionList[questionIndex];
   }, [questionIndex, questionList]);
 
@@ -115,13 +113,19 @@ export default function Chat({
     bottom.current?.scrollIntoView({ behavior: "smooth" });
   }, [bottom.current, currentQuestion, submissions, hasEnded]);
 
-  // End the quiz
-  const endGame = async () => {
-    // Update the quiz stats
-    const { success } = await updateQuizStats(quizId, user.id);
-    if (!success) {
-      toast({ title: "Something went wrong!", duration: 3000 });
-    }
+  const checkScore = async () => {
+    const quiz_stats = await getQuizStats(quizId);
+
+    let totalCorrect = quiz_stats.submissions?.reduce(
+      (acc: any, question: any) => {
+        if (question.isCorrect) {
+          return acc + 1;
+        }
+        return acc;
+      },
+      0
+    );
+    setScore(totalCorrect);
   };
 
   // Check if the selected answer is correct
@@ -139,7 +143,7 @@ export default function Chat({
           user.id,
           currentSubmission.questionId,
           quizData.id,
-          quizData.multiple_topics,
+          quizData.topic,
           user.grade
         );
       }
@@ -157,7 +161,7 @@ export default function Chat({
       const isCorrect = checkAnswer(index);
 
       setCurrentSubmission({
-        questionId: currentQuestion?.uuid,
+        questionId: currentQuestion?.uuid!,
         selected: options[index!],
         isCorrect,
       });
@@ -180,6 +184,7 @@ export default function Chat({
 
   // Check if all questions have been answered
   const allQuestionsAnswered = useMemo(() => {
+    if (!questionList) return false;
     return submissions.length === questionList.length;
   }, [submissions, questionList]);
 
@@ -208,7 +213,7 @@ export default function Chat({
       setUserInput("");
     } else {
       // Check if the user input is in the options text
-      const optionTexts = options.map((option) =>
+      const optionTexts = options.map((option: any) =>
         option.text.toLowerCase().trim()
       );
       const index = optionTexts.indexOf(optimizedAnswer);
@@ -221,10 +226,19 @@ export default function Chat({
     }
   };
 
+  const endGame = async () => {
+    // Update the quiz stats
+    await checkScore();
+    const { success } = await updateQuizStats(quizId, user.id);
+    if (!success) {
+      toast({ title: "Something went wrong!", duration: 3000 });
+    }
+  };
+
   useEffect(() => {
     // If the quiz is complete, redirect to the home page
     if (isComplete) {
-      router.push("/");
+      // router.push("/");
     }
     setIsMounted(true);
   }, []);
@@ -236,26 +250,46 @@ export default function Chat({
       <div className="flex-1 px-2 md:px-8">
         <div className="pb-4 max-w-4xl mx-auto h-full w-full">
           <Toaster />
-          <InitialChatMessage setStart={setStart} user={user} />
-          {start &&
-            questionList.slice(0, questionIndex + 1).map((question, i) => (
-              <div className="grid" key={i}>
-                <MCQBox
-                  currentQuestion={question}
-                  handleNext={handleNext}
-                  submissions={submissions}
-                  questionIndex={i + 1}
-                  user={user}
-                />
-                <SelectedAnswer submissions={submissions} index={i} />
-              </div>
-            ))}
+          <InitialChatMessage
+            setStart={setStart}
+            started={started}
+            user={user}
+            setQuestionList={setQuestionList}
+            quizId={quizId}
+            setQuizTopic={setQuizTopic}
+            assignStatus={assignStatus}
+          />
+          {quizTopic && (
+            <TopicMessage
+              topic={quizTopic}
+              questionsLength={questionList.length}
+            />
+          )}
+          {started &&
+            questionList
+              ?.slice(0, questionIndex + 1)
+              .map((question: any, i: number) => (
+                <div className="grid" key={i}>
+                  <MCQBox
+                    currentQuestion={question}
+                    handleNext={handleNext}
+                    submissions={submissions}
+                    questionIndex={i + 1}
+                    user={user}
+                    hasEnded={hasEnded}
+                    explanation={question.explanation}
+                  />
+                  <SelectedAnswer submissions={submissions} index={i} />
+                </div>
+              ))}
           {hasEnded && (
             <EndChatMessage
               showQuizScore={showQuizScore}
               user={user}
               startNewQuiz={startNewQuiz}
               loader={loader}
+              score={score}
+              questionsLength={questionList.length}
             />
           )}
         </div>

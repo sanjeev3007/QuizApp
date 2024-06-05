@@ -1,26 +1,17 @@
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 // create quiz
-export async function createMathQuiz(
-  userid: string,
-  questions: any,
-  topics: string[],
-  grade: number
-) {
+export async function createMathQuiz(userid: string, grade: number) {
   const supabase = createClientComponentClient();
 
   const metadata = {
     grade: grade,
-    topics: topics,
   };
 
   const { data, error } = await supabase
     .from("quiz")
     .insert({
       userid: userid,
-      questions: questions,
-      start: true,
-      multiple_topics: topics,
       metadata: metadata,
     })
     .select();
@@ -33,60 +24,120 @@ export async function createMathQuiz(
   return data;
 }
 
-// generating questions// generating questions
-export const getMathQuestions = async (user_grade: number, userId: string) => {
-  let grade = user_grade;
-  if (grade > 8) grade = 8;
+export async function updateMathQuiz(
+  userid: string,
+  questions: Array<any>,
+  topic: string,
+  quizId: string,
+  grade: number,
+  assignedData?: any
+) {
+  const supabase = createClientComponentClient();
 
-  let db_with_grade = `fetch_rows_db_grade${grade}_math`;
+  let metadata;
+  let isAssigned = !!assignedData?.topic;
 
-  // generate two random topics
-  const topics = await generateRandomTopics(grade);
+  if (assignedData) {
+    metadata = {
+      grade: assignedData?.currentGrade || grade,
+      topic: topic,
+      assignedGrade: assignedData?.topic?.grade,
+    };
+  } else {
+    metadata = {
+      grade: grade,
+      topic: topic,
+    };
+  }
 
-  // fetching stored correct submissions
-  const questionIds = await fetchCorrectSubmissions(userId, topics);
+  const { data, error } = await supabase
+    .from("quiz")
+    .update({
+      questions: questions,
+      start: true,
+      topic: topic,
+      metadata: metadata,
+      assigned: isAssigned,
+    })
+    .eq("id", quizId)
+    .eq("userid", userid)
+    .select();
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  return data;
+}
+
+export const getMathQuestions = async (
+  user_grade: number,
+  userId: string,
+  selectedTopic?: any
+) => {
+  let grade;
+
+  let db_name = "db_math_rpc";
+  let topic;
+
+  if (!!selectedTopic?.topic) {
+    topic = selectedTopic.topic?.topic;
+    grade = selectedTopic.topic?.grade;
+  } else {
+    grade = user_grade;
+    if (grade > 8) grade = 8;
+    topic = await generateRandomTopic(grade);
+  }
+
+  const questionIds = await fetchCorrectSubmissions(userId, topic);
 
   const level1 = await fetchQuestionsByLevel(
     "easy",
     4,
-    topics,
+    topic,
     questionIds,
-    db_with_grade
+    db_name,
+    grade
   );
   const level2 = await fetchQuestionsByLevel(
     "medium",
     4,
-    topics,
+    topic,
     questionIds,
-    db_with_grade
+    db_name,
+    grade
   );
   const level3 = await fetchQuestionsByLevel(
     "hard",
     2,
-    topics,
+    topic,
     questionIds,
-    db_with_grade
+    db_name,
+    grade
   );
 
   const questions = [...level1, ...level2, ...level3];
-  return { questions, topics: topics };
+  return { questions, topic };
 };
 
 // fetching question function
 const fetchQuestionsByLevel = async (
   level: "easy" | "medium" | "hard",
   limit: number,
-  topics: string[],
+  topic: string,
   questionIds: string[],
-  db_url: string
+  db_name: string,
+  grade: number
 ) => {
   const supabase = createClientComponentClient();
 
-  const { data, error } = await supabase.rpc(db_url, {
+  const { data, error } = await supabase.rpc(db_name, {
     level: level,
     rows_limit: limit,
-    topics: topics,
+    subject_topic: topic,
     uuids: questionIds,
+    selected_grade: grade,
   });
 
   if (error) {
@@ -97,7 +148,7 @@ const fetchQuestionsByLevel = async (
 };
 
 //   generating random topics
-const generateRandomTopics = async (grade: number) => {
+const generateRandomTopic = async (grade: number) => {
   const supabase = createClientComponentClient();
 
   const { data, error } = await supabase
@@ -110,17 +161,9 @@ const generateRandomTopics = async (grade: number) => {
 
   const allTopics = Array.from(new Set(data?.map((topic) => topic.topic)));
 
-  const randomTopics = [] as string[];
-  for (let i = 0; i < 2; i++) {
-    const randomTopic = allTopics[Math.floor(Math.random() * allTopics.length)];
-    if (randomTopics.includes(randomTopic)) {
-      i--;
-      continue;
-    }
-    randomTopics.push(randomTopic);
-  }
+  const randomTopic = allTopics[Math.floor(Math.random() * allTopics.length)];
 
-  return randomTopics;
+  return randomTopic;
 };
 
 // update quiz stats to complete
@@ -145,7 +188,7 @@ export const updateQuizStats = async (quizId: string, userId: string) => {
 // fetching correct submissions
 export const fetchCorrectSubmissions = async (
   userId: string,
-  topics: string[]
+  topic: string
 ) => {
   const supabase = createClientComponentClient();
 
@@ -153,7 +196,7 @@ export const fetchCorrectSubmissions = async (
     .from("correct_submissions")
     .select("questionid")
     .eq("userid", userId)
-    .in("topic", topics);
+    .eq("topic", topic);
 
   if (!data) {
     return [];
@@ -191,7 +234,7 @@ export async function storeCorrectSubmission(
   userId: string,
   questionId: string,
   quizId: number,
-  multiple_topics: string[],
+  topic: string,
   grade: number
 ) {
   const supabase = createClientComponentClient();
@@ -200,7 +243,7 @@ export async function storeCorrectSubmission(
     userid: userId,
     questionid: questionId,
     quizid: quizId,
-    multiple_topics: multiple_topics,
+    topic: topic,
     grade: grade,
   });
 

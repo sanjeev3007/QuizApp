@@ -39,3 +39,17 @@ export const formatTimeDelta = (delta: number) => {
     return `${seconds}s`;
   }
 };
+
+export async function getAssignStatus(userid: string) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_SANDBOX_API}/noah/topic/assigned/status?studentId=${userid}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const data = await res.json();
+  return data.exists;
+}
