@@ -17,6 +17,7 @@
     "@langchain/openai": "^0.0.28",
     "@mui/icons-material": "^5.15.10",
     "@mui/material": "^5.15.10",
+    "@mui/styles": "^5.15.19",
     "@newrelic/next": "^0.8.0",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
