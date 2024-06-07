@@ -21,11 +21,7 @@ import {
   getGKQuestions,
   getInCompletedGKQuiz,
 } from "@/actions/gk-quiz";
-import {
-  createMathQuiz,
-  getInCompletedMathQuiz,
-  getMathQuestions,
-} from "@/actions/math";
+import { createMathQuiz, getInCompletedMathQuiz } from "@/actions/math";
 
 type Props = {
   type: string;
@@ -124,28 +120,6 @@ const Card = ({
       generateGKQuiz();
     }
   };
-
-  useEffect(() => {
-    (async () => {
-      // await getNumberOfCompletedQuizes();
-    })();
-  }, [isActive]);
-
-  // const getNumberOfCompletedQuizes = async () => {
-  //   if (type === "chat") return;
-  //   if (type === "math") {
-  //     const completedMathQuiz = await getNumberOfCompletedMathQuiz(user_id!);
-  //     setIsActive(completedMathQuiz.numberOfCompletedQuiz > 0);
-  //     setQuizData(completedMathQuiz);
-  //     return;
-  //   }
-  //   if (type === "gk") {
-  //     const completedGKQuiz = await getNumberOfCompletedGKQuiz(user_id!);
-  //     setIsActive(completedGKQuiz.numberOfCompletedQuiz > 0);
-  //     setQuizData(completedGKQuiz);
-  //     return;
-  //   }
-  // };
 
   return (
     <div className="bg-[#F0F6FA] w-full py-4 px-6 flex flex-col justify-center content-center items-center rounded-lg">

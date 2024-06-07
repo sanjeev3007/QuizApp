@@ -9,7 +9,7 @@ export async function createMathQuiz(userid: string, grade: number) {
   };
 
   const { data, error } = await supabase
-    .from("quiz")
+    .from("test_quiz")
     .insert({
       userid: userid,
       metadata: metadata,
@@ -24,14 +24,21 @@ export async function createMathQuiz(userid: string, grade: number) {
   return data;
 }
 
-export async function updateMathQuiz(
-  userid: string,
-  questions: Array<any>,
-  topic: string,
-  quizId: string,
-  grade: number,
-  assignedData?: any
-) {
+export async function updateMathQuiz({
+  userid,
+  questions,
+  topic_id,
+  quiz_id,
+  grade,
+  assignedData,
+}: {
+  userid: string;
+  questions: Array<any>;
+  topic_id: number;
+  quiz_id: string;
+  grade: number;
+  assignedData?: any;
+}) {
   const supabase = createClientComponentClient();
 
   let metadata;
@@ -40,26 +47,26 @@ export async function updateMathQuiz(
   if (assignedData) {
     metadata = {
       grade: assignedData?.currentGrade || grade,
-      topic: topic,
+      topic: topic_id,
       assignedGrade: assignedData?.topic?.grade,
     };
   } else {
     metadata = {
       grade: grade,
-      topic: topic,
+      topic: topic_id,
     };
   }
 
   const { data, error } = await supabase
-    .from("quiz")
+    .from("test_quiz")
     .update({
-      questions: questions,
+      questions,
       start: true,
-      topic: topic,
-      metadata: metadata,
+      topic_id,
+      metadata,
       assigned: isAssigned,
     })
-    .eq("id", quizId)
+    .eq("id", quiz_id)
     .eq("userid", userid)
     .select();
 
@@ -77,48 +84,44 @@ export const getMathQuestions = async (
   selectedTopic?: any
 ) => {
   let grade;
-
-  let db_name = "db_math_rpc";
-  let topic;
+  let topicData;
 
   if (!!selectedTopic?.topic) {
-    topic = selectedTopic.topic?.topic;
+    topicData = await getIdFromTopic(selectedTopic.topic?.topic);
+    console.log(topicData);
     grade = selectedTopic.topic?.grade;
   } else {
     grade = user_grade;
     if (grade > 8) grade = 8;
-    topic = await generateRandomTopic(grade);
+    topicData = await generateRandomTopic(grade);
   }
 
-  const questionIds = await fetchCorrectSubmissions(userId, topic);
+  const questionIds = await fetchCorrectSubmissions(userId, topicData?.id);
 
   const level1 = await fetchQuestionsByLevel(
     "easy",
     4,
-    topic,
+    topicData?.topic,
     questionIds,
-    db_name,
     grade
   );
   const level2 = await fetchQuestionsByLevel(
     "medium",
     4,
-    topic,
+    topicData?.topic,
     questionIds,
-    db_name,
     grade
   );
   const level3 = await fetchQuestionsByLevel(
     "hard",
     2,
-    topic,
+    topicData?.topic,
     questionIds,
-    db_name,
     grade
   );
 
   const questions = [...level1, ...level2, ...level3];
-  return { questions, topic };
+  return { questions, topicName: topicData?.topic, topicId: topicData?.id };
 };
 
 // fetching question function
@@ -127,12 +130,11 @@ const fetchQuestionsByLevel = async (
   limit: number,
   topic: string,
   questionIds: string[],
-  db_name: string,
   grade: number
 ) => {
   const supabase = createClientComponentClient();
 
-  const { data, error } = await supabase.rpc(db_name, {
+  const { data, error } = await supabase.rpc("test_db_math_rpc", {
     level: level,
     rows_limit: limit,
     subject_topic: topic,
@@ -147,19 +149,47 @@ const fetchQuestionsByLevel = async (
   return data;
 };
 
-//   generating random topics
-const generateRandomTopic = async (grade: number) => {
+const getIdFromTopic = async (topic: string) => {
   const supabase = createClientComponentClient();
 
   const { data, error } = await supabase
-    .from(`db_grade${grade}_math`)
-    .select("topic");
+    .from("topic")
+    .select("id, topic_name")
+    .eq("topic_name", topic)
+    .limit(1)
+    .single();
 
   if (error) {
     console.log(error);
   }
 
-  const allTopics = Array.from(new Set(data?.map((topic) => topic.topic)));
+  if (!data) return null;
+  return {
+    id: data.id,
+    topic: data.topic_name,
+  };
+};
+
+//   generating random topics
+const generateRandomTopic = async (grade: number) => {
+  const supabase = createClientComponentClient();
+
+  const { data, error } = await supabase
+    .from(`topic`)
+    .select("id, topic_name")
+    .eq("grade", grade);
+
+  if (error) {
+    console.log(error);
+  }
+
+  const allTopics = Array.from(
+    new Set(
+      data?.map((topic) => {
+        return { id: topic.id, topic: topic.topic_name };
+      })
+    )
+  );
 
   const randomTopic = allTopics[Math.floor(Math.random() * allTopics.length)];
 
@@ -170,7 +200,7 @@ const generateRandomTopic = async (grade: number) => {
 export const updateQuizStats = async (quizId: string, userId: string) => {
   const supabase = createClientComponentClient();
   const { error } = await supabase
-    .from("quiz")
+    .from("test_quiz")
     .update({
       complete: true,
     })
@@ -187,27 +217,59 @@ export const updateQuizStats = async (quizId: string, userId: string) => {
 // ---------- submissions actions ------------
 // fetching correct submissions
 export const fetchCorrectSubmissions = async (
-  userId: string,
-  topic: string
+  user_id: string,
+  topic_id: string
 ) => {
   const supabase = createClientComponentClient();
 
   const { data } = await supabase
-    .from("correct_submissions")
-    .select("questionid")
-    .eq("userid", userId)
-    .eq("topic", topic);
+    .from("test_correct_submissions")
+    .select("question_id")
+    .eq("user_id", user_id)
+    .eq("topic_id", topic_id);
 
   if (!data) {
     return [];
   }
 
   const formattedData = data.map((quiz) => {
-    return quiz.questionid;
+    return quiz.question_id;
   });
 
   return formattedData;
 };
+
+// storing correct submission
+export async function storeCorrectSubmission({
+  grade,
+  question_id,
+  quiz_id,
+  topic_id,
+  user_id,
+}: {
+  user_id: string;
+  question_id: string;
+  quiz_id: number;
+  topic_id: number;
+  grade: number;
+}) {
+  const supabase = createClientComponentClient();
+
+  const { error } = await supabase.from("test_correct_submissions").insert({
+    user_id,
+    question_id,
+    quiz_id,
+    topic_id,
+    grade,
+  });
+
+  if (error) {
+    console.error("store Correct Submission error", error);
+    return { success: false };
+  }
+
+  return { success: true };
+}
 
 // store user submission
 export async function storeUserSubmission(
@@ -218,7 +280,7 @@ export async function storeUserSubmission(
   const supabase = createClientComponentClient();
 
   const { data } = await supabase
-    .from("quiz")
+    .from("test_quiz")
     .update({
       submissions: submission,
     })
@@ -227,32 +289,6 @@ export async function storeUserSubmission(
     .select();
 
   return { success: true, data };
-}
-
-// storing correct submission
-export async function storeCorrectSubmission(
-  userId: string,
-  questionId: string,
-  quizId: number,
-  topic: string,
-  grade: number
-) {
-  const supabase = createClientComponentClient();
-
-  const { error } = await supabase.from("correct_submissions").insert({
-    userid: userId,
-    questionid: questionId,
-    quizid: quizId,
-    topic: topic,
-    grade: grade,
-  });
-
-  if (error) {
-    console.error("store Correct Submission error", error);
-    return { success: false };
-  }
-
-  return { success: true };
 }
 
 // feedback quiz
@@ -285,7 +321,7 @@ export const feedbackQuiz = async ({
 export const getNumberOfCompletedMathQuiz = async (userid: string) => {
   const supabase = createClientComponentClient();
   const { data: allQuizes, error } = await supabase
-    .from("quiz")
+    .from("test_quiz")
     .select("questions, submissions")
     .eq("userid", userid)
     .eq("complete", "True");
@@ -311,7 +347,7 @@ export async function getInCompletedMathQuiz(userId: string) {
   const supabase = createClientComponentClient();
   const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000); // Calculate the timestamp for 2 hours ago
   const { data, error } = await supabase
-    .from("quiz")
+    .from("test_quiz")
     .select("*")
     .eq("userid", userId)
     .eq("start", true)
@@ -322,4 +358,18 @@ export async function getInCompletedMathQuiz(userId: string) {
     console.error("incomplete quiz error", error);
   }
   return data;
+}
+
+export async function getTopicNameFromDB(topic_id: number) {
+  const supabase = createClientComponentClient();
+  const { data, error } = await supabase
+    .from("topic")
+    .select("topic_name")
+    .eq("id", topic_id)
+    .single();
+  if (error) {
+    console.error("get topic name error", error);
+  }
+  console.log(data);
+  return data?.topic_name;
 }

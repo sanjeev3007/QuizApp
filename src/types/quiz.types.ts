@@ -1,9 +1,8 @@
 export type QuizDataType = {
   id: number;
   userid: string;
-  topic: string;
+  topic_id: number;
   questions: {
-    id: number;
     uuid: string;
     grade: string;
     topic: string;
@@ -17,12 +16,7 @@ export type QuizDataType = {
       learning_objective: string;
     };
     question: string;
-    created_at: string;
     explanation: string;
-    modified_at: string;
-    blooms_level: string;
-    difficulty_level: string;
-    difficulty_rating: number;
   }[];
   submissions: {
     selected: {
@@ -33,14 +27,46 @@ export type QuizDataType = {
     questionId: string;
   }[];
   created_at: Date;
-  timestarted: Date;
-  timeended: Date;
   start: boolean;
   complete: boolean;
-  multiple_topics: Array<string>;
 };
 
 type Option = {
   text: string;
   correct: string;
+};
+
+export type TopicTable = {
+  id: number;
+  topic_name: string;
+  subject_id: string;
+  grade: string;
+  type: string;
+  created_at: Date;
+  updated_at: Date;
+};
+
+export type SubjectTable = {
+  id: number;
+  subject_name: string;
+  created_at: Date;
+  updated_at: Date;
+};
+
+export type CorrectSubmissions = {
+  id: string;
+  user_id: string;
+  question_id: string;
+  quiz_id: number;
+  topic_id: string;
+  grade: number;
+  created_at: Date;
+};
+
+export type TopicAssignedToQuiz = {
+  id: number;
+  quiz_id: string;
+  topic_id: number;
+  created_at: Date;
+  updated_at: Date;
 };

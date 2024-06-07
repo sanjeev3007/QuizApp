@@ -20,16 +20,7 @@ import redirect_arrow from "@/assets/Images/redirect_arrow.png";
 import levelCup from "@/assets/Images/levelCup.png";
 import levelCupStraight from "@/assets/Images/levelCupStraight.png";
 import podium from "@/assets/Images/podium.png";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import CircularProgress from "@mui/material/CircularProgress";
 import "@/components/home-page.css";
-import { Inter } from "next/font/google";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
-import { getQuestions } from "@/app/supabase-client-provider";
 
 export const quizCreationSchema = z.object({
   topic: z
@@ -46,20 +37,10 @@ export const quizCreationSchema = z.object({
 });
 
 type Props = {
-  inCompleteQuiz: any;
-  userId: string;
-  userName: string;
-  grade: number;
   quizData: any;
 };
 
-const HomePage = ({
-  inCompleteQuiz,
-  userId,
-  userName,
-  grade,
-  quizData,
-}: Props) => {
+const HomePage = ({ quizData }: Props) => {
   const router = useRouter();
   const theme = useTheme();
 
@@ -67,55 +48,9 @@ const HomePage = ({
 
   const mobileScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [isActive] = useState<boolean>(isActiveJourney);
-  const [loader, setLoader] = useState<boolean>(false);
-  const [insightLoader, setInsightLoader] = useState<boolean>(false);
   const level = quizData?.level;
   const levelPercent =
     (quizData?.numberOfCompletedQuiz / quizData?.totalQuiz) * 100;
-
-  const onSubmit = async () => {
-    try {
-      setLoader(true);
-
-      if (!!inCompleteQuiz) {
-        router.push(`/chat/${inCompleteQuiz.id}`);
-        return;
-      }
-
-      const { questions, topics } = await getQuestions(grade, userId);
-      if (questions.length === 0) {
-        return;
-      }
-
-      const metadata = {
-        grade: grade,
-        topics: topics,
-      };
-      const supabase = createClientComponentClient();
-      const { data: assessment_data, error } = await supabase
-        .from("quiz")
-        .insert({
-          userid: userId,
-          multiple_topics: topics,
-          questions: questions,
-          start: true,
-          metadata: metadata,
-        })
-        .select();
-
-      if (error) {
-        console.error(error);
-      }
-      if (assessment_data && assessment_data.length > 0) {
-        router.push(`/chat/${assessment_data[0].id}`);
-      }
-    } catch (error) {
-      console.log(error);
-      return;
-    } finally {
-      setLoader(false);
-    }
-  };
 
   const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
     height: 15,
@@ -227,38 +162,21 @@ const HomePage = ({
                   "w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-semibold text-[#FFF] hover:bg-[#E98451]",
                   mobileScreen && "px-5 py-6 w-[50%]"
                 )}
-                // onClick={() => onSubmit()}
                 onClick={() => router.push("/quizes")}
               >
                 Continue
-                {loader ? (
-                  <CircularProgress
-                    color="inherit"
-                    size={25}
-                    className="ml-2"
-                  />
-                ) : (
-                  <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
-                )}
+                <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
               </Button>
             ) : (
               <Button
                 className={cn(
                   "w-max px-11 mt-[2rem] py-6 bg-[#E98451] text-lg font-semibold text-[#FFF] hover:bg-[#E98451]",
-                  mobileScreen && "fixed bottom-3 w-[90%]" // Conditionally apply 'fixed bottom-0' for mobile screens
+                  mobileScreen && "fixed bottom-3 w-[90%]"
                 )}
                 onClick={() => router.push("/quizes")}
               >
                 Get Started
-                {loader ? (
-                  <CircularProgress
-                    color="inherit"
-                    size={25}
-                    className="ml-2"
-                  />
-                ) : (
-                  <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
-                )}
+                <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
               </Button>
             )}
             {isActive && (
@@ -276,14 +194,8 @@ const HomePage = ({
                     : ""
                 }
               >
-                View Insights{" "}
-                {insightLoader ? (
-                  <CircularProgress
-                    color="inherit"
-                    size={25}
-                    className="ml-2"
-                  />
-                ) : quizData?.numberOfCompletedQuiz > 9 ? (
+                View Insights
+                {quizData?.numberOfCompletedQuiz > 9 ? (
                   <Image src={redirect_arrow} alt="redirect" className="ml-3" />
                 ) : (
                   <LockOutlinedIcon className="ml-[0.5rem]" fontSize="small" />

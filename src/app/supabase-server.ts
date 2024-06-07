@@ -22,7 +22,7 @@ export const getQuizById = async (id: any) => {
   const supabase = createServerSupabaseClient();
   try {
     let { data, error } = await supabase
-      .from("quiz")
+      .from("test_quiz")
       .select("*")
       .eq("id", id)
       .limit(1);
@@ -41,7 +41,7 @@ export const getQuizById = async (id: any) => {
 export const getQuizStats = async (quizId: string) => {
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
-    .from("quiz")
+    .from("test_quiz")
     .select("*")
     .eq("id", quizId)
     .single();
@@ -54,7 +54,7 @@ export const getQuizStats = async (quizId: string) => {
 export const getNumberOfCompletedQuiz = async (userid: string) => {
   const supabase = createServerSupabaseClient();
   const { data: allQuizes, error } = await supabase
-    .from("quiz")
+    .from("test_quiz")
     .select("questions, submissions")
     .eq("userid", userid)
     .eq("complete", "True");
@@ -186,7 +186,7 @@ const pushFinalScore = (subtopics: any) => {
 export const getInsight = async (userid: string, grade: number) => {
   const supabase = createServerSupabaseClient();
   const { data: allQuizes, error } = await supabase
-    .from("quiz")
+    .from("test_quiz")
     .select()
     .eq("userid", userid)
     .eq("complete", true);
@@ -239,7 +239,7 @@ const getLast10Quizes = async ({
 }) => {
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
-    .from("quiz")
+    .from("test_quiz")
     .select("*")
     .eq("complete", "true")
     .eq("userid", userid)
@@ -280,7 +280,7 @@ const getAccuracy = (completedQuizes: any[]) => {
 export const getDashboard = async (userid: string) => {
   const supabase = createServerSupabaseClient();
   // const { data: allQuizes, error } = await supabase
-  //   .from("quiz")
+  //   .from("test_quiz")
   //   .select("questions", "submissions")
   //   .eq("userid", userid)
   //   .eq("complete", "true")
@@ -308,7 +308,7 @@ export async function getInCompletedQuiz(userId: string) {
   const supabase = createServerSupabaseClient();
   const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000); // Calculate the timestamp for 2 hours ago
   const { data, error } = await supabase
-    .from("quiz")
+    .from("test_quiz")
     .select("*")
     .eq("userid", userId)
     .eq("start", true)

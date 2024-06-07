@@ -3,7 +3,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 export const getQuizStats = async (quizId: string) => {
   const supabase = createClientComponentClient();
   const { data, error } = await supabase
-    .from("quiz")
+    .from("test_quiz")
     .select("*")
     .eq("id", quizId)
     .single();
@@ -16,7 +16,7 @@ export const getQuizStats = async (quizId: string) => {
 export const updateQuizStats = async (quizId: string, userId: string) => {
   const supabase = createClientComponentClient();
   const { error } = await supabase
-    .from("quiz")
+    .from("test_quiz")
     .update({
       complete: true,
     })
@@ -60,7 +60,7 @@ export async function getInCompletedQuiz(userId: string) {
   const supabase = createClientComponentClient();
   const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
   const { data, error } = await supabase
-    .from("quiz")
+    .from("test_quiz")
     .select("*")
     .eq("random_user_id", userId)
     .eq("start", true)
@@ -81,7 +81,7 @@ export async function storeUserSubmission(
   const supabase = createClientComponentClient();
 
   const { data } = await supabase
-    .from("quiz")
+    .from("test_quiz")
     .update({
       submissions: submission,
     })

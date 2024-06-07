@@ -56,11 +56,20 @@ export function InitialChatMessage({
   const quizOnRandomTopic = async () => {
     try {
       setLoading(true);
-      const { questions, topic } = await getMathQuestions(user.grade!, user.id);
+      const { questions, topicName, topicId } = await getMathQuestions(
+        user.grade!,
+        user.id
+      );
       setQuestionList(questions);
-      setQuizTopic(topic);
+      setQuizTopic(topicName);
       setStart(true);
-      await updateMathQuiz(user.id, questions, topic, quizId, user.grade!);
+      await updateMathQuiz({
+        userid: user.id,
+        questions,
+        topic_id: topicId,
+        quiz_id: quizId,
+        grade: user.grade!,
+      });
     } catch (error) {
       console.log(error);
     } finally {
@@ -73,22 +82,22 @@ export function InitialChatMessage({
       setLoading(true);
       const assignedData = await getTopicByMentor();
 
-      const { questions, topic } = await getMathQuestions(
+      const { questions, topicName, topicId } = await getMathQuestions(
         user.grade!,
         user.id,
         assignedData
       );
       setQuestionList(questions);
-      setQuizTopic(topic);
+      setQuizTopic(topicName);
       setStart(true);
-      await updateMathQuiz(
-        user.id,
+      await updateMathQuiz({
+        userid: user.id,
         questions,
-        topic,
-        quizId,
-        user.grade!,
-        assignedData
-      );
+        topic_id: topicId,
+        quiz_id: quizId,
+        grade: user.grade!,
+        assignedData,
+      });
     } catch (error) {
       console.log(error);
     } finally {

@@ -29,6 +29,7 @@ import { QuizDataType } from "@/types/quiz.types";
 import {
   createMathQuiz,
   getMathQuestions,
+  getTopicNameFromDB,
   storeCorrectSubmission,
   storeUserSubmission,
   updateQuizStats,
@@ -76,7 +77,7 @@ export default function Chat({
   const [currentSubmission, setCurrentSubmission] =
     useState<SubmissionType | null>(null);
   const [score, setScore] = useState(0);
-  const [quizTopic, setQuizTopic] = useState<string | null>(quizData.topic);
+  const [quizTopic, setQuizTopic] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -139,13 +140,13 @@ export default function Chat({
     (async () => {
       await storeUserSubmission(quizId, user.id, submissions);
       if (currentSubmission?.isCorrect) {
-        await storeCorrectSubmission(
-          user.id,
-          currentSubmission.questionId,
-          quizData.id,
-          quizData.topic,
-          user.grade
-        );
+        await storeCorrectSubmission({
+          grade: user.grade,
+          question_id: currentSubmission.questionId,
+          quiz_id: quizData.id,
+          topic_id: quizData.topic_id,
+          user_id: user.id,
+        });
       }
       router.refresh();
     })();
@@ -236,10 +237,12 @@ export default function Chat({
   };
 
   useEffect(() => {
-    // If the quiz is complete, redirect to the home page
-    if (isComplete) {
-      // router.push("/");
-    }
+    (async () => {
+      if (!quizData.topic_id) return;
+      const topicName = await getTopicNameFromDB(quizData.topic_id);
+      setQuizTopic(topicName);
+    })();
+
     setIsMounted(true);
   }, []);
 
