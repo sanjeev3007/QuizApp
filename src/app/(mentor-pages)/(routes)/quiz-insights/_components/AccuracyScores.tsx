@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@mui/styles";
 import { getAccuracyScores } from "@/lib/quiz-insights/apiCLient";
+import LoadingPage from "../Loader";
 
 const useStyles = makeStyles(() => ({
   conatiner: {
@@ -64,16 +65,22 @@ const useStyles = makeStyles(() => ({
     lineHeight: "16.94px",
   },
 }));
+interface Props {
+  mentorId: any; // Define the type of mentorId here
+  userId: any;
+}
 
-const AccuracyScores = ({ mentorId, userId }) => {
+const AccuracyScores = ({ mentorId, userId }: Props) => {
   const classes = useStyles();
   const [scoreDetails, setScoreDetails] = useState([]);
+  const [isScoreLoading, setIsScoreLoading] = useState(false);
 
   useEffect(() => {
+    setIsScoreLoading(true);
     const fetchData = async () => {
       try {
         const data = await getAccuracyScores(mentorId, userId);
-        console.log(data, "dataaa");
+        setIsScoreLoading(false);
         if (data && data?.response.length > 0) {
           setScoreDetails(data?.response);
         }
@@ -88,25 +95,29 @@ const AccuracyScores = ({ mentorId, userId }) => {
   return (
     <div className={classes.conatiner}>
       <div className={classes.title}>Accuracy Scores</div>
-      <div className={classes.scrollContainer}>
-        <div className={classes.scoresContainer}>
-          {scoreDetails &&
-            scoreDetails.length > 0 &&
-            scoreDetails.map((item, index) => {
-              return (
-                <div
-                  key={index}
-                  className={`${classes.scoreWrapper} ${
-                    index !== 0 && classes.addMargin
-                  }`}
-                >
-                  <div className={classes.quizName}>{item.topic}</div>
-                  <div className={classes.score}>{item.totalScore}</div>
-                </div>
-              );
-            })}
+      {isScoreLoading ? (
+        <LoadingPage />
+      ) : (
+        <div className={classes.scrollContainer}>
+          <div className={classes.scoresContainer}>
+            {scoreDetails &&
+              scoreDetails.length > 0 &&
+              scoreDetails.map((item: any, index: number) => {
+                return (
+                  <div
+                    key={index}
+                    className={`${classes.scoreWrapper} ${
+                      index !== 0 && classes.addMargin
+                    }`}
+                  >
+                    <div className={classes.quizName}>{item.topic}</div>
+                    <div className={classes.score}>{item.totalScore}</div>
+                  </div>
+                );
+              })}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

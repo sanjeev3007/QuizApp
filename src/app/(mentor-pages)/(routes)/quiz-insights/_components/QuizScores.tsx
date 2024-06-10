@@ -6,6 +6,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
+import LoadingPage from "../Loader";
 
 const useStyles = makeStyles(() => ({
   conatiner: {
@@ -25,10 +26,19 @@ const useStyles = makeStyles(() => ({
     fontSize: "16px",
     lineHeight: "18.71px",
     fontWeight: "600",
-    marginBottom: "20px",
   },
   icons: { fontSize: "18px" },
 }));
+
+interface Props {
+  quizScores: any;
+  currentPage: number;
+  onNextClick: any;
+  onPrevClick: any;
+  itemsPerPage: number;
+  totalCount: any;
+  isGraphLoading: any;
+}
 
 const QuizScores = ({
   quizScores,
@@ -37,7 +47,8 @@ const QuizScores = ({
   onPrevClick,
   itemsPerPage,
   totalCount,
-}) => {
+  isGraphLoading,
+}: Props) => {
   const classes = useStyles();
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const startIndex = currentPage * itemsPerPage;
@@ -45,7 +56,7 @@ const QuizScores = ({
 
   const maxBarHeight = 108;
   const minBarHeight = 20;
-  const maxValue = Math.max(...quizScores.map((item) => item.score));
+  const maxValue = Math.max(...quizScores.map((item: any) => item.score));
   const scalingFactor =
     maxValue === 0 ? 0 : (maxBarHeight - minBarHeight) / maxValue;
 
@@ -59,66 +70,75 @@ const QuizScores = ({
 
   return (
     <div className={classes.conatiner}>
-      <div className={classes.title}>Quiz Scores</div>
-      <div className={classes.quizScoreWrapper}>
-        <IconButton
-          aria-label="previous"
-          onClick={handlePrevClick}
-          disabled={currentPage === 1}
-        >
-          <ArrowBackIosNewIcon className={classes.icons} />
-        </IconButton>
-        <div className={styles["custom-bar-graph"]}>
-          {quizScores &&
-            quizScores.length > 0 &&
-            quizScores?.map((item, index) => (
-              <div className={classes.displayColumn}>
-                <div
-                  key={index}
-                  className={styles["bar"]}
-                  style={{
-                    height: `${
-                      item.score === 0
-                        ? minBarHeight
-                        : minBarHeight + item.score * scalingFactor
-                    }px`,
-                    background:
-                      item.score <= 2
-                        ? "#EB9284"
-                        : item.score <= 7
-                        ? "#FFA85D"
-                        : "#7EC8A6",
-                  }}
-                >
-                  <span
-                    className={styles["bar-value"]}
-                    style={{ color: "#FFF" }}
-                  >
-                    {item.score}
-                  </span>
-                </div>
-                <div
-                  style={{
-                    color: "#D0CBC8",
-                    maxWidth: "30px",
-                    overflowWrap: "break-word",
-                    textAlign: "center",
-                    fontSize: "12px",
-                  }}
-                >
-                  {`Quiz ${item.quizNo}`}
-                </div>
-              </div>
-            ))}
-        </div>
-        <IconButton
-          aria-label="next"
-          onClick={handleNextClick}
-          disabled={currentPage === totalPages - 1}
-        >
-          <ArrowForwardIosIcon className={classes.icons} />
-        </IconButton>
+      <div
+        className={classes.title}
+        style={{ marginBottom: !isGraphLoading ? "20px" : "0px" }}
+      >
+        Quiz Scores
       </div>
+      {isGraphLoading ? (
+        <LoadingPage />
+      ) : (
+        <div className={classes.quizScoreWrapper}>
+          <IconButton
+            aria-label="previous"
+            onClick={handlePrevClick}
+            disabled={currentPage === 1}
+          >
+            <ArrowBackIosNewIcon className={classes.icons} />
+          </IconButton>
+          <div className={styles["custom-bar-graph"]}>
+            {quizScores &&
+              quizScores.length > 0 &&
+              quizScores?.map((item: any, index: number) => (
+                <div>
+                  <div
+                    key={index}
+                    className={styles["bar"]}
+                    style={{
+                      height: `${
+                        item.score === 0
+                          ? minBarHeight
+                          : minBarHeight + item.score * scalingFactor
+                      }px`,
+                      background:
+                        item.score <= 2
+                          ? "#EB9284"
+                          : item.score <= 7
+                          ? "#FFA85D"
+                          : "#7EC8A6",
+                    }}
+                  >
+                    <span
+                      className={styles["bar-value"]}
+                      style={{ color: "#FFF" }}
+                    >
+                      {item.score}
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      color: "#D0CBC8",
+                      maxWidth: "30px",
+                      overflowWrap: "break-word",
+                      textAlign: "center",
+                      fontSize: "12px",
+                    }}
+                  >
+                    {`Quiz ${item.quizNo}`}
+                  </div>
+                </div>
+              ))}
+          </div>
+          <IconButton
+            aria-label="next"
+            onClick={handleNextClick}
+            disabled={currentPage === totalPages - 1}
+          >
+            <ArrowForwardIosIcon className={classes.icons} />
+          </IconButton>
+        </div>
+      )}
     </div>
   );
 };

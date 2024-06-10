@@ -6,6 +6,7 @@ import Cross from "@/assets/Images/wrong.svg";
 import Image from "next/image";
 import FormControl from "@mui/material/FormControl";
 import NativeSelect from "@mui/material/NativeSelect";
+import LoadingPage from "../Loader";
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -126,98 +127,118 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const WrongAnswers = ({ quizScores, incorrectAns, quizId, handleSelect }) => {
+interface Props {
+  quizScores: any;
+  incorrectAns: any;
+  quizId: string;
+  handleSelect: any;
+  isAnswersLoading: any;
+}
+
+const WrongAnswers = ({
+  quizScores,
+  incorrectAns,
+  quizId,
+  handleSelect,
+  isAnswersLoading,
+}: Props) => {
   const classes = useStyles();
 
-  const handleChange = (event) => {
+  const handleChange = (event: any) => {
     handleSelect(event.target.value);
   };
   return (
     <div className={classes.container}>
       <div className={classes.quizListWrapper}>
         <div className={classes.title}>Wrong Answers Review</div>
-        <div className={classes.rootSelect}>
-          <NativeSelect
-            className={classes.select}
-            disableUnderline
-            defaultValue={quizId}
-            onChange={handleChange}
-            inputProps={{
-              name: "age",
-              id: "uncontrolled-native",
-            }}
-          >
-            {quizScores.map((option, index) => (
-              <option key={option.quizId} value={option.quizId}>
-                {`Quiz ${option.quizNo}`}
-              </option>
-            ))}
-          </NativeSelect>
-        </div>
+        {!isAnswersLoading && (
+          <div className={classes.rootSelect}>
+            <NativeSelect
+              className={classes.select}
+              disableUnderline
+              defaultValue={quizId}
+              onChange={handleChange}
+              inputProps={{
+                name: "age",
+                id: "uncontrolled-native",
+              }}
+            >
+              {quizScores.map((option: any, index: number) => (
+                <option key={option.quizId} value={option.quizId}>
+                  {`Quiz ${option.quizNo}`}
+                </option>
+              ))}
+            </NativeSelect>
+          </div>
+        )}
       </div>
-      <div className={classes.scrollContainer}>
-        <div className={classes.questionContainer}>
-          {incorrectAns.map((item, index) => {
-            return (
-              <div
-                key={index}
-                className={`${classes.questionWrapper} ${
-                  index !== 0 && classes.addMargin
-                }`}
-              >
-                <div className={classes.question}>{item.question}</div>
-                <div className={classes.answersContainer}>
-                  {item.options.map((answer, index) => {
-                    return (
-                      <div
-                        className={classes.answerWrapper}
-                        style={{
-                          background: answer.correct
-                            ? "#7EC8A6"
-                            : answer.wrong
-                            ? "#EEA195"
-                            : "#F9FBFB",
-                        }}
-                      >
-                        <div>
-                          {answer.correct ? (
-                            <Image
-                              src={Tick}
-                              alt="tick"
-                              className={classes.img}
-                            />
-                          ) : answer.wrong ? (
-                            <Image
-                              src={Cross}
-                              alt="wrong"
-                              className={classes.img}
-                            />
-                          ) : (
-                            <div className={classes.options}>
-                              {`${String.fromCharCode(97 + index)}`}
-                            </div>
-                          )}
-                        </div>
+      {isAnswersLoading ? (
+        <LoadingPage />
+      ) : (
+        <div className={classes.scrollContainer}>
+          <div className={classes.questionContainer}>
+            {incorrectAns.map((item: any, index: number) => {
+              return (
+                <div
+                  key={index}
+                  className={`${classes.questionWrapper} ${
+                    index !== 0 && classes.addMargin
+                  }`}
+                >
+                  <div className={classes.question}>{item.question}</div>
+                  <div className={classes.answersContainer}>
+                    {item.options.map((answer: any, index: number) => {
+                      return (
                         <div
-                          className={classes.answer}
+                          className={classes.answerWrapper}
                           style={{
-                            color:
-                              answer.correct || answer.wrong
-                                ? "#FFFFFF"
-                                : "#7A7A7A",
+                            background: answer.correct
+                              ? "#7EC8A6"
+                              : answer.wrong
+                              ? "#EEA195"
+                              : "#F9FBFB",
                           }}
                         >
-                          {answer.text}{" "}
+                          <div>
+                            {answer.correct ? (
+                              <Image
+                                src={Tick}
+                                alt="tick"
+                                className={classes.img}
+                              />
+                            ) : answer.wrong ? (
+                              <Image
+                                src={Cross}
+                                alt="wrong"
+                                className={classes.img}
+                              />
+                            ) : (
+                              <div className={classes.options}>
+                                {`${String.fromCharCode(97 + index)}`}
+                              </div>
+                            )}
+                          </div>
+                          <div
+                            className={classes.answer}
+                            style={{
+                              color:
+                                answer.correct || answer.wrong
+                                  ? "#FFFFFF"
+                                  : "#7A7A7A",
+                            }}
+                          >
+                            {answer.text}{" "}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

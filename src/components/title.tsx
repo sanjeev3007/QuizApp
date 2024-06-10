@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Title = ({ studentName }) => {
+const Title = ({ studentName }: any) => {
   const classes = useStyles();
   return (
     <div className={classes.title}>
