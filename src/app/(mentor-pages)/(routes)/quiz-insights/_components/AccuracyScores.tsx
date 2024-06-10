@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@mui/styles";
 import { getAccuracyScores } from "@/lib/quiz-insights/apiCLient";
 import LoadingPage from "../Loader";
+import { getCookie } from "cookies-next";
 
 const useStyles = makeStyles(() => ({
   conatiner: {
@@ -79,7 +80,9 @@ const AccuracyScores = ({ mentorId, userId }: Props) => {
     setIsScoreLoading(true);
     const fetchData = async () => {
       try {
-        const data = await getAccuracyScores(mentorId, userId);
+        const mId = getCookie("mentorId");
+        const studentId = getCookie("userId");
+        const data = await getAccuracyScores(mId, studentId);
         setIsScoreLoading(false);
         if (data && data?.response.length > 0) {
           setScoreDetails(data?.response);
