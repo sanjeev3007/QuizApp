@@ -85,6 +85,7 @@ const AccuracyScores = ({ mentorId, userId }: Props) => {
         const data = await getAccuracyScores(mId, studentId);
         setIsScoreLoading(false);
         if (data && data?.response.length > 0) {
+          console.log(data, "data");
           setScoreDetails(data?.response);
         }
       } catch (error) {
