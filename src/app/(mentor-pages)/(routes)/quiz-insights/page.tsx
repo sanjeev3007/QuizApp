@@ -38,6 +38,7 @@ const QuizInsights = () => {
           const data = await getQuizDetails(mentorId, userId, currentPage);
           setIsGraphLoading(false);
           if (data && data?.quizScores.length > 0) {
+            console.log('data 123: ', data);
             setQuizScores(data?.quizScores);
             if (data?.totalCount) {
               setTotalCount(data?.totalCount);
