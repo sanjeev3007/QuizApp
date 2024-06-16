@@ -7,6 +7,6 @@ export interface Chat extends Record<string, any> {
   createdAt: Date;
   userId: string;
   path: string;
-  messages: Message[];
+  messages: any[];
   sharePath?: string; // Refactor to use RLS
 }

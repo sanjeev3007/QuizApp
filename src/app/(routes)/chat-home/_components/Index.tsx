@@ -21,6 +21,10 @@ import { nanoid } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import LastInteractions from "./last-interactions";
 import useChatQuery from "@/store/chat-query";
+import { useActions, useAIState, useUIState, getMutableAIState } from "ai/rsc";
+import { AI } from "@/actions/chat-stream";
+import { UserMessage } from "../../chat-bot/_components/user-message";
+import { revalidatePath } from "next/cache";
 
 type chatData = {
   id: string;
@@ -43,6 +47,9 @@ const Index = ({ user_Id, recentChats }: Props) => {
   const [userInput, setUserInput] = useState("");
   const router = useRouter();
   const [randomFact, setRandomFact] = useState("");
+  const chatQuery = useChatQuery((state) => state);
+  const [_, setMessages] = useUIState<typeof AI>();
+  const { submit } = useActions();
 
   useEffect(() => {
     // Set a random fact when the component mounts
@@ -85,7 +92,6 @@ const Index = ({ user_Id, recentChats }: Props) => {
     "Your ears and nose continue growing throughout your entire life.",
     "The tongue of a blue whale can weigh as much as an elephant.",
   ];
-  const chatQuery = useChatQuery((state) => state);
 
   const handleUserInput = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -130,7 +136,7 @@ const Index = ({ user_Id, recentChats }: Props) => {
               className="border-0 py-[4px]  text-sm fomt-semibold text-[#FFF] bg-[#E98451] hover:bg-[#E98451]"
             >
               <span className="hidden sm:block">Start Chat</span>
-              <Image src={ion_send_white} alt="" className="sm:ml-2"/>
+              <Image src={ion_send_white} alt="" className="sm:ml-2" />
             </Button>
           </div>
         </form>
