@@ -3,12 +3,8 @@ import Image from "next/image";
 
 type UserMessageProps = {
   message: string;
-  chatId?: string;
 };
-export const UserMessage: React.FC<UserMessageProps> = ({
-  message,
-  chatId,
-}) => {
+export const UserMessage: React.FC<UserMessageProps> = ({ message }) => {
   return (
     <div className="flex-1 relative w-full">
       <div className="flex w-full justify-start gap-x-2 mt-4">

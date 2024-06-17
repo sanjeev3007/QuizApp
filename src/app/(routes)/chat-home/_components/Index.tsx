@@ -51,6 +51,21 @@ const Index = ({ user_Id, recentChats }: Props) => {
   const [_, setMessages] = useUIState<typeof AI>();
   const { submit } = useActions();
 
+  const handleUserInput = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Handle user input
+    if (userInput === "") {
+      toast({ title: "Enter the Question", duration: 3000 });
+    }
+    // converting user input to lowercase and removing any extra spaces
+    const optimizedAnswer: string = userInput.toLowerCase().trim();
+
+    setUserInput("");
+    chatQuery.setQuery(optimizedAnswer);
+
+    router.push(`/chat-bot/${user_Id}/${id}`);
+  };
+
   useEffect(() => {
     // Set a random fact when the component mounts
     const randomIndex = Math.floor(Math.random() * facts.length);
@@ -64,6 +79,7 @@ const Index = ({ user_Id, recentChats }: Props) => {
 
     return () => clearInterval(intervalId); // Cleanup the interval on component unmount
   }, []);
+
   const facts = [
     "A single strand of human hair can support up to 100 grams in weight.",
     "The Eiffel Tower can be 15 cm taller during the summer due to thermal expansion.",
@@ -93,20 +109,6 @@ const Index = ({ user_Id, recentChats }: Props) => {
     "The tongue of a blue whale can weigh as much as an elephant.",
   ];
 
-  const handleUserInput = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Handle user input
-    if (userInput === "") {
-      toast({ title: "Enter the Question", duration: 3000 });
-    }
-    // converting user input to lowercase and removing any extra spaces
-    const optimizedAnswer: string = userInput.toLowerCase().trim();
-
-    setUserInput("");
-    chatQuery.setQuery(optimizedAnswer);
-
-    router.push(`/chat-bot/${user_Id}/${id}`);
-  };
   return (
     <div className="flex flex-col justify-center content-center items-center">
       <div className="flex justify-between content-center items-center">

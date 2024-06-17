@@ -121,7 +121,7 @@ export const getUIStateFromAIState = (aiState: Chat) => {
       case "user":
         return {
           id,
-          component: <UserMessage message={content} chatId={aiState.chatId} />,
+          component: <UserMessage message={content} />,
         };
       case "assistant":
         const answer = createStreamableValue();

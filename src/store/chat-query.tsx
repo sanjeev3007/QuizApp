@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 type Props = {
   query: string | null;
-  setQuery: (v: string) => void;
+  setQuery: (v: string | null) => void;
 };
 
 const useChatQuery = create<Props>((set) => ({

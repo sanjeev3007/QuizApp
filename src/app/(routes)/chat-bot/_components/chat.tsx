@@ -35,6 +35,7 @@ export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const { submit } = useActions();
   const [_, setMessages] = useUIState<typeof AI>();
+  const [IsMounted, setIsMounted] = useState(false);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -66,6 +67,29 @@ export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
     return () => {
       window.removeEventListener("keydown", focusInput);
     };
+  }, []);
+
+  useEffect(() => {
+    if (
+      chatQuery.query &&
+      messages.length === 0 &&
+      aiState.messages.length === 0
+    ) {
+      (async () => {
+        setMessages((currentMessages) => [
+          ...currentMessages,
+          {
+            id: nanoid(),
+            component: <UserMessage message={chatQuery.query!} />,
+          },
+        ]);
+
+        const res = await submit(chatQuery.query, id);
+
+        setMessages((currentMessages) => [...currentMessages, res as any]);
+        chatQuery.setQuery(null);
+      })();
+    }
   }, []);
 
   return (

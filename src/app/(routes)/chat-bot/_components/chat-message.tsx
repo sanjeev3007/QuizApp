@@ -12,7 +12,7 @@ export function ChatMessage({ messages, aiState }: ChatMessageProps) {
 
   useEffect(() => {
     bottomScrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, aiState?.messages]);
+  }, [messages, aiState?.messages, aiState]);
   return (
     <div
       className={cn(

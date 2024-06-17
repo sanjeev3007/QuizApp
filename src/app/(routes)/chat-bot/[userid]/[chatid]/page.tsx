@@ -10,7 +10,7 @@ export default async function ChatPage({
   const { chat, doubtSolved } = await getChat(userid, chatid);
   console.log(chat?.messages);
   return (
-    <AI initialAIState={{ chatId: chatid, messages: chat?.messages }}>
+    <AI initialAIState={{ chatId: chatid, messages: chat?.messages || [] }}>
       <div className="h-[calc(100vh-4rem)] pb-[5rem] left-0 w-full">
         <Chat
           id={chatid}
