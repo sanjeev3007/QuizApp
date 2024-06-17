@@ -5,14 +5,20 @@ import { useEffect, useRef } from "react";
 export interface ChatMessageProps {
   messages: UIState;
   aiState: any;
+  initialMessages: any[];
 }
 
-export function ChatMessage({ messages, aiState }: ChatMessageProps) {
+export function ChatMessage({
+  messages,
+  aiState,
+  initialMessages,
+}: ChatMessageProps) {
   const bottomScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     bottomScrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, aiState?.messages, aiState]);
+    console.log(messages, aiState);
+  }, [messages, aiState?.messages, initialMessages]);
   return (
     <div
       className={cn(

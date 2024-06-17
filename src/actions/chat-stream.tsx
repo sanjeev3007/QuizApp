@@ -11,6 +11,7 @@ import { StreamResponse } from "@/utils/stream-response";
 import { UserMessage } from "@/app/(routes)/chat-bot/_components/user-message";
 import { BotMessage } from "@/app/(routes)/chat-bot/_components/bot-message";
 import { storeChat } from "@/utils/store-chat";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 async function submit(content: string, id: string) {
   "use server";

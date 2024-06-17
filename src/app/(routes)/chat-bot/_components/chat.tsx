@@ -24,9 +24,6 @@ type ChatProps = {
 export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
   const [messages] = useUIState();
   const [aiState] = useAIState();
-  const [suggestions, setSuggestions] = useState<[{ question: string }] | null>(
-    null
-  );
   const [doubtSolveStatus, setDoubtSolveStatus] =
     useState<boolean>(doubtSolved);
   const bottom = useRef<HTMLDivElement>(null);
@@ -35,7 +32,6 @@ export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const { submit } = useActions();
   const [_, setMessages] = useUIState<typeof AI>();
-  const [IsMounted, setIsMounted] = useState(false);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -69,33 +65,14 @@ export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
     };
   }, []);
 
-  useEffect(() => {
-    if (
-      chatQuery.query &&
-      messages.length === 0 &&
-      aiState.messages.length === 0
-    ) {
-      (async () => {
-        setMessages((currentMessages) => [
-          ...currentMessages,
-          {
-            id: nanoid(),
-            component: <UserMessage message={chatQuery.query!} />,
-          },
-        ]);
-
-        const res = await submit(chatQuery.query, id);
-
-        setMessages((currentMessages) => [...currentMessages, res as any]);
-        chatQuery.setQuery(null);
-      })();
-    }
-  }, []);
-
   return (
     <ScrollArea className="h-full w-full flex flex-col">
       <div className="flex-1 px-2 md:px-8">
-        <ChatMessage messages={messages} aiState={aiState} />
+        <ChatMessage
+          messages={messages}
+          aiState={aiState}
+          initialMessages={initialMessages}
+        />
         {!doubtSolveStatus && (
           <form
             onSubmit={onSubmit}

@@ -44,24 +44,33 @@ type Props = {
 
 const Index = ({ user_Id, recentChats }: Props) => {
   const id = nanoid();
-  const [userInput, setUserInput] = useState("");
+  const [inputValue, setInputValue] = useState("");
   const router = useRouter();
   const [randomFact, setRandomFact] = useState("");
   const chatQuery = useChatQuery((state) => state);
   const [_, setMessages] = useUIState<typeof AI>();
   const { submit } = useActions();
 
-  const handleUserInput = (e: FormEvent<HTMLFormElement>) => {
+  const handleUserInput = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle user input
-    if (userInput === "") {
+
+    if (inputValue === "") {
       toast({ title: "Enter the Question", duration: 3000 });
     }
-    // converting user input to lowercase and removing any extra spaces
-    const optimizedAnswer: string = userInput.toLowerCase().trim();
 
-    setUserInput("");
-    chatQuery.setQuery(optimizedAnswer);
+    setMessages((currentMessages) => [
+      ...currentMessages,
+      {
+        id: nanoid(),
+        component: <UserMessage message={inputValue} />,
+      },
+    ]);
+
+    const res = await submit(inputValue, id);
+
+    setMessages((currentMessages) => [...currentMessages, res as any]);
+
+    setInputValue("");
 
     router.push(`/chat-bot/${user_Id}/${id}`);
   };
@@ -130,8 +139,8 @@ const Index = ({ user_Id, recentChats }: Props) => {
               type="text"
               placeholder="Ask something..."
               className="w-full border-0 focus-visible:outline-none focus-visible:border-0 focus-visible:ring-0"
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
             />
             <Button
               type="submit"
