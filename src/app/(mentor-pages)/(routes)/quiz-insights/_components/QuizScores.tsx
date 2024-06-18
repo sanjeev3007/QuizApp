@@ -133,7 +133,7 @@ const QuizScores = ({
           <IconButton
             aria-label="next"
             onClick={handleNextClick}
-            disabled={currentPage === totalPages - 1}
+            disabled={currentPage === totalPages}
           >
             <ArrowForwardIosIcon className={classes.icons} />
           </IconButton>

@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => ({
     padding: "16px 24px",
     borderRadius: "8px",
     border: "1px solid #FDECD9",
-    height: "380px",
+    minHeight: "380px",
     minWidth: "560px",
   },
   title: {
@@ -150,7 +150,7 @@ const WrongAnswers = ({
   return (
     <div className={classes.container}>
       <div className={classes.quizListWrapper}>
-        <div className={classes.title}>Wrong Answers Review</div>
+        <div className={classes.title}>Answers Review</div>
         {!isAnswersLoading && (
           <div className={classes.rootSelect}>
             <NativeSelect
