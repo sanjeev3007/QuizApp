@@ -118,11 +118,13 @@ const QuizScores = ({
                   </div>
                   <div
                     style={{
-                      color: "#D0CBC8",
+                      color: "#7A7A7A",
                       maxWidth: "30px",
                       overflowWrap: "break-word",
                       textAlign: "center",
                       fontSize: "12px",
+                      fontWeight: 500,
+                      marginTop: "4px",
                     }}
                   >
                     {`Quiz ${item.quizNo}`}

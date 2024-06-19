@@ -65,9 +65,10 @@ const useStyles = makeStyles(() => ({
       lineHeight: "16.41px",
       color: "#3D3D3D",
       fontWeight: "400",
+      padding:"4px 10px"
     },
     "& .MuiInputBase-input": {
-      backgroundColor: "#fff",
+      backgroundColor: "#FFF",
     },
   },
   questionContainer: {
@@ -164,9 +165,13 @@ const WrongAnswers = ({
               }}
             >
               {quizScores.map((option: any, index: number) => (
-                <option key={option.quizId} value={option.quizId}>
+                <option
+                  key={option.quizId}
+                  value={option.quizId}
+                >
                   {`Quiz ${option.quizNo}`}
                 </option>
+                
               ))}
             </NativeSelect>
           </div>
