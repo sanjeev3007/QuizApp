@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { UIState } from "@/actions/chat-stream";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export interface ChatMessageProps {
   messages: UIState;
@@ -17,8 +17,17 @@ export function ChatMessage({
 
   useEffect(() => {
     bottomScrollRef.current?.scrollIntoView({ behavior: "smooth" });
-    console.log(messages, aiState);
   }, [messages, aiState?.messages, initialMessages]);
+
+  // const chatMessages = messages.map((m, i) => {
+  //   return {
+  //     id: m.id,
+  //     // component: m.component,
+  //     hideSuggestions: m.hideSuggestions,
+  //     suggestions: m.suggestions,
+  //   };
+  // });
+  // console.log(chatMessages);
   return (
     <div
       className={cn(

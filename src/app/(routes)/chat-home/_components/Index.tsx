@@ -1,17 +1,9 @@
 "use client";
 
 import React from "react";
-import {
-  FormEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { FormEvent, useEffect, useState } from "react";
 import noahSmallIcon from "@/assets/Images/noahSmallIcon.png";
 import { toast } from "@/components/ui/use-toast";
-import { Toaster } from "@/components/ui/toaster";
 import { Input } from "@/components/ui/input";
 import ion_send_white from "@/assets/Images/ion_send_white.png";
 import Image from "next/image";
@@ -20,11 +12,10 @@ import "./index.css";
 import { nanoid } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import LastInteractions from "./last-interactions";
-import useChatQuery from "@/store/chat-query";
-import { useActions, useAIState, useUIState, getMutableAIState } from "ai/rsc";
+import { useActions, useUIState } from "ai/rsc";
 import { AI } from "@/actions/chat-stream";
 import { UserMessage } from "../../chat-bot/_components/user-message";
-import { revalidatePath } from "next/cache";
+import { CircularProgress } from "@mui/material";
 
 type chatData = {
   id: string;
@@ -47,32 +38,39 @@ const Index = ({ user_Id, recentChats }: Props) => {
   const [inputValue, setInputValue] = useState("");
   const router = useRouter();
   const [randomFact, setRandomFact] = useState("");
-  const chatQuery = useChatQuery((state) => state);
   const [_, setMessages] = useUIState<typeof AI>();
   const { submit } = useActions();
+  const [loading, setLoading] = useState(false);
 
   const handleUserInput = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
 
-    if (inputValue === "") {
-      toast({ title: "Enter the Question", duration: 3000 });
+    try {
+      if (inputValue === "") {
+        toast({ title: "Enter the Question", duration: 3000 });
+      }
+
+      setMessages((currentMessages) => [
+        ...currentMessages,
+        {
+          id: nanoid(),
+          component: <UserMessage message={inputValue} />,
+        },
+      ]);
+
+      const res = await submit(inputValue, id);
+
+      setMessages((currentMessages) => [...currentMessages, res as any]);
+
+      setInputValue("");
+
+      router.push(`/chat-bot/${user_Id}/${id}`);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-
-    setMessages((currentMessages) => [
-      ...currentMessages,
-      {
-        id: nanoid(),
-        component: <UserMessage message={inputValue} />,
-      },
-    ]);
-
-    const res = await submit(inputValue, id);
-
-    setMessages((currentMessages) => [...currentMessages, res as any]);
-
-    setInputValue("");
-
-    router.push(`/chat-bot/${user_Id}/${id}`);
   };
 
   useEffect(() => {
@@ -144,10 +142,17 @@ const Index = ({ user_Id, recentChats }: Props) => {
             />
             <Button
               type="submit"
+              disabled={loading}
               className="border-0 py-[4px]  text-sm fomt-semibold text-[#FFF] bg-[#E98451] hover:bg-[#E98451]"
             >
-              <span className="hidden sm:block">Start Chat</span>
-              <Image src={ion_send_white} alt="" className="sm:ml-2" />
+              {loading ? (
+                <CircularProgress color="inherit" size={20} />
+              ) : (
+                <div className="flex items-center pr-4">
+                  <span className="hidden sm:block">Start Chat</span>
+                  <Image src={ion_send_white} alt="" className="sm:ml-2" />
+                </div>
+              )}
             </Button>
           </div>
         </form>

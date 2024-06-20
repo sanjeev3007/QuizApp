@@ -11,13 +11,15 @@ import { StreamResponse } from "@/utils/stream-response";
 import { UserMessage } from "@/app/(routes)/chat-bot/_components/user-message";
 import { BotMessage } from "@/app/(routes)/chat-bot/_components/bot-message";
 import { storeChat } from "@/utils/store-chat";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { SuggestionsBox } from "@/app/(routes)/chat-bot/_components/suggestions";
 
 async function submit(content: string, id: string) {
   "use server";
 
   const aiState = getMutableAIState<typeof AI>();
   const uiStream = createStreamableUI();
+  const isGenerating = createStreamableValue(true);
+  const hideSuggestions = createStreamableValue(true);
 
   console.log(content, id, aiState.get());
 
@@ -55,12 +57,19 @@ async function submit(content: string, id: string) {
         },
       ],
     });
-
+    hideSuggestions.done(false);
     uiStream.done();
+    isGenerating.done();
   };
 
   processEvents();
-  return { id: nanoid(), component: uiStream.value };
+  isGenerating.done(false);
+  return {
+    id: nanoid(),
+    component: uiStream.value,
+    isGenerating: isGenerating.value,
+    hideSuggestions: hideSuggestions.value,
+  };
 }
 
 export type AIMessage = {
@@ -78,6 +87,8 @@ export type UIState = {
   id: string;
   component: React.ReactNode;
   isGenerating?: StreamableValue<boolean>;
+  hideSuggestions?: StreamableValue<boolean>;
+  suggestions?: React.ReactNode;
 }[];
 
 export interface Chat extends Record<string, any> {
@@ -110,7 +121,6 @@ export const AI = createAI<AIState, UIState>({
   },
   onSetAIState: async ({ state, done }: { state: AIState; done: boolean }) => {
     "use server";
-    console.log(state, done);
     await storeChat({ messages: state.messages, chat_id: state.chatId });
   },
 });
@@ -126,10 +136,19 @@ export const getUIStateFromAIState = (aiState: Chat) => {
         };
       case "assistant":
         const answer = createStreamableValue();
+        const hideSuggestions = createStreamableValue();
+        hideSuggestions.done(false);
         answer.done(JSON.parse(content));
         return {
           id,
-          component: <BotMessage message={answer.value} />,
+          component: (
+            <BotMessage
+              message={answer.value}
+              hideSuggestions={hideSuggestions.value}
+            />
+          ),
+          hideSuggestions: hideSuggestions.value,
+          suggestions: <SuggestionsBox message={answer.value} />,
         };
       default:
         return {

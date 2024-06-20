@@ -49,7 +49,9 @@ export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
     setMessages((currentMessages) => [...currentMessages, res as any]);
 
     setInputValue("");
+    console.log(aiState);
   };
+  console.log(messages);
 
   useEffect(() => {
     const focusInput = (e: KeyboardEvent) => {
