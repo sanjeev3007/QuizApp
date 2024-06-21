@@ -1,7 +1,7 @@
 "use client";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import ion_send from "@/assets/Images/ion_send.png";
 import Image from "next/image";
@@ -9,10 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Message } from "ai";
 import { nanoid } from "nanoid";
 import { useActions, useAIState, useUIState } from "ai/rsc";
-import { AI } from "@/actions/chat-stream";
+import { AI, AIState } from "@/actions/chat-stream";
 import { UserMessage } from "./user-message";
 import { ChatMessage } from "./chat-message";
 import useChatQuery from "@/store/chat-query";
+import { StaticBotMessage } from "./bot-message";
+import { useRouter } from "next/navigation";
 
 type ChatProps = {
   id: string;
@@ -21,17 +23,32 @@ type ChatProps = {
   doubtSolved: boolean;
 };
 
+export const getUIStateFromAIState = (aiState: AIState) => {
+  return aiState.messages
+    ?.filter((message) => message.role.toLowerCase() !== "system")
+    ?.map((message) => ({
+      id: message.id,
+      display:
+        message.role.toLowerCase() === "user" ? (
+          <UserMessage message={message.content} />
+        ) : (
+          <StaticBotMessage
+            message={message.content}
+            hideSuggestions={{ curr: false }}
+          />
+        ),
+    }));
+};
+
 export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
-  const [messages] = useUIState();
-  const [aiState] = useAIState();
+  const [aiState, setAIState] = useAIState<typeof AI>();
   const [doubtSolveStatus, setDoubtSolveStatus] =
     useState<boolean>(doubtSolved);
-  const bottom = useRef<HTMLDivElement>(null);
   const chatQuery = useChatQuery((state) => state);
   const [inputValue, setInputValue] = useState(chatQuery.query ?? "");
-  const inputRef = useRef<HTMLTextAreaElement>(null);
   const { submit } = useActions();
-  const [_, setMessages] = useUIState<typeof AI>();
+  const [messages, setMessages] = useUIState<typeof AI>();
+  const router = useRouter();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,7 +57,7 @@ export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
       ...currentMessages,
       {
         id: nanoid(),
-        component: <UserMessage message={inputValue} />,
+        display: <UserMessage message={inputValue} />,
       },
     ]);
 
@@ -49,23 +66,20 @@ export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
     setMessages((currentMessages) => [...currentMessages, res as any]);
 
     setInputValue("");
-    console.log(aiState);
   };
-  console.log(messages);
 
   useEffect(() => {
-    const focusInput = (e: KeyboardEvent) => {
-      if (e.key === "/") {
-        e.preventDefault();
-        inputRef.current?.focus();
-      }
-    };
-    window.addEventListener("keydown", focusInput);
-
-    return () => {
-      window.removeEventListener("keydown", focusInput);
-    };
-  }, []);
+    console.log(messages, aiState);
+    if (id && aiState.messages.length === 0) {
+      setAIState({
+        chatId: id,
+        messages: initialMessages,
+      });
+      setMessages(
+        getUIStateFromAIState({ chatId: id, messages: initialMessages })
+      );
+    }
+  }, [id, aiState]);
 
   return (
     <ScrollArea className="h-full w-full flex flex-col">

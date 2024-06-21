@@ -21,7 +21,7 @@ export const SuggestionsBox: React.FC<SuggestionsProps> = ({ message }) => {
       ...currentMessages,
       {
         id: nanoid(),
-        component: <UserMessage message={inputValue} />,
+        display: <UserMessage message={inputValue} />,
       },
     ]);
 

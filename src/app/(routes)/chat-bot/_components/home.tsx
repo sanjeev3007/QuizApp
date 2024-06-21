@@ -8,14 +8,16 @@ import { Input } from "@/components/ui/input";
 import ion_send_white from "@/assets/Images/ion_send_white.png";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import "./index.css";
+import "./home.css";
 import { nanoid } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import LastInteractions from "./last-interactions";
-import { useActions, useUIState } from "ai/rsc";
+import { useActions, useAIState, useUIState } from "ai/rsc";
 import { AI } from "@/actions/chat-stream";
 import { UserMessage } from "../../chat-bot/[userid]/[chatid]/_components/user-message";
 import { CircularProgress } from "@mui/material";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { getUIStateFromAIState } from "../[userid]/[chatid]/_components/chat";
 
 type chatData = {
   id: string;
@@ -33,13 +35,14 @@ type Props = {
   recentChats: chatData[] | null;
 };
 
-const Index = ({ user_Id, recentChats }: Props) => {
+const Home = ({ user_Id, recentChats }: Props) => {
   const id = nanoid();
   const [inputValue, setInputValue] = useState("");
   const router = useRouter();
   const [randomFact, setRandomFact] = useState("");
   const [_, setMessages] = useUIState<typeof AI>();
   const { submit } = useActions();
+  const [aiState, setAIState] = useAIState<typeof AI>();
   const [loading, setLoading] = useState(false);
 
   const handleUserInput = async (e: FormEvent<HTMLFormElement>) => {
@@ -74,6 +77,11 @@ const Index = ({ user_Id, recentChats }: Props) => {
   };
 
   useEffect(() => {
+    // setAIState({
+    //   chatId: id,
+    //   messages: [],
+    // });
+
     // Set a random fact when the component mounts
     const randomIndex = Math.floor(Math.random() * facts.length);
     setRandomFact(facts[randomIndex]);
@@ -167,11 +175,11 @@ const Index = ({ user_Id, recentChats }: Props) => {
       </div>
       {recentChats && recentChats.length > 0 && (
         <div className="w-full md:max-w-3xl mt-[3rem]">
-          <LastInteractions recentChats={recentChats} />
+          {/* <LastInteractions recentChats={recentChats} /> */}
         </div>
       )}
     </div>
   );
 };
 
-export default Index;
+export default Home;

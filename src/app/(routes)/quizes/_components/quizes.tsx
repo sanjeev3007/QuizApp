@@ -54,7 +54,7 @@ const Quizes = async ({
         />
         <Card
           type="chat"
-          path={"/chat-home"}
+          path={"/chat-bot"}
           user_id={userId}
           grade={grade}
           quizData={completedGKQuiz}

@@ -19,15 +19,6 @@ export function ChatMessage({
     bottomScrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, aiState?.messages, initialMessages]);
 
-  // const chatMessages = messages.map((m, i) => {
-  //   return {
-  //     id: m.id,
-  //     // component: m.component,
-  //     hideSuggestions: m.hideSuggestions,
-  //     suggestions: m.suggestions,
-  //   };
-  // });
-  // console.log(chatMessages);
   return (
     <div
       className={cn(
@@ -37,7 +28,7 @@ export function ChatMessage({
       {messages.map((message, index: number) => {
         return (
           <div className="" key={message.id ?? index}>
-            {message.component}
+            {message.display}
           </div>
         );
       })}

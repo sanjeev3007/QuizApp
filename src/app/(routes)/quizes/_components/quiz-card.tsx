@@ -117,7 +117,7 @@ const Card = ({
     setLoader(true);
     if (path === "/chat") {
       generateMathQuiz();
-    } else if (path === "/chat-home") {
+    } else if (path === "/chat-bot") {
       router.push(path);
       setLoader(false);
     } else {
