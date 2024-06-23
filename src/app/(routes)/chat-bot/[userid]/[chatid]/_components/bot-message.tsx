@@ -10,15 +10,17 @@ import { UserMessage } from "./user-message";
 
 type BotMessageProps = {
   message: PartialAnswer;
-  hideSuggestions?: any;
+  messageId?: string;
+  showSuggestions: boolean;
 };
 
 export const BotMessage: React.FC<BotMessageProps> = ({
   message,
-  hideSuggestions,
+  messageId,
+  showSuggestions,
 }) => {
   const [data] = useStreamableValue<PartialAnswer>(message);
-  const [_, setMessages] = useUIState<typeof AI>();
+  const [messages, setMessages] = useUIState<typeof AI>();
   const { submit } = useActions();
 
   const followUp = async (inputValue: string) => {
@@ -35,6 +37,8 @@ export const BotMessage: React.FC<BotMessageProps> = ({
     setMessages((currentMessages) => [...currentMessages, res as any]);
   };
 
+  console.log(data, messageId, messages);
+
   if (!data) return;
   return (
     <div className="flex-1 relative w-full">
@@ -50,7 +54,7 @@ export const BotMessage: React.FC<BotMessageProps> = ({
           {data?.answer}
         </div>
       </div>
-      <div className={cn(hideSuggestions?.curr ? "hidden" : "inline-block")}>
+      <div className={cn(showSuggestions ? "inline-block" : "hidden")}>
         {!!data?.relatedQuestions?.length && (
           <div className="flex items-center max-w-3xl w-full mx-auto mt-[2rem] mb-2 text-[#2F4F4F] text-sm font-medium">
             Suggestions for you
@@ -81,25 +85,7 @@ export const BotMessage: React.FC<BotMessageProps> = ({
 
 export const StaticBotMessage: React.FC<{
   message: string;
-  hideSuggestions: any;
-}> = ({ message, hideSuggestions }) => {
-  const [_, setMessages] = useUIState<typeof AI>();
-  const { submit } = useActions();
-
-  const followUp = async (inputValue: string) => {
-    setMessages((currentMessages) => [
-      ...currentMessages,
-      {
-        id: nanoid(),
-        display: <UserMessage message={inputValue} />,
-      },
-    ]);
-
-    const res = await submit(inputValue);
-
-    setMessages((currentMessages) => [...currentMessages, res as any]);
-  };
-
+}> = ({ message }) => {
   if (!message) return;
   return (
     <div className="flex-1 relative w-full">
@@ -113,31 +99,6 @@ export const StaticBotMessage: React.FC<{
           }
         >
           {JSON.parse(message)?.answer}
-        </div>
-      </div>
-      <div className={cn(hideSuggestions?.curr ? "hidden" : "inline-block")}>
-        {!!JSON.parse(message)?.relatedQuestions?.length && (
-          <div className="flex items-center max-w-3xl w-full mx-auto mt-[2rem] mb-2 text-[#2F4F4F] text-sm font-medium">
-            Suggestions for you
-            <div className="ml-1">
-              <Image src={stars_icon} alt="" />
-            </div>
-          </div>
-        )}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-w-3xl w-full mx-auto">
-          {JSON.parse(message)?.relatedQuestions?.map((q: any, i: number) => (
-            <button
-              key={i}
-              type="button"
-              className="flex items-center w-full h-full cursor-pointer rounded-md border border-[#E4E2DC] bg-[#F6F5F4] px-3 py-2 text-sm text-[#5B8989] hover:bg-[#E4E2DC]"
-              onClick={() => followUp(q!)}
-            >
-              <div className="mr-1">
-                <Image src={stars_icon} alt="" />
-              </div>
-              <div className="text-left ml-2">{q}</div>
-            </button>
-          ))}
         </div>
       </div>
     </div>

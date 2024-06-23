@@ -19,6 +19,8 @@ export function ChatMessage({
     bottomScrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, aiState?.messages, initialMessages]);
 
+  console.log(messages);
+
   return (
     <div
       className={cn(
@@ -27,8 +29,8 @@ export function ChatMessage({
     >
       {messages.map((message, index: number) => {
         return (
-          <div className="" key={message.id ?? index}>
-            {message.display}
+          <div key={message.id ?? index}>
+            <div className="">{message.display}</div>
           </div>
         );
       })}

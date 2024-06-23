@@ -7,6 +7,8 @@ export default async function ChatLayout({
   children: React.ReactNode;
 }) {
   return (
-    <AI initialAIState={{ chatId: nanoid(), messages: [] }}>{children}</AI>
+    <AI initialAIState={{ chatId: nanoid(), messages: [] }} initialUIState={[]}>
+      {children}
+    </AI>
   );
 }

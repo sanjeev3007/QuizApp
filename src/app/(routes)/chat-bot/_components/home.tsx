@@ -40,7 +40,7 @@ const Home = ({ user_Id, recentChats }: Props) => {
   const [inputValue, setInputValue] = useState("");
   const router = useRouter();
   const [randomFact, setRandomFact] = useState("");
-  const [_, setMessages] = useUIState<typeof AI>();
+  const [messages, setMessages] = useUIState<typeof AI>();
   const { submit } = useActions();
   const [aiState, setAIState] = useAIState<typeof AI>();
   const [loading, setLoading] = useState(false);
@@ -77,11 +77,15 @@ const Home = ({ user_Id, recentChats }: Props) => {
   };
 
   useEffect(() => {
-    // setAIState({
-    //   chatId: id,
-    //   messages: [],
-    // });
+    setAIState({
+      chatId: id,
+      messages: [],
+    });
+    setMessages([]);
+    console.log(aiState, messages);
+  }, []);
 
+  useEffect(() => {
     // Set a random fact when the component mounts
     const randomIndex = Math.floor(Math.random() * facts.length);
     setRandomFact(facts[randomIndex]);

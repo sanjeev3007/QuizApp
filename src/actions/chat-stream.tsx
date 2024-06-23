@@ -11,14 +11,13 @@ import { StreamResponse } from "@/utils/stream-response";
 import { UserMessage } from "@/app/(routes)/chat-bot/[userid]/[chatid]/_components/user-message";
 import { BotMessage } from "@/app/(routes)/chat-bot/[userid]/[chatid]/_components/bot-message";
 import { storeChat } from "@/utils/store-chat";
-import { SuggestionsBox } from "@/app/(routes)/chat-bot/[userid]/[chatid]/_components/suggestions";
 
 async function submit(content: string, id: string) {
   "use server";
 
   const aiState = getMutableAIState<typeof AI>();
   const uiStream = createStreamableUI();
-  const isGenerating = createStreamableValue(true);
+  const isGenerating = createStreamableValue(false);
 
   const messages: CoreMessage[] = [...aiState.get()?.messages] as any[];
 
@@ -41,21 +40,22 @@ async function submit(content: string, id: string) {
   }
 
   const processEvents = async () => {
-    const answer = await StreamResponse({ uiStream, messages });
+    const answerId = nanoid();
+    const answer = await StreamResponse({ uiStream, messages, answerId });
 
     aiState.done({
       ...aiState.get(),
       messages: [
         ...aiState.get().messages,
         {
-          id: nanoid(),
+          id: answerId,
           role: "assistant",
           content: JSON.stringify(answer),
         },
       ],
     });
     uiStream.done();
-    isGenerating.done(false);
+    isGenerating.done(true);
   };
 
   processEvents();
@@ -81,6 +81,7 @@ export type UIState = {
   id: string;
   display: React.ReactNode;
   isGenerating?: StreamableValue<boolean>;
+  suggestions?: React.ReactNode;
 }[];
 
 export interface Chat extends Record<string, any> {
@@ -131,8 +132,14 @@ export const getUIStateFromAIState = (aiState: Chat) => {
         answer.done(JSON.parse(content));
         return {
           id,
-          display: <BotMessage message={answer.value} />,
-          suggestions: <SuggestionsBox message={answer.value} />,
+          display: (
+            <BotMessage
+              message={answer.value}
+              messageId={id}
+              showSuggestions={false}
+            />
+          ),
+          suggestions: <div>Suggestions</div>,
         };
       default:
         return {

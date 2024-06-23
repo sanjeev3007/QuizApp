@@ -7,16 +7,23 @@ import { BotMessage } from "@/app/(routes)/chat-bot/[userid]/[chatid]/_component
 type Props = {
   uiStream: ReturnType<typeof createStreamableUI>;
   messages: CoreMessage[];
+  answerId: string;
 };
 
 const openai = createOpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 });
 
-export async function StreamResponse({ uiStream, messages }: Props) {
+export async function StreamResponse({ uiStream, messages, answerId }: Props) {
   const stream = createStreamableValue<PartialAnswer>();
 
-  uiStream.append(<BotMessage message={stream.value} />);
+  uiStream.append(
+    <BotMessage
+      message={stream.value}
+      messageId={answerId}
+      showSuggestions={true}
+    />
+  );
 
   let finalInquiry: PartialAnswer = {};
   await streamObject({

@@ -32,23 +32,19 @@ export const getUIStateFromAIState = (aiState: AIState) => {
         message.role.toLowerCase() === "user" ? (
           <UserMessage message={message.content} />
         ) : (
-          <StaticBotMessage
-            message={message.content}
-            hideSuggestions={{ curr: false }}
-          />
+          <StaticBotMessage message={message.content} />
         ),
     }));
 };
 
 export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
+  const { submit } = useActions();
   const [aiState, setAIState] = useAIState<typeof AI>();
+  const [messages, setMessages] = useUIState<typeof AI>();
+  const chatQuery = useChatQuery((state) => state);
+  const [inputValue, setInputValue] = useState(chatQuery?.query ?? "");
   const [doubtSolveStatus, setDoubtSolveStatus] =
     useState<boolean>(doubtSolved);
-  const chatQuery = useChatQuery((state) => state);
-  const [inputValue, setInputValue] = useState(chatQuery.query ?? "");
-  const { submit } = useActions();
-  const [messages, setMessages] = useUIState<typeof AI>();
-  const router = useRouter();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -73,10 +69,10 @@ export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
     if (id && aiState.messages.length === 0) {
       setAIState({
         chatId: id,
-        messages: initialMessages,
+        messages: initialMessages || [],
       });
       setMessages(
-        getUIStateFromAIState({ chatId: id, messages: initialMessages })
+        getUIStateFromAIState({ chatId: id, messages: initialMessages || [] })
       );
     }
   }, [id, aiState]);
