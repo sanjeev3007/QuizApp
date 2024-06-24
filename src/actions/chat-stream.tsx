@@ -11,6 +11,7 @@ import { StreamResponse } from "@/utils/stream-response";
 import { UserMessage } from "@/app/(routes)/chat-bot/[userid]/[chatid]/_components/user-message";
 import { BotMessage } from "@/app/(routes)/chat-bot/[userid]/[chatid]/_components/bot-message";
 import { storeChat } from "@/utils/store-chat";
+import { revalidatePath } from "next/cache";
 
 async function submit(content: string, id: string) {
   "use server";
@@ -114,11 +115,14 @@ export const AI = createAI<AIState, UIState>({
   },
   onSetAIState: async ({ state, done }: { state: AIState; done: boolean }) => {
     "use server";
+    if (done) {
+      revalidatePath(`/chat-bot`);
+    }
     await storeChat({ messages: state.messages, chat_id: state.chatId });
   },
 });
 
-export const getUIStateFromAIState = (aiState: Chat) => {
+export const getUIStateFromAIState = (aiState: Readonly<Chat>) => {
   return aiState.messages?.map((message) => {
     const { id, role, content } = message;
     switch (role) {

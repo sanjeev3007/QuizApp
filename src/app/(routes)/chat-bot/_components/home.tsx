@@ -78,14 +78,11 @@ const Home = ({ user_Id, recentChats }: Props) => {
 
   useEffect(() => {
     setAIState({
-      chatId: id,
+      chatId: nanoid(),
       messages: [],
     });
     setMessages([]);
-    console.log(aiState, messages);
-  }, []);
 
-  useEffect(() => {
     // Set a random fact when the component mounts
     const randomIndex = Math.floor(Math.random() * facts.length);
     setRandomFact(facts[randomIndex]);

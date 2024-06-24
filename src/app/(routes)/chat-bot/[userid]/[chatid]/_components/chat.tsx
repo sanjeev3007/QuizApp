@@ -77,6 +77,14 @@ export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
     }
   }, [id, aiState]);
 
+  const onReset = () => {
+    setAIState({
+      chatId: nanoid(),
+      messages: [],
+    });
+    setMessages([]);
+  };
+
   return (
     <ScrollArea className="h-full w-full flex flex-col">
       <div className="flex-1 px-2 md:px-8">
@@ -85,6 +93,7 @@ export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
           aiState={aiState}
           initialMessages={initialMessages}
         />
+        <Button onClick={onReset}>Reset</Button>
         {!doubtSolveStatus && (
           <form
             onSubmit={onSubmit}

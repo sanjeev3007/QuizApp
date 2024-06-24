@@ -1,7 +1,12 @@
 "use client";
 import { AI } from "@/actions/chat-stream";
 import { PartialAnswer } from "@/schemas/chat";
-import { useActions, useStreamableValue, useUIState } from "ai/rsc";
+import {
+  StreamableValue,
+  useActions,
+  useStreamableValue,
+  useUIState,
+} from "ai/rsc";
 import Image from "next/image";
 import botIcon from "@/assets/Images/bot_icon.png";
 import stars_icon from "@/assets/Images/stars_icon.png";
@@ -9,7 +14,7 @@ import { cn, nanoid } from "@/lib/utils";
 import { UserMessage } from "./user-message";
 
 type BotMessageProps = {
-  message: PartialAnswer;
+  message: StreamableValue<PartialAnswer>;
   messageId?: string;
   showSuggestions: boolean;
 };
