@@ -95,6 +95,38 @@ const quizWiseScore = ({
   });
   return score;
 };
+interface GetSubmittedAnswersParams {
+  quizIdsArray: number[];
+}
+
+const getSummitedAnswers = async (
+  { quizIdsArray }: GetSubmittedAnswersParams
+) => {
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase
+    .from('quiz')
+    .select(`
+      *,
+      submission!inner (
+        *,
+        db_math!inner (
+          *,
+          subtopic!inner (*)
+        )
+      )
+    `)
+    .in('id', quizIdsArray);
+
+  if (error) {
+    console.error('Error fetching data:', error);
+    return null;
+  }
+
+  return data;
+
+
+
+}
 
 const getTopicWiseLevelScore = async (allQuizes: any[], grade: number) => {
   const supabase = createServerSupabaseClient();
@@ -108,62 +140,95 @@ const getTopicWiseLevelScore = async (allQuizes: any[], grade: number) => {
     mediumTotal: 0,
     hardTotal: 0,
   };
-  await Promise.all(
-    allQuizes?.map(async ({ submissions }) => {
-      if (submissions.length) {
-        await Promise.all(
-          submissions.map(
-            async ({
-              questionId,
-              isCorrect,
-            }: {
-              questionId: string;
-              isCorrect: boolean;
-            }) => {
-              const response = await supabase
-                .from(`db_math`)
-                .select()
-                .eq("uuid", questionId);
-              if (response && response.data && !response.data[0]) return;
-              const questionData =
-                response && response.data && response.data[0];
-              const subtopic: any = questionData?.metadata.subtopic;
-              const difficultyLevel =
-                questionData?.difficulty_level?.toLowerCase();
-              if (subtopics[subtopic]) {
-                subtopics[subtopic].totalQuestion += 1;
-                if (isCorrect) subtopics[subtopic].totalCorrectQuestion += 1;
-                switch (difficultyLevel) {
-                  case "easy":
-                    subtopics[subtopic].easy += isCorrect ? 1 : 0;
-                    subtopics[subtopic].easyTotal += 1;
-                    break;
-                  case "medium":
-                    subtopics[subtopic].medium += isCorrect ? 1 : 0;
-                    subtopics[subtopic].mediumTotal += 1;
-                    break;
-                  default:
-                    subtopics[subtopic].hard += isCorrect ? 1 : 0;
-                    subtopics[subtopic].hardTotal += 1;
-                }
-              } else {
-                subtopics[subtopic] = {
-                  totalQuestion: 1,
-                  totalCorrectQuestion: isCorrect ? 1 : 0,
-                  easy: difficultyLevel == "easy" && isCorrect ? 1 : 0,
-                  medium: difficultyLevel == "medium" && isCorrect ? 1 : 0,
-                  hard: difficultyLevel == "hard" && isCorrect ? 1 : 0,
-                  easyTotal: difficultyLevel == "easy" ? 1 : 0,
-                  mediumTotal: difficultyLevel == "medium" ? 1 : 0,
-                  hardTotal: difficultyLevel == "hard" ? 1 : 0,
-                };
-              }
-            }
-          )
-        );
+  const submitData = await getSummitedAnswers({quizIdsArray:allQuizes})
+  // quiz has mapping to submission table
+  // await Promise.all(
+  //   allQuizes?.map(async ({ submissions }) => {
+  //     if (submissions.length) {
+  //       await Promise.all(
+  //         submissions.map(
+  //           async ({
+  //             questionId,
+  //             isCorrect,
+  //           }: {
+  //             questionId: string;
+  //             isCorrect: boolean;
+  //           }) => {
+  //             const response = await supabase
+  //               .from(`db_math`)
+  //               .select()
+  //               .eq("uuid", questionId);
+  //             if (response && response.data && !response.data[0]) return;
+  //             const questionData =
+  //               response && response.data && response.data[0];
+  //             const subtopic: any = questionData?.metadata.subtopic;
+  //             const difficultyLevel =
+  //               questionData?.difficulty_level?.toLowerCase();
+  //             if (subtopics[subtopic]) {
+  //               subtopics[subtopic].totalQuestion += 1;
+  //               if (isCorrect) subtopics[subtopic].totalCorrectQuestion += 1;
+  //               switch (difficultyLevel) {
+  //                 case "easy":
+  //                   subtopics[subtopic].easy += isCorrect ? 1 : 0;
+  //                   subtopics[subtopic].easyTotal += 1;
+  //                   break;
+  //                 case "medium":
+  //                   subtopics[subtopic].medium += isCorrect ? 1 : 0;
+  //                   subtopics[subtopic].mediumTotal += 1;
+  //                   break;
+  //                 default:
+  //                   subtopics[subtopic].hard += isCorrect ? 1 : 0;
+  //                   subtopics[subtopic].hardTotal += 1;
+  //               }
+  //             } else {
+  //               subtopics[subtopic] = {
+  //                 totalQuestion: 1,
+  //                 totalCorrectQuestion: isCorrect ? 1 : 0,
+  //                 easy: difficultyLevel == "easy" && isCorrect ? 1 : 0,
+  //                 medium: difficultyLevel == "medium" && isCorrect ? 1 : 0,
+  //                 hard: difficultyLevel == "hard" && isCorrect ? 1 : 0,
+  //                 easyTotal: difficultyLevel == "easy" ? 1 : 0,
+  //                 mediumTotal: difficultyLevel == "medium" ? 1 : 0,
+  //                 hardTotal: difficultyLevel == "hard" ? 1 : 0,
+  //               };
+  //             }
+  //           }
+  //         )
+  //       );
+  //     }
+  //   })
+  // );
+  if(!submitData?.length) return
+  submitData.map(({ subtopic_name: subtopic, difficultyLevel, isCorrect }) => {
+    if (subtopics[subtopic]) {
+      subtopics[subtopic].totalQuestion += 1;
+      if (isCorrect) subtopics[subtopic].totalCorrectQuestion += 1;
+      switch (difficultyLevel) {
+        case "easy":
+          subtopics[subtopic].easy += isCorrect ? 1 : 0;
+          subtopics[subtopic].easyTotal += 1;
+          break;
+        case "medium":
+          subtopics[subtopic].medium += isCorrect ? 1 : 0;
+          subtopics[subtopic].mediumTotal += 1;
+          break;
+        default:
+          subtopics[subtopic].hard += isCorrect ? 1 : 0;
+          subtopics[subtopic].hardTotal += 1;
       }
-    })
-  );
+    } else {
+      subtopics[subtopic] = {
+        totalQuestion: 1,
+        totalCorrectQuestion: isCorrect ? 1 : 0,
+        easy: difficultyLevel == "easy" && isCorrect ? 1 : 0,
+        medium: difficultyLevel == "medium" && isCorrect ? 1 : 0,
+        hard: difficultyLevel == "hard" && isCorrect ? 1 : 0,
+        easyTotal: difficultyLevel == "easy" ? 1 : 0,
+        mediumTotal: difficultyLevel == "medium" ? 1 : 0,
+        hardTotal: difficultyLevel == "hard" ? 1 : 0,
+      };
+    }
+  })
   return subtopics;
 };
 
