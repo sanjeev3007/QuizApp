@@ -4,6 +4,7 @@ import Quizes from "./_components/quizes";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 import CircularProgress from "@mui/material/CircularProgress";
+import HomePage from "@/components/home-page";
 
 const PageContent = async () => {
   const userName =
@@ -16,7 +17,7 @@ const PageContent = async () => {
   const total_chats = await doubtSolveDashboard(user_Id!);
 
   return (
-    <Quizes
+    <HomePage
       userId={user_Id!}
       userName={userName!}
       grade={parseInt(grade)}

@@ -1,47 +1,299 @@
-.gradient-text {
-  background: -webkit-linear-gradient(70.37deg, #4186b4 21.81%, #ffd452 76.7%);
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.level-text {
-  background: -webkit-linear-gradient(95.66deg, #edc008 0%, #e6ad0f 98.41%);
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.red-level-text {
-  background: -webkit-linear-gradient(
-    116.27deg,
-    #f8874f 16.52%,
-    #f75931 83.34%
-  );
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+.parentDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.level-card {
-  background: -webkit-linear-gradient(77.69deg, #f0f6fa 17.91%, #fffbeb 82.09%);
+.titleSectionWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-bottom: 1rem;
 }
-.gradient-text-1{
-  background: -webkit-linear-gradient(72deg, #4186B41F 24.69%, #FFC20A1F 75.31%);
+
+.titleTxt {
+  margin-top: 25px;
+  text-align: center;
 }
-.star {
-  background: -webkit-linear-gradient(
-    133.83deg,
-    #fcbc73 16.91%,
-    #f9c576 90.25%
-  );
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+
+.titleTxt .subHeadingTxt {
+  font-family: "Inter", sans-serif;
+  color: #5b8989;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 38.73px;
+  margin-top: 24px;
 }
+
+.noahHomeIcon {
+  margin-right: 120px;
+}
+
+.cardContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.cardHeading {
+  font-family: "Inter", sans-serif;
+  color: #5b8989;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 24.2px;
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+.cardsWrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.cardLayout {
+  flex: 1;
+  background: -webkit-linear-gradient(99.24deg, #f9fafa 0%, #f2f7f7 100%);
+  border: 1px solid #e6efef;
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cardContent {
+  padding: 20px;
+}
+
+.cardTitle {
+  font-family: "Inter", sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #517b7b;
+  margin-bottom: 10px;
+}
+
+.cardSubTitle {
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #6c9d9d;
+  margin-bottom: 15px;
+}
+
+.cardDescription {
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #a3a3a3;
+  margin-bottom: 20px;
+}
+
+.btnContainer {
+  margin-top: 30px;
+}
+
+.getStartedBtn {
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 19.36px;
+  text-transform: none;
+  color: #ffffff;
+  background: #e98451;
+  box-shadow: none;
+}
+
+.getStartedBtn:hover {
+  color: #ffffff;
+  background: #e98451;
+  box-shadow: none;
+}
+
+/* Subject list screen */
+
+.activityCardContainer {
+  max-width: 739px;
+  border: 1px solid #ebf3ff;
+  border-radius: 16px;
+  box-shadow: 0px 0px 8px 0px #0053f429;
+  padding: 20px;
+}
+
+.cardHeadingTxt {
+  font-family: "Inter", sans-serif;
+  color: #5b8989;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.profileWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(99.24deg, #f6f9f8 0%, #f1f3f3 100%);
+  border: 1px solid #e6efef;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.profileSection {
+  display: flex;
+  align-items: center;
+}
+
+.profileDetails {
+  margin-left: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.nameTag {
+  font-family: "Inter", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 24.2px;
+  text-align: left;
+  color: #5b8989;
+  margin-bottom: 10px;
+}
+
+.gradeTag {
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 19.36px;
+  text-align: left;
+  color: #5b8989;
+}
+
+.editBtn {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  color: #0053f4;
+  padding: 0;
+  margin-top: 8px;
+  text-transform: none;
+  color: #8f8f8f;
+}
+
+.rankSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.rankNumber {
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 19.36px;
+  color: #ffffff;
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.rankTitle {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 16.94px;
+  text-align: center;
+  color: #ff8800;
+  margin-top: 10px;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+  .titleTxt .subHeadingTxt {
+    font-size: 28px;
+    line-height: 33.89px;
+  }
+  .cardContainer {
+    width: 100%;
+  }
+  .cardsWrapper {
+    flex-direction: column;
+  }
+  .cardLayout {
+    width: 100%;
+  }
+  .cardHeading, .cardHeadingTxt {
+    font-size: 20px;
+    line-height: 24.2px;
+  }
+  .noahHomeIcon {
+    margin: 0;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .titleSectionWrapper {
+    flex-direction: column-reverse;
+    align-items: center;
+  }
+  .noahHeadingImg {
+    display: flex;
+    justify-content: center;
+  }
+  .titleTxt .subHeadingTxt {
+    font-size: 20px;
+    line-height: 24.2px;
+  }
+  .noahHomeIcon {
+    margin: 0;
+  }
+  .cardContainer {
+    width: 100%;
+  }
+  .cardsWrapper {
+    flex-direction: column;
+    text-align: left;
+  }
+  .cardHeading {
+    font-size: 16px;
+    line-height: 19.36px;
+    text-align: center;
+    margin-top: 40px;
+  }
+  .cardTitle {
+    font-size: 16px;
+    line-height: 19.36px;
+  }
+  .cardSubTitle {
+    font-size: 14px;
+    line-height: 16.94px;
+  }
+  .cardDescription {
+    font-size: 14px;
+    line-height: 16.94px;
+  }
+  .profileWrapper {
+    flex-direction: column;
+  }
+  .profileSection {
+    align-items: flex-start;
+  }
+  .rankContainer {
+    margin-top: 40px;
+  }
+}
+
 ::-webkit-scrollbar {
-  width: 5px; /* width of the scrollbar */
+  width: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #cbd5e0; /* color of the scrollbar thumb */
-  border-radius: 4px; /* rounded corners of the thumb */
+  background-color: #cbd5e0;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #edf2f7; /* color of the scrollbar track */
+  background-color: #edf2f7;
 }
