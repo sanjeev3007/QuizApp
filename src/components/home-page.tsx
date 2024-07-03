@@ -127,7 +127,7 @@ const HomePage: React.FC<Props> = ({
     } else if (title === "Ask a Doubt") {
       router.push("/chat-home");
     } else if (title === "Learn") {
-      router.push(`/student-dashboard?userId=${userId}&userName=${encodeURIComponent(userName)}&grade=${grade}`);
+      router.push("/student-dashboard");
     }
   };
 
