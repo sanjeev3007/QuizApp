@@ -23,6 +23,7 @@ export default function RootLayout({
     <SupabaseProvider>
       <Providers>
         <html lang="en">
+          <head><link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap" rel="stylesheet" /></head>
           <body className={poppins.className}>
             <main className="flex flex-col h-screen w-full">{children}</main>
           </body>

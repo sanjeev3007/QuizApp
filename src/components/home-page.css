@@ -19,7 +19,7 @@
 }
 
 .titleTxt .subHeadingTxt {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-inter);
   color: #5b8989;
   font-size: 32px;
   font-weight: 600;
@@ -38,7 +38,7 @@
 }
 
 .cardHeading {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-inter);
   color: #5b8989;
   font-size: 20px;
   font-weight: 600;
@@ -66,7 +66,7 @@
 }
 
 .cardTitle {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-inter);
   font-size: 20px;
   font-weight: 600;
   color: #517b7b;
@@ -74,7 +74,7 @@
 }
 
 .cardSubTitle {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-inter);
   font-size: 16px;
   font-weight: 400;
   color: #6c9d9d;
@@ -82,7 +82,7 @@
 }
 
 .cardDescription {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-inter);
   font-size: 16px;
   font-weight: 400;
   color: #a3a3a3;
@@ -94,7 +94,7 @@
 }
 
 .getStartedBtn {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-inter);
   font-size: 16px;
   font-weight: 600;
   line-height: 19.36px;
@@ -121,7 +121,7 @@
 }
 
 .cardHeadingTxt {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-inter);
   color: #5b8989;
   font-size: 20px;
   font-weight: 600;
@@ -131,7 +131,6 @@
 .profileWrapper {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   background: linear-gradient(99.24deg, #f6f9f8 0%, #f1f3f3 100%);
   border: 1px solid #e6efef;
   border-radius: 8px;
@@ -148,11 +147,10 @@
   margin-left: 16px;
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 
 .nameTag {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-inter);
   font-size: 20px;
   font-weight: 500;
   line-height: 24.2px;
@@ -162,7 +160,7 @@
 }
 
 .gradeTag {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-inter);
   font-size: 16px;
   font-weight: 500;
   line-height: 19.36px;
@@ -171,13 +169,15 @@
 }
 
 .editBtn {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-inter);
   font-size: 14px;
   color: #0053f4;
   padding: 0;
   margin-top: 8px;
   text-transform: none;
   color: #8f8f8f;
+  display: flex;
+  justify-content: flex-start;
 }
 
 .rankSection {
@@ -188,7 +188,7 @@
 }
 
 .rankNumber {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-inter);
   font-size: 16px;
   font-weight: 700;
   line-height: 19.36px;
@@ -200,14 +200,199 @@
   transform: translate(-50%, -50%);
 }
 
-.rankTitle {
-  font-family: "Inter", sans-serif;
+.rankTitle,
+.rankTitleGray {
+  font-family: var(--font-inter);
   font-size: 14px;
   font-weight: 600;
   line-height: 16.94px;
   text-align: center;
-  color: #ff8800;
   margin-top: 10px;
+}
+
+.rankTitle {
+  color: #ff8800;
+}
+
+.rankTitleGray {
+  color: #aaa9a8;
+}
+
+.activityTrackHeading {
+  font-family: var(--font-inter);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 19.36px;
+  letter-spacing: 0.01em;
+  text-align: left;
+  color: #569090;
+}
+
+.streaksContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.streakGraph {
+  margin-top: 15px;
+}
+
+.streakGifAndText {
+  display: flex;
+}
+
+.streakTrackTxt {
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 54.91px;
+  letter-spacing: 0.01em;
+  text-align: left;
+  color: #ffa85d;
+}
+
+.streakTxt {
+  font-family: var(--font-inter);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16.94px;
+  text-align: left;
+  color: #5b8989;
+}
+
+.streakDescription {
+  font-family: var(--font-inter);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 19.36px;
+  text-align: left;
+  color: #a3a3a3;
+  margin-top: 10px;
+}
+
+.activitiesTrackerContainer {
+  margin-top: 25px;
+}
+
+.avatarCategoriesTxt {
+  font-family: "Roboto";
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14.06px;
+  text-align: left;
+  color: #5b8989;
+}
+
+/* activity-Dialog */
+
+.dialog-title {
+  position: relative;
+  padding: 16px;
+}
+
+.close-icon {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  color: #446c6c;
+}
+
+.activityDialogHeading {
+  font-family: var(--font-roboto-mono);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 18.75px;
+  text-align: center;
+  color: #446c6c;
+}
+
+.avatar-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 17px;
+  justify-content: flex-start;
+}
+
+.MuiTabs-indicator {
+  display: none;
+}
+
+.MuiTab-root {
+  font-family: var(--font-roboto-mono);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 14.06px;
+  text-transform: none;
+  color: #5b8989;
+  min-width: 0;
+  min-height: 0;
+  padding: 6px 12px;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.MuiTab-root.Mui-selected {
+  background-color: #e98451;
+  color: #ffffff;
+  gap: 10px;
+  border-radius: 8px;
+}
+
+.MuiTabs-flexContainer {
+  gap: 8px;
+}
+
+.submitBtnContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.submitBtn {
+  padding: 12px 24px;
+  gap: 6px;
+  border-radius: 4px;
+  background: #ff712d;
+  text-transform: none;
+  margin-top: 20px;
+  width: 166px;
+  height: 40px;
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.submitBtn:hover {
+  background: #ff712d;
+  color: #ffffff;
+}
+
+.submitBtn:active {
+  box-shadow: none;
+}
+
+.dialog-content {
+  padding: 16px;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog-profile {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.activityStreakTxt {
+  font-family: var(--font-inter);
+font-size: 14px;
+font-weight: 500;
+line-height: 16.94px;
+letter-spacing: 0.01em;
+text-align: center;
+color: #569090;
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
@@ -224,12 +409,26 @@
   .cardLayout {
     width: 100%;
   }
-  .cardHeading, .cardHeadingTxt {
+  .cardHeading,
+  .cardHeadingTxt {
     font-size: 20px;
     line-height: 24.2px;
   }
   .noahHomeIcon {
     margin: 0;
+  }
+  .nameTag {
+    font-size: 16px;
+    line-height: 19.36px;
+  }
+  .gradeTag {
+    font-size: 14px;
+    line-height: 16.94px;
+  }
+  .rankTitle,
+  .rankTitleGray {
+    font-size: 14px;
+    line-height: 16.94px;
   }
 }
 
@@ -282,6 +481,42 @@
   }
   .rankContainer {
     margin-top: 40px;
+  }
+  .cardHeadingTxt {
+    font-size: 16px;
+    line-height: 19.36px;
+    text-align: center;
+  }
+  .nameTag {
+    font-size: 14px;
+    line-height: 16.94px;
+  }
+  .gradeTag {
+    font-size: 14px;
+    line-height: 16.94px;
+  }
+  .rankTitle,
+  .rankTitleGray {
+    font-size: 14px;
+    line-height: 16.94px;
+  }
+  .activityTrackHeading {
+    font-size: 16px;
+    line-height: 19.36px;
+    letter-spacing: 0.01em;
+    text-align: center;
+    margin-top: 30px;
+  }
+  .streaksContainer {
+    flex-direction: column;
+  }
+  .activityStreak {
+    margin-top: 20px;
+  }
+  .avatar-grid {
+    gap: 3px;
+    justify-content: center;
+    margin-top: 0;
   }
 }
 

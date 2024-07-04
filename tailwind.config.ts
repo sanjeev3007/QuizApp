@@ -26,6 +26,7 @@ const config = {
       fontFamily: {
         sans: ['var(--font-inter)'],
         mono: ['var(--font-roboto-mono)'],
+        bowlby: ['Bowlby One SC']
       },
       colors: {
         border: "hsl(var(--border))",
