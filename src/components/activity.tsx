@@ -40,13 +40,13 @@ const activity = () => {
   const rank = 10;
 
   const streakData = [
-    { date: "01 Jan", count: 7 },
-    { date: "02 Jan", count: 8 },
-    { date: "03 Jan", count: 10 },
-    { date: "04 Jan", count: 8 },
-    { date: "05 Jan", count: 10 },
-    { date: "06 Jan", count: 5 },
-    { date: "07 Jan", count: 2 },
+    { date: "01 Jan", count: 7, subject: "science" },
+    { date: "02 Jan", count: 8, subject: "science" },
+    { date: "03 Jan", count: 10, subject: "science" },
+    { date: "04 Jan", count: 8, subject: "science" },
+    { date: "05 Jan", count: 10, subject: "science" },
+    { date: "06 Jan", count: 5, subject: "science" },
+    { date: "07 Jan", count: 2, subject: "science" },
   ];
 
   useEffect(() => {

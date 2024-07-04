@@ -1,7 +1,13 @@
 import Activity from "@/components/activity";
+import NoahHeader from "@/components/noah-subject-header";
 
 const PageContent = () => {
-  return <Activity/>;
+  return (
+    <>
+      <NoahHeader />
+      <Activity />
+    </>
+  );
 };
 
 const Page = () => {

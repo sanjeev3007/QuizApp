@@ -146,6 +146,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { StaticImageData } from "next/image";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
+import Activeframe from "@/assets/Images/active_frame.svg";
 
 type EditProfileDialogProps = {
   open: boolean;
@@ -358,7 +359,7 @@ const ActivityDialog: React.FC<EditProfileDialogProps> = ({
   };
 
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const avatarSize = isMobile ? 48 : 64;
 
@@ -402,8 +403,17 @@ const ActivityDialog: React.FC<EditProfileDialogProps> = ({
                 sx={{
                   width: avatarSize,
                   height: avatarSize,
+                  position: "relative",
                   borderRadius: "4px",
+                  "&:focus": {
+                    border: "2px solid transparent",
+                    borderImageSource:
+                      "linear-gradient(135deg, #4EB487 0%, #50B883 100%)",
+                    borderImageSlice: 1,
+                    borderRadius: "4px"
+                  },
                 }}
+                tabIndex={0}
               />
             </Button>
           ))}
