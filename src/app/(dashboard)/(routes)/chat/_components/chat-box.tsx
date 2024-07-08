@@ -25,22 +25,17 @@ import {
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { QuizDataType } from "@/types/quiz.types";
+import { QuestionType, QuizDataType, SubmissionType } from "@/types/quiz.types";
 import {
   createMathQuiz,
   getMathQuestions,
   getTopicNameFromDB,
   storeCorrectSubmission,
   storeUserSubmission,
+  storeUserSubmissionToSubmissions,
   updateQuizStats,
 } from "@/actions/math";
 import { getQuizStats } from "@/app/supabase-client-provider";
-
-type SubmissionType = {
-  questionId: string;
-  selected: { text: string; correct: string };
-  isCorrect: boolean;
-};
 
 type ChatProps = {
   quizData: QuizDataType;
@@ -66,7 +61,7 @@ export default function Chat({
     quizData.submissions?.length || 0
   );
   const [hasEnded, setHasEnded] = useState(false);
-  const [submissions, setSubmissions] = useState<any[]>(
+  const [submissions, setSubmissions] = useState<SubmissionType[]>(
     quizData?.submissions || []
   );
   const [quizScore, showQuizScore] = useState(false);
@@ -139,6 +134,15 @@ export default function Chat({
     // Store the user submission to the db
     (async () => {
       await storeUserSubmission(quizId, user.id, submissions);
+      if (currentSubmission?.questionIntId && currentSubmission?.selected) {
+        await storeUserSubmissionToSubmissions({
+          quizId: parseInt(quizId),
+          questionId: currentSubmission?.questionIntId!,
+          isCorrect: currentSubmission?.isCorrect!,
+          optionSelected: currentSubmission?.selected.text!,
+          correctOption: currentSubmission?.correctOption!,
+        });
+      }
       if (currentSubmission?.isCorrect) {
         await storeCorrectSubmission({
           grade: user.grade,
@@ -162,12 +166,15 @@ export default function Chat({
       const isCorrect = checkAnswer(index);
 
       setCurrentSubmission({
+        questionIntId: currentQuestion?.id,
         questionId: currentQuestion?.uuid!,
         selected: options[index!],
         isCorrect,
+        correctOption: options.find((option: any) => option.correct === "true")
+          ?.text,
       });
 
-      setSubmissions((submissions: any) => [
+      setSubmissions((submissions) => [
         ...submissions,
         {
           questionId: currentQuestion?.uuid,

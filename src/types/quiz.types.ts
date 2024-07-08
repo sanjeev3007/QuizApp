@@ -23,8 +23,10 @@ export type QuizDataType = {
       text: string;
       correct: string;
     };
-    isCorrect: false;
+    isCorrect: boolean;
     questionId: string;
+    questionIntId?: number;
+    correctOption?: string;
   }[];
   created_at: Date;
   start: boolean;
@@ -36,37 +38,36 @@ type Option = {
   correct: string;
 };
 
-export type TopicTable = {
+export type SubmissionType = {
+  selected: {
+    text: string;
+    correct: string;
+  };
+  isCorrect: boolean;
+  questionId: string;
+  questionIntId?: number;
+  correctOption?: string;
+};
+
+export type QuestionType = {
   id: number;
-  topic_name: string;
-  subject_id: string;
+  uuid: string;
   grade: string;
-  type: string;
-  created_at: Date;
-  updated_at: Date;
-};
-
-export type SubjectTable = {
-  id: number;
-  subject_name: string;
-  created_at: Date;
-  updated_at: Date;
-};
-
-export type CorrectSubmissions = {
-  id: string;
-  user_id: string;
-  question_id: string;
-  quiz_id: number;
-  topic_id: string;
-  grade: number;
-  created_at: Date;
-};
-
-export type TopicAssignedToQuiz = {
-  id: number;
-  quiz_id: string;
-  topic_id: number;
-  created_at: Date;
-  updated_at: Date;
+  topic: string;
+  options: Option[];
+  subject: string;
+  metadata: {
+    grade: string;
+    topic: string;
+    subject: string;
+    subtopic: string;
+    learning_objective: string;
+  };
+  question: string;
+  created_at: string;
+  explanation: string;
+  modified_at: string;
+  blooms_level: string;
+  difficulty_level: string;
+  difficulty_rating: number;
 };

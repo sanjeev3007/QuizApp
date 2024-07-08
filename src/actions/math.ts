@@ -275,20 +275,57 @@ export async function storeCorrectSubmission({
 export async function storeUserSubmission(
   quizId: string,
   userId: string,
-  submission: any
+  submissions: any
 ) {
   const supabase = createClientComponentClient();
 
   const { data } = await supabase
     .from("test_quiz")
     .update({
-      submissions: submission,
+      submissions: submissions,
     })
     .eq("id", quizId)
     .eq("userid", userId)
     .select();
 
   return { success: true, data };
+}
+
+// store user submission to submissions table
+export async function storeUserSubmissionToSubmissions({
+  quizId,
+  questionId,
+  isCorrect,
+  optionSelected,
+  correctOption,
+}: {
+  quizId: number;
+  questionId: number;
+  isCorrect: boolean;
+  optionSelected: string;
+  correctOption: string;
+}) {
+  console.log(quizId, questionId, isCorrect, optionSelected, correctOption);
+  const supabase = createClientComponentClient();
+
+  const { data, error } = await supabase
+    .from("submissions")
+    .insert([
+      {
+        quiz_id: quizId,
+        question_id: questionId,
+        is_correct: isCorrect,
+        option_selected: optionSelected,
+        correct_option: correctOption,
+      },
+    ])
+    .select();
+
+  console.log(data);
+  if (error) {
+    console.error("store user submission to submissions error", error);
+    return { success: false };
+  }
 }
 
 // feedback quiz
