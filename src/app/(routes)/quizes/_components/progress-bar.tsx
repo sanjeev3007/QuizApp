@@ -10,18 +10,22 @@ import "@/components/home-page.css";
 
 type Props = {
   type: string;
-  quizData: any;
+  mathQuiz: {
+    level: number;
+    numberOfCompletedQuiz: number;
+    totalQuiz: number;
+  };
   gkQuiz: {
     accuracy: number;
     totalQuiz: number;
   };
 };
 
-const ProgressBar = ({ type, quizData, gkQuiz }: Props) => {
+const ProgressBar = ({ type, mathQuiz, gkQuiz }: Props) => {
   const theme = useTheme();
-  const level = quizData?.level;
+  const level = mathQuiz?.level;
   const levelPercent =
-    (quizData?.numberOfCompletedQuiz / quizData?.totalQuiz) * 100;
+    (mathQuiz?.numberOfCompletedQuiz / mathQuiz?.totalQuiz) * 100;
   const BorderLinearProgress = styled(LinearProgress)(() => ({
     height: 15,
     borderRadius: 10,
@@ -46,13 +50,13 @@ const ProgressBar = ({ type, quizData, gkQuiz }: Props) => {
       <div className="flex justify-between content-center items-center mt-1">
         {type === "gk" ? (
           <span>
-            Accuracy: <span className="font-bold">{gkQuiz.accuracy || 0}%</span> on{" "}
-            {gkQuiz.totalQuiz} quizzes
+            Accuracy: <span className="font-bold">{gkQuiz.accuracy || 0}%</span>{" "}
+            on {gkQuiz.totalQuiz} quizzes
           </span>
         ) : (
           <span>
-            Completed {quizData?.numberOfCompletedQuiz || 0} out of{" "}
-            {quizData?.totalQuiz} quizzes
+            Completed {mathQuiz?.numberOfCompletedQuiz || 0} out of{" "}
+            {mathQuiz?.totalQuiz} quizzes
           </span>
         )}
         {level > 0 && type !== "gk" && (
@@ -60,7 +64,7 @@ const ProgressBar = ({ type, quizData, gkQuiz }: Props) => {
         )}
         {level > 0 && type !== "gk" && (
           <div className="absolute top-0 mt-4 -translate-y-full right-0 mr-2 translate-x-full">
-            <Image src={levelCup} alt="cup" className="h-[24px] w-[24px]"/>
+            <Image src={levelCup} alt="cup" className="h-[24px] w-[24px]" />
           </div>
         )}
       </div>

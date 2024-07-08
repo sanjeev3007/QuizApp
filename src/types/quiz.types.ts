@@ -31,6 +31,7 @@ export type QuizDataType = {
   created_at: Date;
   start: boolean;
   complete: boolean;
+  multiple_topics?: any;
 };
 
 type Option = {

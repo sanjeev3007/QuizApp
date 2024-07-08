@@ -1,22 +1,14 @@
 "use client";
 
 import React from "react";
-import {
-  FormEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { FormEvent, useEffect, useState } from "react";
 import noahSmallIcon from "@/assets/Images/noahSmallIcon.png";
 import { toast } from "@/components/ui/use-toast";
-import { Toaster } from "@/components/ui/toaster";
 import { Input } from "@/components/ui/input";
 import ion_send_white from "@/assets/Images/ion_send_white.png";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import "./index.css";
+import "./home.css";
 import { nanoid } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import LastInteractions from "./last-interactions";
@@ -38,7 +30,7 @@ type Props = {
   recentChats: chatData[] | null;
 };
 
-const Index = ({ user_Id, recentChats }: Props) => {
+const ChatHome = ({ user_Id, recentChats }: Props) => {
   const id = nanoid();
   const [userInput, setUserInput] = useState("");
   const router = useRouter();
@@ -130,7 +122,7 @@ const Index = ({ user_Id, recentChats }: Props) => {
               className="border-0 py-[4px]  text-sm fomt-semibold text-[#FFF] bg-[#E98451] hover:bg-[#E98451]"
             >
               <span className="hidden sm:block">Start Chat</span>
-              <Image src={ion_send_white} alt="" className="sm:ml-2"/>
+              <Image src={ion_send_white} alt="" className="sm:ml-2" />
             </Button>
           </div>
         </form>
@@ -152,4 +144,4 @@ const Index = ({ user_Id, recentChats }: Props) => {
   );
 };
 
-export default Index;
+export default ChatHome;

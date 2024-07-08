@@ -21,37 +21,51 @@ import {
   getGKQuestions,
   getInCompletedGKQuiz,
 } from "@/actions/gk-quiz";
-import { createMathQuiz, getInCompletedMathQuiz } from "@/actions/math";
+import {
+  createMathQuiz,
+  getInCompletedMathQuiz,
+  getNumberOfCompletedMathQuiz,
+} from "@/actions/math";
+import { useQuery } from "@tanstack/react-query";
 
 type Props = {
   type: string;
   path: string;
-  user_id: string;
+  userId: string;
   grade: number;
-  quizData: any;
+  mathQuiz: {
+    level: number;
+    numberOfCompletedQuiz: number;
+    totalQuiz: number;
+  };
   gkQuiz: {
     accuracy: number;
     totalQuiz: number;
   };
-  totalChats: number;
+  title: string;
+  description: {
+    active: string;
+    inActive: string;
+  };
 };
 const Card = ({
   type,
   path,
-  user_id,
+  userId,
   grade,
-  quizData,
+  mathQuiz,
   gkQuiz,
-  totalChats,
+  title,
+  description,
 }: Props) => {
-  const isActiveJourney = quizData?.numberOfCompletedQuiz == 0 ? false : true;
+  const isActiveJourney = mathQuiz?.numberOfCompletedQuiz == 0 ? false : true;
   const [isActive] = useState<boolean>(isActiveJourney);
   const router = useRouter();
   const [loader, setLoader] = useState<boolean>(false);
   const [insightLoader, setInsightLoader] = useState<boolean>(false);
 
   const viewScore = () => {
-    if (quizData?.numberOfCompletedQuiz > 9) {
+    if (mathQuiz!.numberOfCompletedQuiz > 9) {
       router.push(`/view-insights`);
     }
   };
@@ -60,18 +74,18 @@ const Card = ({
     try {
       setLoader(true);
 
-      const inCompleteQuiz = await getInCompletedMathQuiz(user_id);
+      const inCompleteQuiz = await getInCompletedMathQuiz(userId);
 
       if (inCompleteQuiz && inCompleteQuiz?.length! > 0) {
-        router.push(`/chat/${inCompleteQuiz[0]?.id}`);
+        router.push(`/math-quiz/${inCompleteQuiz[0]?.id}`);
         setLoader(false);
         return;
       }
 
       // create quiz and redirect to quiz page
-      const data = await createMathQuiz(user_id, grade!);
+      const data = await createMathQuiz(userId, grade!);
       if (!data) return;
-      router.push(`/chat/${data[0]?.id}`);
+      router.push(`/math-quiz/${data[0]?.id}`);
     } catch (error) {
       console.log(error);
       return;
@@ -84,7 +98,7 @@ const Card = ({
     try {
       setLoader(true);
 
-      const inCompleteQuiz = await getInCompletedGKQuiz(user_id);
+      const inCompleteQuiz = await getInCompletedGKQuiz(userId);
 
       if (inCompleteQuiz && inCompleteQuiz?.length! > 0) {
         router.push(`/gk-quiz/${inCompleteQuiz[0]?.id}`);
@@ -92,13 +106,13 @@ const Card = ({
         return;
       }
 
-      const { questions, topics } = await getGKQuestions(user_id);
+      const { questions, topics } = await getGKQuestions(userId);
       if (questions.length === 0) {
         return;
       }
 
       // create gk quiz and redirect to gk-quiz page
-      const data = await createGKQuiz(user_id, questions, topics);
+      const data = await createGKQuiz(userId, questions, topics);
       if (!data || !data!.length) return;
       router.push(`/gk-quiz/${data[0]?.id}`);
     } catch (error) {
@@ -110,12 +124,8 @@ const Card = ({
   };
 
   const navigateTo = async () => {
-    setLoader(true);
-    if (path === "/chat") {
+    if (type === "/math") {
       generateMathQuiz();
-    } else if (path === "/chat-home") {
-      router.push(path);
-      setLoader(false);
     } else {
       generateGKQuiz();
     }
@@ -128,37 +138,15 @@ const Card = ({
         alt=""
       />
       <span className="text-[#2F4F4F] text-lg font-extrabold mt-2">
-        {type === "math"
-          ? "Math Quiz"
-          : type === "gk"
-          ? "General Quiz"
-          : "Doubt Solving"}
+        {title}
       </span>
       <div className="text-center text-[#5B8989] text-sm font-medium mt-2">
-        {type === "math" && isActive
-          ? "Get better. One quiz at a time"
-          : type === "math" && !isActive
-          ? "Explore math topic based quizzes which are adaptive and personalised for you"
-          : type === "gk" && isActive
-          ? "General trivia. Just for fun."
-          : type === "gk" && !isActive
-          ? "Explore quizzes around diverse topics to test your general knowledge"
-          : type === "chat" && totalChats > 0
-          ? "Ask anything. Anytime"
-          : "Chat with Noah to get your academic doubts resolved for any subject"}
+        {isActive ? description.active : description.inActive}
       </div>
-      {type === "chat" && totalChats > 0 ? (
-        <div className="w-full text-[#5B8989] flex justify-center content-center items-center mt-[2rem]">
-          <Image src={chatsIcon} alt="chat" />
-          <span className="font-bold text-xl ml-1">{totalChats}</span>
-          <span className="text-sm font-medium mt-1 ml-1">chats done</span>
+      {isActive && (
+        <div className="w-[70%] sm:w-[55%] lg:w-full">
+          <ProgressBar type={type} mathQuiz={mathQuiz} gkQuiz={gkQuiz} />
         </div>
-      ) : (
-        isActive && (
-          <div className="w-[70%] sm:w-[55%] lg:w-full">
-            <ProgressBar type={type} quizData={quizData} gkQuiz={gkQuiz} />
-          </div>
-        )
       )}
       <div
         className={cn(
@@ -172,13 +160,13 @@ const Card = ({
           <Button
             className={cn(
               "w-max mt-[1.5rem] py-[6px] px-[12px] bg-[#B59585] text-sm font-semibold text-[#FFFFFF] hover:bg-[#B59585]",
-              quizData?.numberOfCompletedQuiz > 9 &&
+              mathQuiz!.numberOfCompletedQuiz > 9 &&
                 "text-[#E98451] border-2 border-[#E98451] bg-[#FFF] hover:bg-[#FFF]"
               // mobileScreen && "px-5 py-6 w-[50%]"
             )}
             onClick={viewScore}
             title={
-              quizData?.numberOfCompletedQuiz < 10
+              mathQuiz!.numberOfCompletedQuiz < 10
                 ? "Complete at least 10 quizzes to view insights"
                 : ""
             }
@@ -186,7 +174,7 @@ const Card = ({
             Insights{" "}
             {insightLoader ? (
               <CircularProgress color="inherit" size={25} className="ml-2" />
-            ) : quizData?.numberOfCompletedQuiz > 9 ? (
+            ) : mathQuiz!.numberOfCompletedQuiz > 9 ? (
               <Image src={redirect_arrow} alt="redirect" className="ml-2" />
             ) : (
               <LockOutlinedIcon className="ml-2" fontSize="small" />
@@ -201,16 +189,14 @@ const Card = ({
             )}
             onClick={() => navigateTo()}
           >
-            {type !== "chat" ? "Continue" : "Start Chat"}
+            Continue
             {loader ? (
               <CircularProgress color="inherit" size={25} className="ml-2" />
-            ) : type !== "chat" ? (
+            ) : (
               <FastForwardOutlinedIcon
                 className="ml-[0.5rem]"
                 fontSize="small"
               />
-            ) : (
-              <Image src={start_chat_icon} alt="chat" className="ml-[0.5rem]" />
             )}
           </Button>
         ) : (
@@ -221,21 +207,14 @@ const Card = ({
             )}
             onClick={() => navigateTo()}
           >
-            {type !== "chat" ? "Get Started" : "Start Chat"}
+            Get Started
             {loader ? (
               <CircularProgress color="inherit" size={25} className="ml-2" />
-            ) : isActive && totalChats > 0 ? (
-              <FastForwardOutlinedIcon
-                className="ml-[0.5rem]"
-                fontSize="small"
-              />
-            ) : !isActive && type !== "chat" ? (
+            ) : (
               <ArrowForwardOutlinedIcon
                 className="ml-[0.5rem]"
                 fontSize="small"
               />
-            ) : (
-              <Image src={start_chat_icon} alt="chat" className="ml-[0.5rem]" />
             )}
           </Button>
         )}

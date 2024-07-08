@@ -18,12 +18,20 @@ type ChatProps = {
   user_id: string;
   initialMessages: Message[];
   doubtSolved: boolean;
+  chatTitle: string;
 };
 
-export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
+export function Chat({
+  id,
+  user_id,
+  initialMessages,
+  doubtSolved,
+  chatTitle: storedTitle,
+}: ChatProps) {
   const [suggestions, setSuggestions] = useState<[{ question: string }] | null>(
     null
   );
+  const [chatTitle, setChatTitle] = useState<string>(storedTitle);
   const [doubtSolveStatus, setDoubtSolveStatus] =
     useState<boolean>(doubtSolved);
   const {
@@ -34,12 +42,14 @@ export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
     handleSubmit,
     handleInputChange,
     setInput,
+    data: streamData,
   } = useChat({
     initialMessages,
     id,
     body: {
       id,
       user_id,
+      chatTitle,
     },
     async onResponse(response) {
       setSuggestions(null);
@@ -54,9 +64,12 @@ export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
   });
   const bottom = useRef<HTMLDivElement>(null);
   const chatQuery = useChatQuery((state) => state);
+  const title_data: any = streamData;
 
   useEffect(() => {
     bottom.current?.scrollIntoView({ behavior: "smooth" });
+    if (title_data)
+      setChatTitle(title_data![title_data?.length - 1]?.chat_title);
   }, [messages, suggestions]);
 
   useEffect(() => {
@@ -74,7 +87,7 @@ export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
       messages[messages.length - 1]?.role === "assistant"
     ) {
       setSuggestions(
-        JSON.parse(messages[messages.length - 1].content).nextPossibleQuestions
+        JSON.parse(messages[messages.length - 1].content)?.nextPossibleQuestions
       );
     }
   }, [initialMessages]);

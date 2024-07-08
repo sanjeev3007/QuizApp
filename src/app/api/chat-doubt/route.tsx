@@ -1,5 +1,5 @@
 import "server-only";
-import { OpenAIStream, StreamingTextResponse } from "ai";
+import { OpenAIStream, StreamingTextResponse, StreamData } from "ai";
 import OpenAI from "openai";
 import { cookies } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -12,7 +12,8 @@ const openai = new OpenAI({
 export async function POST(req: Request) {
   const supabase = createServerComponentClient({ cookies });
   const json = await req.json();
-  const { messages, user_id } = json;
+  const { messages, user_id, chatTitle } = json;
+  const data = new StreamData();
 
   if (!user_id) {
     return new Response("Unauthorized", {
@@ -68,9 +69,49 @@ export async function POST(req: Request) {
     ],
   });
 
+  const generateTitle = async (messages: any, completion: string) => {
+    const messagesList = [
+      ...messages,
+      {
+        content: completion,
+        role: "assistant",
+      },
+    ];
+    const history = messagesList
+      ?.map((message: any) => message.content)
+      .join("\n");
+
+    const res = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      temperature: 0.2,
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are an AI assistant that analyzes text to identify doubts or questions or basic conversation and generates title for them.",
+        },
+        {
+          role: "user",
+          content: `Analyze the following text and if it contains a doubt or question or basic conversation, generate a one title (7 words or less) for it, Don't put the 'Title:' or any mark in the starting of the text.\n
+          ${history}`,
+        },
+      ],
+    });
+    return res.choices[0].message.content;
+  };
+
   const stream = OpenAIStream(res, {
     async onCompletion(completion) {
-      const title = json.messages[0].content.substring(0, 100);
+      let title;
+      if (messages.length < 6) {
+        title = await generateTitle(messages, completion);
+      } else {
+        title = chatTitle;
+      }
+      data.append({
+        chat_title: title,
+      });
+      data.close();
       const id = json.id ?? nanoid();
       const createdAt = Date.now();
       const stringDate = new Date(createdAt).toISOString();
@@ -97,7 +138,7 @@ export async function POST(req: Request) {
     },
   });
 
-  return new StreamingTextResponse(stream);
+  return new StreamingTextResponse(stream, {}, data);
 }
 
 const json_format = {
