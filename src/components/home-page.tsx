@@ -135,14 +135,13 @@ const HomePage: React.FC<Props> = ({
     <div className="parentDiv">
       <div className="titleSectionWrapper">
         <div className="titleTxt">
-          <div className="noahHeadingImg">
             <Image
               src={noahHeadingImage}
               alt="Noah heading"
               height={42}
               width={151}
+              className="noahHeadingImg"
             />
-          </div>
           <Typography className="subHeadingTxt">
             Built to make you better.
           </Typography>

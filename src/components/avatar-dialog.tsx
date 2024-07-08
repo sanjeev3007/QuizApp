@@ -320,6 +320,9 @@ const ActivityDialog: React.FC<EditProfileDialogProps> = ({
   grade,
 }) => {
   const [selectedTab, setSelectedTab] = useState<number>(0);
+  const [selectedAvatarIndex, setSelectedAvatarIndex] = useState<number | null>(
+    null
+  );
   const [selectedAvatar, setSelectedAvatar] = useState<StaticImageData>(
     toonImages[0]
   );
@@ -396,25 +399,38 @@ const ActivityDialog: React.FC<EditProfileDialogProps> = ({
 
         <div className="avatar-grid">
           {getAvatarsByCategory().map((avatar, index) => (
-            <Button key={index} onClick={() => handleAvatarSelect(avatar)}>
-              <Avatar
-                src={avatar.src}
-                alt={`Avatar ${index + 1}`}
-                sx={{
-                  width: avatarSize,
-                  height: avatarSize,
-                  position: "relative",
-                  borderRadius: "4px",
-                  "&:focus": {
-                    border: "2px solid transparent",
-                    borderImageSource:
-                      "linear-gradient(135deg, #4EB487 0%, #50B883 100%)",
-                    borderImageSlice: 1,
-                    borderRadius: "4px"
-                  },
-                }}
-                tabIndex={0}
-              />
+            <Button
+              key={index}
+              onClick={() => {
+                handleAvatarSelect(avatar);
+                setSelectedAvatarIndex(index);
+              }}
+            >
+              <div style={{ position: "relative" }}>
+                <Avatar
+                  src={avatar.src}
+                  alt={`Avatar ${index + 1}`}
+                  variant="rounded"
+                  sx={{
+                    width: avatarSize,
+                    height: avatarSize,
+                  }}
+                  tabIndex={0}
+                />
+                {selectedAvatarIndex === index && (
+                  <img
+                    src={Activeframe.src}
+                    alt="Active frame"
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                    }}
+                  />
+                )}
+              </div>
             </Button>
           ))}
         </div>

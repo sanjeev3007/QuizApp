@@ -1,5 +1,10 @@
 "use client";
-import { Avatar, Button, CardContent, Typography } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  CardContent,
+  Typography
+} from "@mui/material";
 import React, { useEffect } from "react";
 import "@/components/home-page.css";
 import Image from "next/image";
@@ -13,48 +18,127 @@ import { getCookie } from "cookies-next";
 import { Bowlby_One_SC } from "next/font/google";
 import ActivityStreak from "./activity-streak";
 import { Inter } from "next/font/google";
+import { getStudentActivity } from "@/lib/quiz-insights/apiCLient";
 
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-inter"
 });
 
-const bowlby = Bowlby_One_SC({ 
+const bowlby = Bowlby_One_SC({
   weight: "400",
   subsets: ["latin"],
-  variable: "--font-bowlby-one-sc",
+  variable: "--font-bowlby-one-sc"
 });
 
+interface ActivityItem {
+  date: string;
+  numberOfQuestion: number;
+  subjectId: number;
+}
 
+interface StudentActivityResponse {
+  response: {
+    activity: ActivityItem[];
+    leaderShip?: {
+      topTenStudentList?: { userid: string; rank: string }[];
+    };
+    streak?: {
+      streak: number;
+    };
+    totalQuestionAnswered?: {
+      totalQuestionAnswered: number;
+    };
+  };
+}
 
-const activity = () => {
-
-  const userName = getCookie("userName") || process.env.NEXT_PUBLIC_DEMO_USER_ID;
-  const userId = getCookie("userId") || process.env.NEXT_PUBLIC_DEMO_USER_ID;
-  const grade = getCookie("grade") || process.env.NEXT_PUBLIC_DEMO_USER_GRADE!;
+const Activity = () => {
+  const userName =
+    (getCookie("userName") as string) || process.env.NEXT_PUBLIC_DEMO_USER_ID;
+  const userId =
+    (getCookie("userId") as string) || process.env.NEXT_PUBLIC_DEMO_USER_ID;
+  const grade =
+    (getCookie("grade") as string) ||
+    (process.env.NEXT_PUBLIC_DEMO_USER_GRADE as string);
 
   const [openDialog, setOpenDialog] = React.useState(false);
   const [avatar, setAvatar] = React.useState<string>("");
+  const [studentActivity, setStudentActivity] = React.useState<StudentActivityResponse | null>(null);
+  const [streakData, setStreakData] = React.useState<any[]>([]);
+  const [userRank, setUserRank] = React.useState<number | null>(null);
   const handleOpenDialog = () => setOpenDialog(true);
   const handleCloseDialog = () => setOpenDialog(false);
-  const rank = 10;
 
-  const streakData = [
-    { date: "01 Jan", count: 7, subject: "science" },
-    { date: "02 Jan", count: 8, subject: "science" },
-    { date: "03 Jan", count: 10, subject: "science" },
-    { date: "04 Jan", count: 8, subject: "science" },
-    { date: "05 Jan", count: 10, subject: "science" },
-    { date: "06 Jan", count: 5, subject: "science" },
-    { date: "07 Jan", count: 2, subject: "science" },
-  ];
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date
+      .toLocaleString("en-US", { day: "2-digit", month: "short" })
+      .replace(",", "");
+  };
 
   useEffect(() => {
     const savedAvatar = localStorage.getItem(`avatar_${userId}`);
     if (savedAvatar) {
       setAvatar(savedAvatar);
     }
+
+    const fetchStudentActivity = async () => {
+      try {
+        const data: StudentActivityResponse = await getStudentActivity(userId);
+        setStudentActivity(data);
+
+        if (data && data.response) {
+          if (data.response.activity) {
+            const formattedActivity = data.response.activity.map((item: ActivityItem) => ({
+              date: formatDate(item.date),
+              count: item.numberOfQuestion,
+              subject: mapSubjectIdToName(item.subjectId)
+            }));
+            setStreakData(formattedActivity);
+          }
+
+          if (data.response.leaderShip && data.response.leaderShip.topTenStudentList) {
+            const userRankData = data.response.leaderShip.topTenStudentList.find(
+              (student) => student.userid === userId
+            );
+            setUserRank(userRankData ? parseInt(userRankData.rank) : null);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching student activity:", err);
+      }
+    };
+
+    const mapSubjectIdToName = (subjectId: number): string => {
+      switch (subjectId) {
+        case 1:
+          return "Maths"
+        case 2:
+          return "Science";
+        case 3:
+          return "English";
+        case 4:
+          return "Coding";
+        default:
+          return "Unknown";
+      }
+    };
+
+    fetchStudentActivity();
   }, [userId]);
+
+  const getSubjectColor = (subject: string) => {
+    switch (subject?.toLowerCase()) {
+      case "math":
+        return "#FFA85D";
+      case "science":
+        return "linear-gradient(123.74deg, #54C993 -2.88%, #54C9B2 103.53%)";
+      case "english":
+        return "linear-gradient(123.74deg, #47BAD7 -2.88%, #47ACD7 103.53%)";
+      default:
+        return "#FFA85D";
+    }
+  };
 
   const handleAvatarUpdate = (newAvatar: string) => {
     setAvatar(newAvatar);
@@ -84,18 +168,18 @@ const activity = () => {
           </div>
           <div className="rankContainer">
             <div className="rankSection">
-              <Image src={rank > 0 ? rank_active : rank_gray} alt="rank" />
+              <Image src={userRank ? rank_active : rank_gray} alt="rank" />
               <Typography className="rankNumber">
-                {rank > 0 ? rank : ""}
+                {userRank ? userRank : ""}
               </Typography>
             </div>
-            <Typography className={rank > 0 ? "rankTitle" : "rankTitleGray"}>
-              {rank > 0 ? "Your Rank" : "Unranked"}
+            <Typography className={userRank ? "rankTitle" : "rankTitleGray"}>
+              {userRank ? "Your Rank" : "Unranked"}
             </Typography>
           </div>
         </div>
         <div className="activitiesTrackerContainer">
-          {streakData ? (
+          {studentActivity ? (
             <>
               <div className="streaksGraphContainer">
                 <Typography className="activityTrackHeading">
@@ -104,7 +188,7 @@ const activity = () => {
               </div>
               <div className="streaksContainer">
                 <div className="streakGraph">
-                <ActivityStreak streakData={streakData}/>
+                  <ActivityStreak streakData={streakData} />
                 </div>
                 <div className="activityStreak">
                   <div className="streakGifAndText">
@@ -115,21 +199,25 @@ const activity = () => {
                       height={72}
                     />
                     <div>
-                    <div className="font-bowlby text-4xl font-normal text-[#FFA85D]">6x</div>
-
+                      <div className="font-bowlby text-4xl font-normal text-[#FFA85D]">
+                        {studentActivity.response.streak?.streak}x
+                      </div>
                       <Typography className="streakTxt">
                         daily streak
                       </Typography>
                     </div>
                   </div>
                   <Typography className="streakDescription">
-                    <strong>{140}</strong> questions completed
+                    <strong>
+                      {studentActivity.response.totalQuestionAnswered?.totalQuestionAnswered}
+                    </strong>{" "}
+                    questions completed
                   </Typography>
                 </div>
               </div>
             </>
           ) : (
-            <>
+            <div className="new-user-activity">
               <Image
                 src={noahFireStreak}
                 alt="noahFireStreak"
@@ -140,9 +228,8 @@ const activity = () => {
                 Keep completing your daily activities and watch your learning
                 streak burning brightly here!
               </Typography>
-            </>
+            </div>
           )}
-          
         </div>
       </CardContent>
       {openDialog && (
@@ -150,7 +237,7 @@ const activity = () => {
           open={openDialog}
           onClose={handleCloseDialog}
           onAvatarUpdate={handleAvatarUpdate}
-          userName={userName || ''}
+          userName={userName || ""}
           grade={grade}
         />
       )}
@@ -158,4 +245,4 @@ const activity = () => {
   );
 };
 
-export default activity;
+export default Activity;
