@@ -1,0 +1,46 @@
+.gradient-text {
+  background: -webkit-linear-gradient(70.37deg, #4186b4 21.81%, #ffd452 76.7%);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-2 {
+  background: -webkit-linear-gradient(5deg, #e561cb 57.95%, #fdb321 91.53%);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.card-math {
+  background: -webkit-linear-gradient(20deg, #fffaf5 -2.88%, #ffefd7 103.53%);
+  border: 1px solid #ffe6c2;
+}
+
+.card-science {
+  background: -webkit-linear-gradient(20deg, #f5fffa -2.88%, #d7fff7 103.53%);
+  border: 1px solid #c2ffed;
+}
+
+.card-english {
+  background: -webkit-linear-gradient(20deg, #f5fdff -2.88%, #d7f3ff 103.53%);
+  border: 1px solid #e6efef;
+}
+
+.card-coding {
+  background: -webkit-linear-gradient(20deg, #f5f5ff -2.88%, #d7dcff 103.53%);
+  border: 1px solid #e6e6ef;
+}
+
+.tags-math {
+  background: -webkit-linear-gradient(20deg, #fff1e1 -2.88%, #feeacd 103.53%);
+  color: #b58440;
+}
+
+.tags-science {
+  background: -webkit-linear-gradient(20deg, #d7ffec -2.88%, #c2fef2 103.53%);
+  color: #40b59b;
+}
+
+.tags-english {
+  background: -webkit-linear-gradient(20deg, #d7f7ff -2.88%, #cdeffe 103.53%);
+  color: #4096b5;
+}

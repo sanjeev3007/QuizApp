@@ -1,7 +1,4 @@
 import React from "react";
-import { makeStyles } from "@mui/styles";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
 import Logo from "@/assets/Images/cy_logo.svg";
 import Image from "next/image";
 import styles from "./header.module.css";
