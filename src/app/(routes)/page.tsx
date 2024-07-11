@@ -11,7 +11,7 @@ const Home = async () => {
 
   return (
     <div className="p-5 lg:px-12 w-full md:max-w-7xl mx-auto bg-[#FFF] !important">
-      <HomePage quizData={numberOfCompletedQuizData} />
+      <HomePage userId={user_Id!} totalChats={0} />
     </div>
   );
 };
