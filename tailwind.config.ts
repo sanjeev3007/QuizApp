@@ -26,6 +26,7 @@ const config = {
       fontFamily: {
         sans: ['var(--font-inter)'],
         mono: ['var(--font-roboto-mono)'],
+        bowlby: ['Bowlby One SC']
       },
       colors: {
         border: "hsl(var(--border))",
@@ -81,6 +82,9 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      screens: {
+        "xs": "375px"
+      }
     },
   },
   plugins: [

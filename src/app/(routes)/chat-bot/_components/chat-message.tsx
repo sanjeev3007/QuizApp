@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import botIcon from "@/assets/Images/bot_icon.png";
+import botIcon from "@/assets/Images/noah_dp.svg";
 import userIcon from "@/assets/Images/user_icon.png";
 import { Message } from "ai";
 import { UseChatHelpers } from "ai/react";
