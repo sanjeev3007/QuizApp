@@ -66,7 +66,6 @@ const PageContent = () => {
           const data2 = await getStudentDashboard({
             studentId: userId,
             subjectId: null,
-            timeZone: "Asia/Calcutta",
           });
           setLeaderboardData(data2.response.leaderboard);
           setStudentActivity(data2.response.activity);
