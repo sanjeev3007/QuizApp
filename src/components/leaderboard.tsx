@@ -2,20 +2,14 @@ import React from "react";
 import Image from "next/image";
 import "./leaderboard.css";
 
-interface LeaderboardEntry {
-  rank: number;
-  profilePicUrl: string;
-  name: string;
-  country: string;
-  rating: number;
-}
-
 const GlobalLeaderboard = ({
   leaderboardData,
   studentData,
+  avatar,
 }: {
   leaderboardData: any;
   studentData: any;
+  avatar: string;
 }) => {
   return (
     <div
@@ -54,7 +48,11 @@ const GlobalLeaderboard = ({
               </div>
               <span className="flex flex-row">
                 <Image
-                  src={studentMeta?.pic || "/images/default-profile.png"}
+                  src={
+                    studentMeta?.studentId == studentData?.studentId
+                      ? avatar || "/images/default-profile.png"
+                      : studentMeta?.pic || "/images/default-profile.png"
+                  }
                   alt="pic"
                   height={20}
                   width={20}
@@ -67,7 +65,11 @@ const GlobalLeaderboard = ({
               <div className="m-auto">
                 {" "}
                 <Image
-                  src={`/images/countries/${studentMeta?.countryName}.png`}
+                  src={
+                    studentMeta?.countryName
+                      ? `/images/countries/${studentMeta?.countryName}.png`
+                      : "/images/countries/default_flag_globe.svg"
+                  }
                   alt="country"
                   height={20}
                   width={20}

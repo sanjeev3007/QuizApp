@@ -10,7 +10,10 @@ import { useRouter } from "next/navigation";
 import CircularProgress from "@mui/material/CircularProgress";
 import { getNumberOfCompletedGKQuiz } from "@/actions/gk-quiz.server";
 import { createGKQuiz, getGKQuestions } from "@/actions/gk-quiz";
-import { doubtSolveDashboard } from "@/app/supabase-server";
+import {
+  doubtSolveDashboard,
+  getNumberOfSubmittedAnswers,
+} from "@/app/supabase-server";
 
 type Props = {
   userId: string;
@@ -30,7 +33,16 @@ const HomePage: React.FC<Props> = ({
   const [quizData, setQuizData] = useState<QuizData | null>(null);
   const [totalDoubtChats, setTotalDoubtChats] =
     useState<number>(initialTotalChats);
-  const numbers = 140;
+  const [numberOfCompletedQuiz, setNumberOfCompletedQuiz] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const x = await getNumberOfSubmittedAnswers(userId);
+      setNumberOfCompletedQuiz(x);
+    };
+    fetchData();
+  }, []);
+
   const router = useRouter();
   const [loader, setLoader] = useState<boolean>(false);
   const cards = [
@@ -38,14 +50,15 @@ const HomePage: React.FC<Props> = ({
       title: "Learn",
       subtitle:
         "Learn through quizzes on different academic subjects tailored for you",
-      description: `${numbers} questions completed`,
+      description: `${numberOfCompletedQuiz} questions completed`,
     },
     {
       title: "Fun Trivia",
       subtitle:
         "Test your general knowledge skills across various topics through quizzes",
       description:
-        quizData && quizData.numberOfCompletedQuiz ? (
+        (quizData && quizData?.numberOfCompletedQuiz == 0) ||
+        quizData?.numberOfCompletedQuiz ? (
           <span>
             <strong>{quizData.numberOfCompletedQuiz}</strong> questions
             completed
@@ -58,13 +71,14 @@ const HomePage: React.FC<Props> = ({
       title: "Ask a Doubt",
       subtitle:
         "Chat with Noah real time to get any of your doubts resolved or discuss any topic",
-      description: totalDoubtChats ? (
-        <span>
-          <strong>{totalDoubtChats}</strong> chats completed
-        </span>
-      ) : (
-        ""
-      ),
+      description:
+        totalDoubtChats == 0 || totalDoubtChats ? (
+          <span>
+            <strong>{totalDoubtChats}</strong> chats completed
+          </span>
+        ) : (
+          ""
+        ),
     },
   ];
 

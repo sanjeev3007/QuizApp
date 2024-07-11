@@ -15,22 +15,19 @@ const activity = ({
   studentActivity,
   streakData,
   studentData,
+  avatar,
+  setAvatar,
 }: {
   subject: string | null;
   studentActivity: any;
   streakData: any;
   studentData: any;
+  avatar: string;
+  setAvatar: Function;
 }) => {
   const [openDialog, setOpenDialog] = React.useState(false);
-  const [avatar, setAvatar] = React.useState<string>("");
   const handleOpenDialog = () => setOpenDialog(true);
   const handleCloseDialog = () => setOpenDialog(false);
-
-  useEffect(() => {
-    if (studentData) {
-      setAvatar(studentData.pic);
-    }
-  }, [studentData]);
 
   const getBackgroundColor = (subject: string | null) => {
     switch (subject) {
@@ -51,7 +48,11 @@ const activity = ({
         <Typography className="cardHeadingTxt">My Activity</Typography>
         <div className="profileWrapper">
           <div className="profileSection">
-            <Avatar src={avatar} alt="profile" sx={{ width: 80, height: 80 }} />
+            <Avatar
+              src={avatar || "/images/default-profile.png"}
+              alt="profile"
+              sx={{ width: 80, height: 80 }}
+            />
             <div className="profileDetails">
               <span className="nameTag">
                 {studentData?.studentName || "N/A"}
@@ -166,6 +167,7 @@ const activity = ({
           grade={studentData.grade}
           studentId={studentData.studentId}
           setAvatar={setAvatar}
+          avatar={avatar}
         />
       )}
     </>

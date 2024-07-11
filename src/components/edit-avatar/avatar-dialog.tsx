@@ -22,6 +22,7 @@ type EditProfileDialogProps = {
   grade: String;
   studentId: String;
   setAvatar: Function;
+  avatar: string;
 };
 
 const ActivityDialog: React.FC<EditProfileDialogProps> = ({
@@ -31,6 +32,7 @@ const ActivityDialog: React.FC<EditProfileDialogProps> = ({
   grade,
   studentId,
   setAvatar,
+  avatar,
 }) => {
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [selectedAvatar, setSelectedAvatar] = useState<string>("");
@@ -92,7 +94,7 @@ const ActivityDialog: React.FC<EditProfileDialogProps> = ({
 
   const handleSubmit = async () => {
     try {
-      await apiService.post("/student/profileImage", {
+      await apiService.post("/dashboard/avatar", {
         imageURL: selectedAvatar,
         studentId,
       });
@@ -114,7 +116,7 @@ const ActivityDialog: React.FC<EditProfileDialogProps> = ({
       <DialogContent className="dialog-content">
         <div className="dialog-profile">
           <Avatar
-            src={selectedAvatar}
+            src={selectedAvatar || avatar}
             style={{ width: 80, height: 80, marginRight: 20 }}
           />
           <div>

@@ -22,6 +22,7 @@ const PageContent = () => {
   const [streakData, setStreakData] = useState({});
   const [studentData, setStudentData] = useState(null);
   const [topicData, setTopicData] = useState([]);
+  const [avatar, setAvatar] = useState<string>("");
 
   const params = useSearchParams();
   const subject = params.get("subject");
@@ -51,18 +52,19 @@ const PageContent = () => {
             subjectId,
             timeZone: "Asia/Calcutta",
           });
-          setLeaderboardData(data.response.leaderShip);
+          setLeaderboardData(data.response.leaderboard);
           setStudentActivity(data.response.activity);
           setStreakData(data.response.streak);
 
           const currentStudent =
-            data.response.leaderShip.topTenStudentList.find(
+            data.response.leaderboard.topTenStudentList.find(
               (row: any) => row.userid == userId
             );
           setStudentData({
-            ...data.response.leaderShip.studentMeta[userId],
+            ...data.response.currentStudentMeta,
             rank: currentStudent?.rank,
           });
+          setAvatar(data.response.currentStudentMeta?.pic || "");
 
           const data2 = await getStudentTopics({
             studentId: userId,
@@ -93,10 +95,13 @@ const PageContent = () => {
               studentActivity={studentActivity}
               streakData={streakData}
               studentData={studentData}
+              avatar={avatar}
+              setAvatar={setAvatar}
             />
             <GlobalLeaderboard
               leaderboardData={leaderboardData}
               studentData={studentData}
+              avatar={avatar}
             />
           </div>
           <div className="lg:text-4xl md:text-2xl xs:text-xl font-semibold leading-[38.73px] text-center lg:mt-10 md:mt-8 xs:mt-6">

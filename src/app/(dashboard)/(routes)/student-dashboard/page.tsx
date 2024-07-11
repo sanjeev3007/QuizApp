@@ -45,6 +45,7 @@ const PageContent = () => {
   const [studentActivity, setStudentActivity] = useState([]);
   const [streakData, setStreakData] = useState({});
   const [studentData, setStudentData] = useState(null);
+  const [avatar, setAvatar] = useState<string>("");
 
   useEffect(() => {
     const userId = getCookie("userId");
@@ -67,18 +68,19 @@ const PageContent = () => {
             subjectId: null,
             timeZone: "Asia/Calcutta",
           });
-          setLeaderboardData(data2.response.leaderShip);
+          setLeaderboardData(data2.response.leaderboard);
           setStudentActivity(data2.response.activity);
           setStreakData(data2.response.streak);
 
           const currentStudent =
-            data2.response.leaderShip.topTenStudentList.find(
+            data2.response.leaderboard.topTenStudentList.find(
               (row: any) => row.userid == userId
             );
           setStudentData({
-            ...data2.response.leaderShip.studentMeta[userId],
+            ...data2.response.currentStudentMeta,
             rank: currentStudent?.rank,
           });
+          setAvatar(data2.response.currentStudentMeta?.pic || "");
         }
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -151,10 +153,13 @@ const PageContent = () => {
               studentActivity={studentActivity}
               streakData={streakData}
               studentData={studentData}
+              avatar={avatar}
+              setAvatar={setAvatar}
             />
             <GlobalLeaderboard
               leaderboardData={leaderboardData}
               studentData={studentData}
+              avatar={avatar}
             />
           </div>
         </div>

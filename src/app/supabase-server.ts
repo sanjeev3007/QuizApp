@@ -357,3 +357,23 @@ export async function recentChat(userId: string) {
 
   return chats;
 }
+
+export const getNumberOfSubmittedAnswers = async (userid: string) => {
+  const supabase = createServerSupabaseClient();
+  const { data: allQuizes, error } = await supabase
+    .from("quiz")
+    .select("questions, submissions")
+    .eq("userid", userid);
+
+  if (error) {
+    console.error(error);
+    return 0;
+  }
+  let numberOfCompletedQuiz = 0;
+  allQuizes?.forEach((quiz) => {
+    if (quiz.submissions?.length > 0) {
+      numberOfCompletedQuiz += quiz.submissions.length;
+    }
+  });
+  return numberOfCompletedQuiz;
+};
