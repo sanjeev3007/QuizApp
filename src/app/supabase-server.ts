@@ -57,7 +57,7 @@ export const getNumberOfCompletedQuiz = async (userid: string) => {
     .from("quiz")
     .select("questions, submissions")
     .eq("userid", userid)
-    .eq("complete", "True");
+    .eq("complete", true);
 
   if (error) {
     console.error(error);

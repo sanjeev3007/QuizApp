@@ -2,6 +2,7 @@ export type QuizDataType = {
   id: number;
   userid: string;
   topic_id: number;
+  subject_id: number;
   questions: {
     uuid: string;
     grade: string;

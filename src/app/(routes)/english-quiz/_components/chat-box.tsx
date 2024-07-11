@@ -92,7 +92,7 @@ export default function Chat({
         setLoader(false);
         return;
       }
-      router.push(`/math-quiz/${data[0].id}`);
+      router.push(`/english-quiz/${data[0].id}`);
     } catch (error) {
       console.log(error);
     } finally {

@@ -39,6 +39,7 @@ export default async function ChatPage({
         }}
         numberOfCompletedQuizData={numberOfCompletedQuizData}
         assignStatus={assignStatus}
+        subjectId={subjectId}
       />
     </div>
   );

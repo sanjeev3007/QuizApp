@@ -45,6 +45,7 @@ type ChatProps = {
   };
   numberOfCompletedQuizData: any;
   assignStatus: boolean;
+  subjectId: number;
 };
 
 export default function Chat({
@@ -53,6 +54,7 @@ export default function Chat({
   user,
   numberOfCompletedQuizData,
   assignStatus,
+  subjectId,
 }: ChatProps) {
   const bottom = useRef<HTMLDivElement>(null);
   const [questionIndex, setQuestionIndex] = useState(
@@ -72,7 +74,6 @@ export default function Chat({
   const [score, setScore] = useState(0);
   const [quizTopic, setQuizTopic] = useState<string | null>(null);
   const [topicId, setTopicId] = useState<number | null>(null);
-  const subjectId = 1;
   const router = useRouter();
 
   const { questions: qList, complete: isComplete } = quizData;
@@ -92,7 +93,7 @@ export default function Chat({
         setLoader(false);
         return;
       }
-      router.push(`/math-quiz/${data[0].id}`);
+      router.push(`/science-quiz/${data[0].id}`);
     } catch (error) {
       console.log(error);
     } finally {
@@ -176,7 +177,7 @@ export default function Chat({
       }
     })();
     router.refresh();
-  }, [submissions, quizTopic, started]);
+  }, [submissions]);
 
   // Handle the next button click
   const handleNext = useCallback(

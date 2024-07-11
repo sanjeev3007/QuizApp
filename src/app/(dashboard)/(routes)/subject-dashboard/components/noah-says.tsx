@@ -5,11 +5,17 @@ import NoahImage from "@/assets/Images/noah_doubt_solve_dp.svg";
 import { Button, Card, CircularProgress, Typography } from "@mui/material";
 import ArrowOutwardRoundedIcon from "@mui/icons-material/ArrowOutwardRounded";
 import EastRoundedIcon from "@mui/icons-material/EastRounded";
-import { createMathQuiz } from "@/actions/math";
 import { useRouter } from "next/navigation";
 import { getCookie } from "cookies-next";
+import { createQuizBySubject } from "@/actions/quiz.client";
 
-const NoahHeader = ({ subjectId }: { subjectId: number }) => {
+const NoahHeader = ({
+  subjectId,
+  quizPath,
+}: {
+  subjectId: number;
+  quizPath: string;
+}) => {
   const userId = getCookie("userId");
   const grade = parseInt(getCookie("grade")!);
   const studentName = getCookie("studentName");
@@ -27,9 +33,10 @@ const NoahHeader = ({ subjectId }: { subjectId: number }) => {
     if (!userId || !grade) return;
     try {
       setLoading(true);
-      const data = await createMathQuiz(userId, grade, subjectId);
+      const data = await createQuizBySubject({ userId, grade, subjectId });
+      console.log(data);
       if (data && data.length > 0) {
-        router.push(`/math-quiz/${data[0].id}`);
+        router.push(`${quizPath}/${data[0].id}`);
       }
     } catch (error) {
       console.log(error);

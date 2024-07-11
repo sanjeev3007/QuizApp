@@ -65,6 +65,7 @@ export function InitialChatMessage({
         userId: user.id,
         subjectId,
       });
+      console.log(questions, topicName, topicId);
       setQuestionList(questions);
       setQuizTopic(topicName);
       setTopicId(topicId);
