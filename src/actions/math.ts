@@ -1,7 +1,11 @@
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 // create quiz
-export async function createMathQuiz(userid: string, grade: number) {
+export async function createMathQuiz(
+  userid: string,
+  grade: number,
+  subjectId: number
+) {
   const supabase = createClientComponentClient();
 
   const metadata = {
@@ -9,10 +13,11 @@ export async function createMathQuiz(userid: string, grade: number) {
   };
 
   const { data, error } = await supabase
-    .from("test_quiz")
+    .from("quiz")
     .insert({
       userid: userid,
       metadata: metadata,
+      subject_id: subjectId,
     })
     .select();
 
@@ -58,7 +63,7 @@ export async function updateMathQuiz({
   }
 
   const { data, error } = await supabase
-    .from("test_quiz")
+    .from("quiz")
     .update({
       questions,
       start: true,
@@ -87,9 +92,9 @@ export const getMathQuestions = async (
   let topicData;
 
   if (!!selectedTopic?.topic) {
-    topicData = await getIdFromTopic(selectedTopic.topic?.topic);
-    console.log(topicData);
     grade = selectedTopic.topic?.grade;
+    topicData = await getIdFromTopic(selectedTopic.topic?.topic, grade);
+    console.log(topicData);
   } else {
     grade = user_grade;
     if (grade > 8) grade = 8;
@@ -134,7 +139,7 @@ const fetchQuestionsByLevel = async (
 ) => {
   const supabase = createClientComponentClient();
 
-  const { data, error } = await supabase.rpc("test_db_math_rpc", {
+  const { data, error } = await supabase.rpc("db_math_rpc", {
     level: level,
     rows_limit: limit,
     subject_topic: topic,
@@ -149,13 +154,14 @@ const fetchQuestionsByLevel = async (
   return data;
 };
 
-const getIdFromTopic = async (topic: string) => {
+const getIdFromTopic = async (topic: string, grade: number) => {
   const supabase = createClientComponentClient();
 
   const { data, error } = await supabase
     .from("topic")
     .select("id, topic_name")
     .eq("topic_name", topic)
+    .eq("grade", grade)
     .limit(1)
     .single();
 
@@ -200,7 +206,7 @@ const generateRandomTopic = async (grade: number) => {
 export const updateQuizStats = async (quizId: string, userId: string) => {
   const supabase = createClientComponentClient();
   const { error } = await supabase
-    .from("test_quiz")
+    .from("quiz")
     .update({
       complete: true,
     })
@@ -223,7 +229,7 @@ export const fetchCorrectSubmissions = async (
   const supabase = createClientComponentClient();
 
   const { data } = await supabase
-    .from("test_correct_submissions")
+    .from("correct_submissions")
     .select("question_id")
     .eq("user_id", user_id)
     .eq("topic_id", topic_id);
@@ -255,10 +261,11 @@ export async function storeCorrectSubmission({
 }) {
   const supabase = createClientComponentClient();
 
-  const { error } = await supabase.from("test_correct_submissions").insert({
-    user_id,
-    question_id,
+  const { error } = await supabase.from("correct_submissions").insert({
+    userid: user_id,
+    questionid: question_id,
     quiz_id,
+    quizid: quiz_id,
     topic_id,
     grade,
   });
@@ -280,7 +287,7 @@ export async function storeUserSubmission(
   const supabase = createClientComponentClient();
 
   const { data } = await supabase
-    .from("test_quiz")
+    .from("quiz")
     .update({
       submissions: submissions,
     })
@@ -305,7 +312,6 @@ export async function storeUserSubmissionToSubmissions({
   optionSelected: string;
   correctOption: string;
 }) {
-  console.log(quizId, questionId, isCorrect, optionSelected, correctOption);
   const supabase = createClientComponentClient();
 
   const { data, error } = await supabase
@@ -358,10 +364,10 @@ export const feedbackQuiz = async ({
 export const getNumberOfCompletedMathQuiz = async (userid: string) => {
   const supabase = createClientComponentClient();
   const { data: allQuizes, error } = await supabase
-    .from("test_quiz")
+    .from("quiz")
     .select("questions, submissions")
     .eq("userid", userid)
-    .eq("complete", "True");
+    .eq("complete", true);
 
   if (error) {
     console.error(error);
@@ -384,7 +390,7 @@ export async function getInCompletedMathQuiz(userId: string) {
   const supabase = createClientComponentClient();
   const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000); // Calculate the timestamp for 2 hours ago
   const { data, error } = await supabase
-    .from("test_quiz")
+    .from("quiz")
     .select("*")
     .eq("userid", userId)
     .eq("start", true)

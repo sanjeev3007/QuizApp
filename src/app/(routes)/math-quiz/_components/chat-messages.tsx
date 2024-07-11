@@ -192,7 +192,9 @@ export function EndChatMessage({
             </Button>
             <Button
               className="min-w-[164px] mt-2 border-2 border-[#E98451] bg-transparent text-[#E98451] hover:bg-transparent md:ml-2"
-              onClick={() => router.push(`/quizes`)}
+              onClick={() =>
+                router.push(`/subject-dashboard?subject=Mathematics`)
+              }
             >
               End Quiz & Exit{" "}
             </Button>

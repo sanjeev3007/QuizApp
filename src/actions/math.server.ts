@@ -5,7 +5,7 @@ import { createServerSupabaseClient } from "@/app/supabase-server";
 export const getNumberOfCompletedMathQuiz = async (userid: string) => {
   const supabase = createServerSupabaseClient();
   const { data: allQuizes, error } = await supabase
-    .from("test_quiz")
+    .from("quiz")
     .select("questions, submissions")
     .eq("userid", userid)
     .eq("complete", "True");

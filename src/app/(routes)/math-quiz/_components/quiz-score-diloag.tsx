@@ -30,7 +30,7 @@ export default function QuizScore({
     const quiz_stats = await getQuizStats(quizId);
     let accuracy: number = 0;
 
-    let totalCorrect = quiz_stats.submissions?.reduce(
+    let totalCorrect = quiz_stats?.submissions?.reduce(
       (acc: any, question: any) => {
         if (question.isCorrect) {
           return acc + 1;
@@ -41,7 +41,7 @@ export default function QuizScore({
     );
     setTotalCorrect(totalCorrect);
 
-    const questionLength = quiz_stats.questions?.length;
+    const questionLength = quiz_stats?.questions?.length;
     setTotalQuestions(questionLength);
     accuracy = (totalCorrect / questionLength) * 100;
     setAccuracy(accuracy);

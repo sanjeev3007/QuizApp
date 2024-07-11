@@ -4,7 +4,7 @@ import "./components/subject-dashboard.css";
 import Activity from "@/components/activity/activity";
 import GlobalLeaderboard from "@/components/leaderboard";
 import NoahHeader from "./components/noah-says";
-import { getCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import {
   getStudentDashboard,
   getStudentTopics,
@@ -51,6 +51,7 @@ const PageContent = () => {
             studentId: userId,
             subjectId,
           });
+          console.log(data);
           setLeaderboardData(data.response.leaderboard);
           setStudentActivity(data.response.activity);
           setStreakData(data.response.streak);
@@ -76,18 +77,20 @@ const PageContent = () => {
         console.error("Error fetching data:", err);
       }
     };
-    fetchData();
+    (async () => {
+      await fetchData();
+    })();
   }, []);
 
   return (
-    <div className="w-full md:max-w-7xl mx-auto bg-[#FFF] pb-10 overflow-hidden !important">
+    <div className="w-full md:max-w-7xl mx-auto bg-[#FFF] pb-10 overflow-y-auto !important">
       <div className="font-sans w-full flex justify-center">
         <div className="w-full flex justify-center flex-col">
           <div className="lg:text-4xl md:text-2xl xs:text-xl font-semibold leading-[38.73px] text-center lg:mt-10 md:mt-8 xs:mt-6">
             <span className="gradient-title-1">Supercharge</span>
             <span className="text-[#5B8989]">{` your ${sub} learning`}</span>
           </div>
-          <NoahHeader />
+          <NoahHeader subjectId={subjectId} />
           <div className="flex lg:flex-row xs:flex-col justify-center gap-8 lg:mt-14 md:mt-6 xs:mt-12 mb-10">
             <Activity
               subject={subject}

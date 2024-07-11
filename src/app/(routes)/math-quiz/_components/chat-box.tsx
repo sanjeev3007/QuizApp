@@ -24,7 +24,7 @@ import {
 } from "./chat-messages";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { QuestionType, QuizDataType, SubmissionType } from "@/types/quiz.types";
 import {
   createMathQuiz,
@@ -73,22 +73,28 @@ export default function Chat({
     useState<SubmissionType | null>(null);
   const [score, setScore] = useState(0);
   const [quizTopic, setQuizTopic] = useState<string | null>(null);
-
+  const subjectId = 1;
   const router = useRouter();
 
   const { questions: qList, complete: isComplete } = quizData;
   const [questionList, setQuestionList] = useState<any>(qList);
 
   const startNewQuiz = async () => {
-    setLoader(true);
+    try {
+      setLoader(true);
 
-    const data = await createMathQuiz(user.id, user.grade);
-    if (!data || !data.length) {
+      const data = await createMathQuiz(user.id, user.grade, subjectId);
+
+      if (!data || !data.length) {
+        setLoader(false);
+        return;
+      }
+      router.push(`/math-quiz/${data[0].id}`);
+    } catch (error) {
+      console.log(error);
+    } finally {
       setLoader(false);
-      return;
     }
-    router.push(`/chat/${data[0].id}`);
-    setLoader(false);
   };
 
   // Get the current question
@@ -110,18 +116,30 @@ export default function Chat({
   }, [bottom.current, currentQuestion, submissions, hasEnded]);
 
   const checkScore = async () => {
-    const quiz_stats = await getQuizStats(quizId);
-
-    let totalCorrect = quiz_stats.submissions?.reduce(
-      (acc: any, question: any) => {
+    if (submissions.length > 0) {
+      let totalCorrect = submissions?.reduce((acc: any, question: any) => {
         if (question.isCorrect) {
           return acc + 1;
         }
         return acc;
-      },
-      0
-    );
-    setScore(totalCorrect);
+      }, 0);
+
+      setScore(totalCorrect);
+    } else {
+      const quiz_stats = await getQuizStats(quizId);
+
+      let totalCorrect = quiz_stats?.submissions?.reduce(
+        (acc: any, question: any) => {
+          if (question.isCorrect) {
+            return acc + 1;
+          }
+          return acc;
+        },
+        0
+      );
+
+      setScore(totalCorrect);
+    }
   };
 
   // Check if the selected answer is correct
