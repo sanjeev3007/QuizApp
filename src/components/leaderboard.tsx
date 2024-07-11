@@ -1,0 +1,87 @@
+import React from "react";
+import Image from "next/image";
+import "./leaderboard.css";
+
+interface LeaderboardEntry {
+  rank: number;
+  profilePicUrl: string;
+  name: string;
+  country: string;
+  rating: number;
+}
+
+const GlobalLeaderboard = ({
+  leaderboardData,
+  studentData,
+}: {
+  leaderboardData: any;
+  studentData: any;
+}) => {
+  return (
+    <div
+      className={`lg:mt-auto lg:mb-auto lg:ml-0 lg:mr-0 xs:m-auto lg:w-[357px] xs:w-[343px] md:w-[704px] xs:h-auto lg:h-[480px] gap-0 lg:rounded-[16px] xs:rounded-[12px] border border-[#EBF3FF] shadow-[0px_0px_8px_0px_#0053F429]`}
+    >
+      <div className="text-xl font-semibold leading-[24.2px] text-center text-[#5B8989] mt-5 mb-6">
+        Global Leaderboard
+      </div>
+      {leaderboardData &&
+        leaderboardData.topTenStudentList &&
+        leaderboardData.topTenStudentList.map((entry: any, index: number) => {
+          const studentMeta = leaderboardData.studentMeta[entry.userid];
+          return (
+            <div
+              key={entry.rank}
+              className={`grid grid-cols-4 grid-cols-[2fr_5.5fr_1fr_1.5fr] h-10 gap-2 text-[14px] font-medium leading-[16.94px] text-left text-[#6C9D9D] p-2 pr-4 ${
+                index % 2 === 0 ? "bg-[#F2F4FD]" : "bg-white"
+              } ${
+                studentData?.studentId == entry.userid
+                  ? "current-user-highlight"
+                  : ""
+              }`}
+            >
+              <div className="mt-auto mb-auto">
+                {[1, 2, 3].includes(entry.rank) ? (
+                  <Image
+                    src={`/images/icons/rank_${entry.rank}.svg`}
+                    alt="rank"
+                    height={20}
+                    width={20}
+                    className={"h-[20px] w-[20px]"}
+                  />
+                ) : (
+                  <span className="ml-1">{entry.rank}</span>
+                )}
+              </div>
+              <span className="flex flex-row">
+                <Image
+                  src={studentMeta?.pic || "/images/default-profile.png"}
+                  alt="pic"
+                  height={20}
+                  width={20}
+                  className="mr-2 mt-auto mb-auto"
+                />
+                <div className="truncate mt-auto mb-auto">
+                  {studentMeta?.studentName}
+                </div>
+              </span>
+              <div className="m-auto">
+                {" "}
+                <Image
+                  src={`/images/countries/${studentMeta?.countryName}.png`}
+                  alt="country"
+                  height={20}
+                  width={20}
+                  className="mt-auto mb-auto"
+                />
+              </div>
+              <div className="mt-auto mb-auto mr-2 text-right">
+                {entry.count}
+              </div>
+            </div>
+          );
+        })}
+    </div>
+  );
+};
+
+export default GlobalLeaderboard;

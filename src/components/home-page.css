@@ -113,12 +113,14 @@
 /* Subject list screen */
 
 .activityCardContainer {
-  max-width: 739px;
   border: 1px solid #ebf3ff;
   border-radius: 16px;
   box-shadow: 0px 0px 8px 0px #0053f429;
   padding: 20px;
-  margin-top: 55px;
+  margin-top: auto;
+  margin-bottom: auto;
+  height: 480px;
+  width: 755px;
 }
 
 .cardHeadingTxt {
@@ -227,6 +229,7 @@
   letter-spacing: 0.01em;
   text-align: left;
   color: #569090;
+  margin-bottom: 10px;
 }
 
 .new-user-activity {
@@ -248,6 +251,7 @@
 
 .streakGifAndText {
   display: flex;
+  justify-content: center;
 }
 
 .streakTrackTxt {
@@ -415,16 +419,21 @@
 }
 
 .noah-heading-wrapper {
-  margin-top: 20px;
+  margin-top: 50px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  width: 1120px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .noah-image-txtContainer {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+  margin-bottom: auto;
+  height: 151px;
 }
 
 .noah-image-txt {
@@ -434,7 +443,7 @@
   line-height: 19.36px;
   text-align: left;
   color: #8f8f8f;
-  margin-top: 10px;
+  margin-top: 4px;
 }
 
 .fact-card-container {
@@ -521,7 +530,7 @@
 .noah-image-fact-wrap {
   display: flex;
   justify-content: space-around;
-   gap: 30px;
+  gap: 30px;
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
@@ -569,7 +578,7 @@
   }
 
   .avatar-grid {
-    gap: 4px;
+    gap: 3px;
   }
 
   .fact-card {
@@ -578,17 +587,31 @@
 
   .noah-heading-wrapper {
     flex-direction: column;
+    justify-content: center;
+    width: 701px;
+    height: 357px;
+    gap: 24px;
+    margin-top: 10px;
   }
 
   .noah-subject-wrap {
-    margin-top: 30px;
+    margin-top: 0;
   }
 
   .noah-image-txtContainer {
     justify-content: flex-start;
   }
 
-  
+  .activityCardContainer {
+    width: 704px;
+    height: 439px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .activityTrackHeading {
+    margin-bottom: 0;
+  }
 }
 
 @media only screen and (max-width: 767px) {
@@ -677,10 +700,15 @@
     justify-content: center;
     margin-top: 0;
   }
+
   .noah-heading-wrapper {
     flex-direction: column;
-    margin: 0;
+    justify-content: center;
+    width: 343px;
+    gap: 12px;
+    margin-top: 10px;
   }
+
   .fact-card {
     margin-top: 10px;
   }
@@ -699,6 +727,35 @@
 
   .noah-image-fact-wrap {
     flex-direction: column;
+    justify-content: center;
+    gap: 0px;
+    height: 400px;
+  }
+
+  .fact-card {
+    height: 219px;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 16px;
+  }
+
+  .activityCardContainer {
+    width: 343px;
+    height: 711px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px 0 0 0;
+  }
+
+  .profileWrapper {
+    width: 311px;
+    height: 269px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .activityTrackHeading {
+    margin-bottom: 0;
   }
 }
 

@@ -14,12 +14,6 @@ import { doubtSolveDashboard } from "@/app/supabase-server";
 
 type Props = {
   userId: string;
-  userName: string;
-  grade: number;
-  gkQuiz: {
-    accuracy: number;
-    totalQuiz: number;
-  };
   totalChats: number;
 };
 
@@ -31,9 +25,6 @@ type QuizData = {
 
 const HomePage: React.FC<Props> = ({
   userId,
-  userName,
-  grade,
-  gkQuiz,
   totalChats: initialTotalChats,
 }: Props) => {
   const [quizData, setQuizData] = useState<QuizData | null>(null);
@@ -135,13 +126,13 @@ const HomePage: React.FC<Props> = ({
     <div className="parentDiv">
       <div className="titleSectionWrapper">
         <div className="titleTxt">
-            <Image
-              src={noahHeadingImage}
-              alt="Noah heading"
-              height={42}
-              width={151}
-              className="noahHeadingImg"
-            />
+          <Image
+            src={noahHeadingImage}
+            alt="Noah heading"
+            height={42}
+            width={151}
+            className="noahHeadingImg"
+          />
           <Typography className="subHeadingTxt">
             Built to make you better.
           </Typography>

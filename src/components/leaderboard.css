@@ -1,0 +1,5 @@
+.current-user-highlight {
+  background: -webkit-linear-gradient(91.62deg, #fbc123 0%, #fb9623 100%);
+  border-radius: 14px;
+  color: white;
+}
