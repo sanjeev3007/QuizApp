@@ -23,6 +23,7 @@ export function InitialChatMessage({
   quizId,
   setQuizTopic,
   assignStatus,
+  setTopicId,
 }: {
   setStart: Dispatch<SetStateAction<boolean>>;
   started: boolean;
@@ -31,6 +32,7 @@ export function InitialChatMessage({
   quizId: string;
   setQuizTopic: Dispatch<SetStateAction<string | null>>;
   assignStatus: boolean;
+  setTopicId: Dispatch<SetStateAction<number | null>>;
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -62,6 +64,7 @@ export function InitialChatMessage({
       );
       setQuestionList(questions);
       setQuizTopic(topicName);
+      setTopicId(topicId);
       setStart(true);
       await updateMathQuiz({
         userid: user.id,
@@ -89,6 +92,7 @@ export function InitialChatMessage({
       );
       setQuestionList(questions);
       setQuizTopic(topicName);
+      setTopicId(topicId);
       setStart(true);
       await updateMathQuiz({
         userid: user.id,
@@ -193,7 +197,7 @@ export function EndChatMessage({
             <Button
               className="min-w-[164px] mt-2 border-2 border-[#E98451] bg-transparent text-[#E98451] hover:bg-transparent md:ml-2"
               onClick={() =>
-                router.push(`/subject-dashboard?subject=Mathematics`)
+                router.push(`/subject-dashboard?subject=mathematics`)
               }
             >
               End Quiz & Exit{" "}

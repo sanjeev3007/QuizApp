@@ -73,6 +73,7 @@ export default function Chat({
     useState<SubmissionType | null>(null);
   const [score, setScore] = useState(0);
   const [quizTopic, setQuizTopic] = useState<string | null>(null);
+  const [topicId, setTopicId] = useState<number | null>(null);
   const subjectId = 1;
   const router = useRouter();
 
@@ -166,13 +167,13 @@ export default function Chat({
           grade: user.grade,
           question_id: currentSubmission.questionId,
           quiz_id: quizData.id,
-          topic_id: quizData.topic_id,
+          topic_id: topicId!,
           user_id: user.id,
         });
       }
-      router.refresh();
     })();
-  }, [submissions]);
+    router.refresh();
+  }, [submissions, quizTopic, started]);
 
   // Handle the next button click
   const handleNext = useCallback(
@@ -286,6 +287,7 @@ export default function Chat({
             quizId={quizId}
             setQuizTopic={setQuizTopic}
             assignStatus={assignStatus}
+            setTopicId={setTopicId}
           />
           {quizTopic && (
             <TopicMessage
