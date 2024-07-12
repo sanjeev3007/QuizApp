@@ -102,7 +102,7 @@ const PageContent = () => {
   }, []);
 
   return (
-    <div className="w-full md:max-w-7xl mx-auto bg-[#FFF] pb-10 overflow-y-auto !important">
+    <div className="w-full md:max-w-7xl mx-auto bg-[#FFF] pb-10 overflow-hidden !important">
       <div className="font-sans w-full flex justify-center">
         <div className="w-full flex justify-center flex-col">
           <div className="lg:text-4xl md:text-2xl xs:text-xl font-semibold leading-[38.73px] text-center lg:mt-10 md:mt-8 xs:mt-6">
