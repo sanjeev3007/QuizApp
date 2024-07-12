@@ -57,7 +57,6 @@ const PageContent = () => {
             studentId: userId,
             subjectId,
           });
-          console.log(data);
           setLeaderboardData(data.response.leaderboard);
           setStudentActivity(data.response.activity);
           setStreakData(data.response.streak);
@@ -99,9 +98,7 @@ const PageContent = () => {
       }
       setTopicLoader(false);
     };
-    (async () => {
-      await fetchData();
-    })();
+    fetchData();
   }, []);
 
   return (
