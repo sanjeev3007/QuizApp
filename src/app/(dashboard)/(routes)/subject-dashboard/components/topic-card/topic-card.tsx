@@ -6,10 +6,12 @@ const TopicCard = ({
   badge,
   topic,
   rating,
+  totalQnsAnswered,
 }: {
   badge: string | null;
   topic: string;
   rating: number;
+  totalQnsAnswered: number;
 }) => {
   const badgeName = `topic-card-badge-${badge}`;
   const badgeText =
@@ -32,7 +34,7 @@ const TopicCard = ({
     unfilledStarsArr.push(i);
   }
 
-  const level = rating == 5 ? "master" : rating > 3 ? "pro" : "beginner";
+  const level = rating > 4 ? "master" : rating > 2 ? "pro" : "beginner";
   const nextBadge =
     level == "beginner" ? "Pro" : level == "pro" ? "Master" : null;
 
@@ -102,25 +104,25 @@ const TopicCard = ({
               <div>
                 <span className="topic-card-rating-text">Achieve </span>
                 <span
-                  className={`font-inter text-xs font-bold leading-[14.52px] text-left level-${level}`}
+                  className={`font-sans lg:text-xs xs:text-[10px] font-bold leading-[14.52px] text-left level-${level}`}
                 >
-                  {`${level == "beginner" ? "3" : "5"} stars`}
+                  {`more than ${level == "beginner" ? "2" : "4"} stars`}
                 </span>
                 <span className="topic-card-rating-text">{` to unlock '${nextBadge}' badge`}</span>
               </div>
             ) : (
-              <div className="topic-card-rating-text mt-1">
+              <div className="topic-card-rating-text mt-2">
                 You achieved Master badge for this topic
               </div>
             )}
           </div>
-          <div>
+          <div className="flex flex-col justify-center">
             <Image
               alt="level-icon"
               width={48}
               height={48}
               src={`/images/icons/level-${level}.png`}
-              className="mt-4"
+              className="xs:w-[34px] xs:h-[34px] lg:w-[48px] lg:h-[48px]"
             />
           </div>
         </div>
@@ -128,10 +130,10 @@ const TopicCard = ({
       <hr className="topic-card-hr" />
       <div className="flex flex-row justify-between md:mt-6 xs:mt-3">
         <div className="text-[#A3A3A3] text-sm mt-auto mb-auto">
-          140 questions answered
+          {`${totalQnsAnswered} questions answered`}
         </div>
         <Button
-          className="font-sans w-[120px] h-[37px] rounded-lg padding-[10px 20px 10px 20px] bg-[#EB9B3A] text-[#FFF] gap-1"
+          className="font-sans w-[120px] h-[37px] rounded-lg padding-[10px 20px 10px 20px] bg-[#EB9B3A] text-[#FFF] gap-1 hover:bg-[#EB9B3A]"
           style={{ textTransform: "none" }}
         >
           <span className="text-sm font-semibold">Practice</span>

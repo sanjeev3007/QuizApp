@@ -30,7 +30,11 @@ const HomePage: React.FC<Props> = ({
   userId,
   totalChats: initialTotalChats,
 }: Props) => {
-  const [quizData, setQuizData] = useState<QuizData | null>(null);
+  const [quizData, setQuizData] = useState<QuizData | null>({
+    numberOfCompletedQuiz: 0,
+    level: 1,
+    totalQuiz: 10,
+  });
   const [totalDoubtChats, setTotalDoubtChats] =
     useState<number>(initialTotalChats);
   const [numberOfCompletedQuiz, setNumberOfCompletedQuiz] = useState<number>(0);
@@ -44,13 +48,16 @@ const HomePage: React.FC<Props> = ({
   }, []);
 
   const router = useRouter();
-  const [loader, setLoader] = useState<boolean>(false);
   const cards = [
     {
       title: "Learn",
       subtitle:
         "Learn through quizzes on different academic subjects tailored for you",
-      description: `${numberOfCompletedQuiz} questions completed`,
+      description: (
+        <span>
+          <strong>{numberOfCompletedQuiz}</strong> questions completed
+        </span>
+      ),
     },
     {
       title: "Fun Trivia",
@@ -108,7 +115,6 @@ const HomePage: React.FC<Props> = ({
 
   const generateGKQuiz = async () => {
     try {
-      setLoader(true);
       const { questions, topics } = await getGKQuestions(userId);
       if (questions.length === 0) {
         return;
@@ -121,8 +127,6 @@ const HomePage: React.FC<Props> = ({
     } catch (error) {
       console.log(error);
       return;
-    } finally {
-      setLoader(false);
     }
   };
 
@@ -137,52 +141,62 @@ const HomePage: React.FC<Props> = ({
   };
 
   return (
-    <div className="parentDiv">
-      <div className="titleSectionWrapper">
-        <div className="titleTxt">
-          <Image
-            src={noahHeadingImage}
-            alt="Noah heading"
-            height={42}
-            width={151}
-            className="noahHeadingImg"
-          />
-          <Typography className="subHeadingTxt">
-            Built to make you better.
+    <div className="flex flex-row justify-center">
+      <div className="parentDiv">
+        <div className="titleSectionWrapper">
+          <div className="titleTxt">
+            <div className="flex flex-row xs:justify-center md:justify-start">
+              <Image
+                src={noahHeadingImage}
+                alt="Noah heading"
+                height={42}
+                width={151}
+                className="noahHeadingImg"
+              />
+            </div>
+            <Typography className="subHeadingTxt">
+              Built to make you better.
+            </Typography>
+          </div>
+          <div className="noahHomeIcon">
+            <Image
+              src={noahImage}
+              alt="Noah image"
+              height={222}
+              width={266}
+              className="md:w-[266px] md:h-[222px] xs:w-[206px] xs:h-[172px]"
+            />
+          </div>
+        </div>
+        <div className="cardContainer">
+          <Typography className="cardHeading">
+            What do you want to do today?
           </Typography>
-        </div>
-        <div className="noahHomeIcon">
-          <Image src={noahImage} alt="Noah image" height={222} width={266} />
-        </div>
-      </div>
-      <div className="cardContainer">
-        <Typography className="cardHeading">
-          What do you want to do today?
-        </Typography>
-        <div className="cardsWrapper">
-          {cards.map((card, index) => (
-            <Card key={index} className="cardLayout">
-              <CardContent>
-                <Typography className="cardTitle">{card.title}</Typography>
-                <Typography className="cardSubTitle">
-                  {card.subtitle}
-                </Typography>
-                <Typography className="cardDescription">
-                  {card.description}
-                </Typography>
-                <div className="btnContainer">
-                  <Button
-                    className="getStartedBtn"
-                    endIcon={<EastRoundedIcon />}
-                    variant="contained"
-                    onClick={() => handleButtonClick(card.title)}
-                  >
-                    Get Started
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+          <div className="cardsWrapper">
+            {cards.map((card, index) => (
+              <Card key={index} className="cardLayout">
+                <CardContent className="lg:m-6 md:m-2 lg:p-0 h-5/6 relative">
+                  <Typography className="cardTitle">{card.title}</Typography>
+                  <Typography className="cardSubTitle">
+                    {card.subtitle}
+                  </Typography>
+                  <Typography className="cardDescription">
+                    {card.description}
+                  </Typography>
+                  <div className="btnContainer">
+                    <Button
+                      className="getStartedBtn"
+                      endIcon={<EastRoundedIcon />}
+                      variant="contained"
+                      onClick={() => handleButtonClick(card.title)}
+                    >
+                      Get Started
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     </div>

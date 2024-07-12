@@ -1,8 +1,15 @@
 import Slider from "react-slick";
 import TopicCard from "./topic-card";
 import "./topic-card.css";
+import ClipLoader from "react-spinners/ClipLoader";
 
-const TopicCardCarousel = ({ items }: { items: any }) => {
+const TopicCardCarousel = ({
+  items,
+  loading,
+}: {
+  items: any;
+  loading: boolean;
+}) => {
   const settings = {
     dots: true,
     infinite: false,
@@ -58,6 +65,17 @@ const TopicCardCarousel = ({ items }: { items: any }) => {
 
   return (
     <div className="carousel-container">
+      {loading && (
+        <div className="flex flex-row justify-center">
+          <ClipLoader
+            color={"#C4C3C1"}
+            loading={loading}
+            size={50}
+            aria-label="Loading Spinner"
+            data-testid="loading"
+          />
+        </div>
+      )}
       {items.length > 0 && (
         <Slider {...settings}>
           {items.map((item: any, index: number) => {
@@ -67,6 +85,7 @@ const TopicCardCarousel = ({ items }: { items: any }) => {
                   topic={item.topicName}
                   badge="assigned"
                   rating={item.totalScore}
+                  totalQnsAnswered={item.totalQuestion}
                 />
               </div>
             );
