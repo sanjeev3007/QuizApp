@@ -4,7 +4,7 @@ import "./components/subject-dashboard.css";
 import Activity from "@/components/activity/activity";
 import GlobalLeaderboard from "@/components/leaderboard";
 import NoahHeader from "./components/noah-says";
-import { getCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import {
   getStudentDashboard,
   getStudentTopics,
@@ -29,22 +29,28 @@ const PageContent = () => {
   const params = useSearchParams();
   const subject = params.get("subject");
 
+  const userId = getCookie("userId");
+  const userGrade = getCookie("grade");
+
   let sub = "";
   let subjectId: any = null;
+  let quizPath: string = "#";
 
   if (subject == "mathematics") {
     sub = "Math";
     subjectId = constants.SUBJECT_IDS.MATH;
+    quizPath = "/math-quiz";
   } else if (subject == "science") {
     sub = "Science";
-    subjectId = constants.SUBJECT_IDS.ENGLISH;
+    subjectId = constants.SUBJECT_IDS.SCIENCE;
+    quizPath = "/science-quiz";
   } else if (subject == "english") {
     sub = "English";
-    subjectId = constants.SUBJECT_IDS.SCIENCE;
+    subjectId = constants.SUBJECT_IDS.ENGLISH;
+    quizPath = "/english-quiz";
   }
 
   useEffect(() => {
-    const userId = getCookie("userId");
     const fetchData = async () => {
       setDashboardLoader(true);
       try {
@@ -76,8 +82,6 @@ const PageContent = () => {
   }, []);
 
   useEffect(() => {
-    const userId = getCookie("userId");
-    const grade = getCookie("grade");
     const fetchData = async () => {
       setTopicLoader(true);
       try {
@@ -85,8 +89,9 @@ const PageContent = () => {
           const data2 = await getStudentTopics({
             studentId: userId,
             course: subject == "mathematics" ? "math" : subject,
-            grade: grade || null,
+            grade: userGrade || null,
           });
+          console.log(data2);
           setTopicData(data2.response);
         }
       } catch (err) {
@@ -105,7 +110,7 @@ const PageContent = () => {
             <span className="gradient-title-1">Supercharge</span>
             <span className="text-[#5B8989]">{` your ${sub} learning`}</span>
           </div>
-          <NoahHeader />
+          <NoahHeader subjectId={subjectId} quizPath={quizPath} />
           <div className="flex lg:flex-row xs:flex-col justify-center gap-8 lg:mt-14 md:mt-6 xs:mt-12 mb-10">
             <Activity
               subject={subject}
@@ -132,7 +137,13 @@ const PageContent = () => {
             <span className="gradient-title-3">practice</span>
           </div>
           <div className="lg:mt-20 md:mt-12">
-            <TopicCardCarousel items={topicData} loading={topicLoader} />
+            <TopicCardCarousel
+              items={topicData}
+              loading={topicLoader}
+              subjectId={subjectId}
+              userId={userId!}
+              userGrade={userGrade!}
+            />
           </div>
         </div>
       </div>

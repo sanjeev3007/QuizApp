@@ -51,13 +51,17 @@ export const getQuizStats = async (quizId: string) => {
   return data;
 };
 
-export const getNumberOfCompletedQuiz = async (userid: string) => {
+export const getNumberOfCompletedQuiz = async (
+  userid: string,
+  subjectId: number
+) => {
   const supabase = createServerSupabaseClient();
   const { data: allQuizes, error } = await supabase
     .from("quiz")
     .select("questions, submissions")
     .eq("userid", userid)
-    .eq("complete", "True");
+    .eq("complete", true)
+    .eq("subject_id", subjectId);
 
   if (error) {
     console.error(error);
@@ -183,13 +187,18 @@ const pushFinalScore = (subtopics: any) => {
   });
 };
 
-export const getInsight = async (userid: string, grade: number) => {
+export const getInsight = async (
+  userid: string,
+  grade: number,
+  subjectId: number
+) => {
   const supabase = createServerSupabaseClient();
   const { data: allQuizes, error } = await supabase
     .from("quiz")
     .select()
     .eq("userid", userid)
-    .eq("complete", true);
+    .eq("complete", true)
+    .eq("subject_id", subjectId);
   if (error) {
     console.error(error);
   }
@@ -277,7 +286,7 @@ const getAccuracy = (completedQuizes: any[]) => {
   };
 };
 
-export const getDashboard = async (userid: string) => {
+export const getDashboard = async (userid: string, subjectId: number) => {
   const supabase = createServerSupabaseClient();
   // const { data: allQuizes, error } = await supabase
   //   .from("quiz")
@@ -285,7 +294,7 @@ export const getDashboard = async (userid: string) => {
   //   .eq("userid", userid)
   //   .eq("complete", "true")
 
-  const quizCurrentStatus = await getNumberOfCompletedQuiz(userid);
+  const quizCurrentStatus = await getNumberOfCompletedQuiz(userid, subjectId);
   const last10Quizes = await getLast10Quizes({ limit: 10, userid });
 
   const quizNumber =

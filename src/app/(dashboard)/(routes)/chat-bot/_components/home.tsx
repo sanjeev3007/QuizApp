@@ -11,12 +11,11 @@ import {
 } from "react";
 import noahDoubtSolvinDp from "@/assets/Images/noah_doubt_solve_dp.svg";
 import { toast } from "@/components/ui/use-toast";
-import { Toaster } from "@/components/ui/toaster";
 import { Input } from "@/components/ui/input";
 import ion_send_white from "@/assets/Images/ion_send_white.png";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import "./index.css";
+import "./home.css";
 import { nanoid } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import LastInteractions from "./last-interactions";
@@ -38,7 +37,7 @@ type Props = {
   recentChats: chatData[] | null;
 };
 
-const Index = ({ user_Id, recentChats }: Props) => {
+const ChatHome = ({ user_Id, recentChats }: Props) => {
   const id = nanoid();
   const [userInput, setUserInput] = useState("");
   const router = useRouter();
@@ -104,7 +103,11 @@ const Index = ({ user_Id, recentChats }: Props) => {
   return (
     <div className="flex flex-col justify-center content-center items-center">
       <div className="flex justify-between content-center items-center">
-        <Image src={noahDoubtSolvinDp} alt="noah" className="h-[54px] w-[54px]" />
+        <Image
+          src={noahDoubtSolvinDp}
+          alt="noah"
+          className="h-[54px] w-[54px]"
+        />
         <div className="ml-4 w-full text-2xl md:text-4xl text-[#2F4F4F] font-extrabold">
           Lets <span className="headerClrTxt">smash doubts</span> together!
         </div>
@@ -130,7 +133,7 @@ const Index = ({ user_Id, recentChats }: Props) => {
               className="border-0 py-[4px]  text-sm fomt-semibold text-[#FFF] bg-[#E98451] hover:bg-[#E98451]"
             >
               <span className="hidden sm:block">Start Chat</span>
-              <Image src={ion_send_white} alt="" className="sm:ml-2"/>
+              <Image src={ion_send_white} alt="" className="sm:ml-2" />
             </Button>
           </div>
         </form>
@@ -152,4 +155,4 @@ const Index = ({ user_Id, recentChats }: Props) => {
   );
 };
 
-export default Index;
+export default ChatHome;

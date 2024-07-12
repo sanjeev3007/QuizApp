@@ -1,18 +1,31 @@
 import Image from "next/image";
 import { Button } from "@mui/material";
 import "../subject-dashboard.css";
+import { generateQuiz } from "@/actions/quiz.client";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const TopicCard = ({
   badge,
   topic,
   rating,
   totalQnsAnswered,
+  subjectId,
+  topicId,
+  userGrade,
+  userId,
 }: {
   badge: string | null;
   topic: string;
   rating: number;
   totalQnsAnswered: number;
+  subjectId: number;
+  topicId: number;
+  userId: string;
+  userGrade: string;
 }) => {
+  const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
   const badgeName = `topic-card-badge-${badge}`;
   const badgeText =
     badge == "assigned"
@@ -38,6 +51,32 @@ const TopicCard = ({
   const nextBadge =
     level == "beginner" ? "Pro" : level == "pro" ? "Master" : null;
 
+  const createQuizByTopic = async () => {
+    setLoading(true);
+    try {
+      const data = await generateQuiz({
+        topicId: topicId,
+        grade: parseInt(userGrade),
+        subjectId: subjectId,
+        userId: userId,
+        start: true,
+      });
+
+      if (subjectId == 1) {
+        router.push(`/math-quiz/${data.id}`);
+      } else if (subjectId == 2) {
+        router.push(`/science-quiz/${data.id}`);
+      } else if (subjectId == 3) {
+        router.push(`/english-quiz/${data.id}`);
+      } else {
+        console.log("Invalid subjectId");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className={`topic-card-container`}>
       <span className={`topic-card-badge ${badgeName} flex flex-row`}>
@@ -135,6 +174,8 @@ const TopicCard = ({
         <Button
           className="font-sans w-[120px] h-[37px] rounded-lg padding-[10px 20px 10px 20px] bg-[#EB9B3A] text-[#FFF] gap-1 hover:bg-[#EB9B3A]"
           style={{ textTransform: "none" }}
+          onClick={async () => await createQuizByTopic()}
+          disabled={loading}
         >
           <span className="text-sm font-semibold">Practice</span>
           <span>

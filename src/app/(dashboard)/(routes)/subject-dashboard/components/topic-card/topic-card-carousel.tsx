@@ -6,9 +6,15 @@ import ClipLoader from "react-spinners/ClipLoader";
 const TopicCardCarousel = ({
   items,
   loading,
+  subjectId,
+  userId,
+  userGrade,
 }: {
   items: any;
   loading: boolean;
+  subjectId: number;
+  userId: string;
+  userGrade: string;
 }) => {
   const settings = {
     dots: true,
@@ -86,6 +92,10 @@ const TopicCardCarousel = ({
                   badge="assigned"
                   rating={item.totalScore}
                   totalQnsAnswered={item.totalQuestion}
+                  subjectId={subjectId}
+                  topicId={item.topicId}
+                  userId={userId}
+                  userGrade={userGrade}
                 />
               </div>
             );

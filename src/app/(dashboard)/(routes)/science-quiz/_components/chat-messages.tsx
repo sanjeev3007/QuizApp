@@ -9,8 +9,8 @@ import Image from "next/image";
 import EastOutlinedIcon from "@mui/icons-material/EastOutlined";
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { useRouter } from "next/navigation";
-import { getMathQuestions, updateMathQuiz } from "@/actions/math";
+import { usePathname, useRouter } from "next/navigation";
+import { getQuestions, updateQuiz } from "@/actions/quiz.client";
 
 if (typeof window !== "undefined") {
 }
@@ -23,6 +23,8 @@ export function InitialChatMessage({
   quizId,
   setQuizTopic,
   assignStatus,
+  setTopicId,
+  subjectId,
 }: {
   setStart: Dispatch<SetStateAction<boolean>>;
   started: boolean;
@@ -31,6 +33,8 @@ export function InitialChatMessage({
   quizId: string;
   setQuizTopic: Dispatch<SetStateAction<string | null>>;
   assignStatus: boolean;
+  setTopicId: Dispatch<SetStateAction<number | null>>;
+  subjectId: number;
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -56,11 +60,23 @@ export function InitialChatMessage({
   const quizOnRandomTopic = async () => {
     try {
       setLoading(true);
-      const { questions, topic } = await getMathQuestions(user.grade!, user.id);
+      const { questions, topicName, topicId } = await getQuestions({
+        user_grade: user.grade!,
+        userId: user.id,
+        subjectId,
+      });
+      console.log(questions, topicName, topicId);
       setQuestionList(questions);
-      setQuizTopic(topic);
+      setQuizTopic(topicName);
+      setTopicId(topicId);
       setStart(true);
-      await updateMathQuiz(user.id, questions, topic, quizId, user.grade!);
+      await updateQuiz({
+        userId: user.id,
+        questions,
+        topicId,
+        quizId,
+        grade: user.grade!,
+      });
     } catch (error) {
       console.log(error);
     } finally {
@@ -73,22 +89,24 @@ export function InitialChatMessage({
       setLoading(true);
       const assignedData = await getTopicByMentor();
 
-      const { questions, topic } = await getMathQuestions(
-        user.grade!,
-        user.id,
-        assignedData
-      );
+      const { questions, topicName, topicId } = await getQuestions({
+        user_grade: user.grade!,
+        userId: user.id,
+        selectedTopic: assignedData,
+        subjectId,
+      });
       setQuestionList(questions);
-      setQuizTopic(topic);
+      setQuizTopic(topicName);
+      setTopicId(topicId);
       setStart(true);
-      await updateMathQuiz(
-        user.id,
+      await updateQuiz({
+        userId: user.id,
         questions,
-        topic,
-        quizId,
-        user.grade!,
-        assignedData
-      );
+        topicId: topicId,
+        quizId: quizId,
+        grade: user.grade!,
+        assignedData,
+      });
     } catch (error) {
       console.log(error);
     } finally {
@@ -154,6 +172,13 @@ export function EndChatMessage({
   questionsLength: number;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
+
+  const redirectPathParam = pathname.includes("science-quiz")
+    ? "science"
+    : pathname.includes("english-quiz")
+    ? "english"
+    : "mathematics";
   return (
     <div className="max-w-3xl my-2 flex items-start w-full gap-x-2">
       <div className="bg-orange-300 w-10 h-10 rounded-full grid place-items-center">
@@ -183,7 +208,9 @@ export function EndChatMessage({
             </Button>
             <Button
               className="min-w-[164px] mt-2 border-2 border-[#E98451] bg-transparent text-[#E98451] hover:bg-transparent md:ml-2"
-              onClick={() => router.push(`/quizes`)}
+              onClick={() =>
+                router.push(`/subject-dashboard?subject=${redirectPathParam}`)
+              }
             >
               End Quiz & Exit{" "}
             </Button>

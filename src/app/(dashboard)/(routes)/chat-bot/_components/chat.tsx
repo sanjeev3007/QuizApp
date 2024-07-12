@@ -18,6 +18,7 @@ type ChatProps = {
   user_id: string;
   initialMessages: Message[];
   doubtSolved: boolean;
+  chatTitle: string;
 };
 
 export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
@@ -74,7 +75,7 @@ export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
       messages[messages.length - 1]?.role === "assistant"
     ) {
       setSuggestions(
-        JSON.parse(messages[messages.length - 1].content).nextPossibleQuestions
+        JSON.parse(messages[messages.length - 1].content)?.nextPossibleQuestions
       );
     }
   }, [initialMessages]);

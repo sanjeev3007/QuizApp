@@ -22,24 +22,18 @@ import {
   InitialChatMessage,
   TopicMessage,
 } from "./chat-messages";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { QuizDataType } from "@/types/quiz.types";
+import { QuizDataType, SubmissionType } from "@/types/quiz.types";
+import { getQuizStats } from "@/app/supabase-client-provider";
 import {
-  createMathQuiz,
-  getMathQuestions,
+  createQuizBySubject,
+  getTopicNameFromDB,
   storeCorrectSubmission,
   storeUserSubmission,
-  updateQuizStats,
-} from "@/actions/math";
-import { getQuizStats } from "@/app/supabase-client-provider";
-
-type SubmissionType = {
-  questionId: string;
-  selected: { text: string; correct: string };
-  isCorrect: boolean;
-};
+  storeUserSubmissionToSubmissions,
+  updateQuizToComplete,
+} from "@/actions/quiz.client";
 
 type ChatProps = {
   quizData: QuizDataType;
@@ -51,6 +45,7 @@ type ChatProps = {
   };
   numberOfCompletedQuizData: any;
   assignStatus: boolean;
+  subjectId: number;
 };
 
 export default function Chat({
@@ -59,13 +54,14 @@ export default function Chat({
   user,
   numberOfCompletedQuizData,
   assignStatus,
+  subjectId,
 }: ChatProps) {
   const bottom = useRef<HTMLDivElement>(null);
   const [questionIndex, setQuestionIndex] = useState(
     quizData.submissions?.length || 0
   );
   const [hasEnded, setHasEnded] = useState(false);
-  const [submissions, setSubmissions] = useState<any[]>(
+  const [submissions, setSubmissions] = useState<SubmissionType[]>(
     quizData?.submissions || []
   );
   const [quizScore, showQuizScore] = useState(false);
@@ -76,23 +72,33 @@ export default function Chat({
   const [currentSubmission, setCurrentSubmission] =
     useState<SubmissionType | null>(null);
   const [score, setScore] = useState(0);
-  const [quizTopic, setQuizTopic] = useState<string | null>(quizData.topic);
-
+  const [quizTopic, setQuizTopic] = useState<string | null>(null);
+  const [topicId, setTopicId] = useState<number | null>(null);
   const router = useRouter();
 
   const { questions: qList, complete: isComplete } = quizData;
   const [questionList, setQuestionList] = useState<any>(qList);
 
   const startNewQuiz = async () => {
-    setLoader(true);
+    try {
+      setLoader(true);
 
-    const data = await createMathQuiz(user.id, user.grade);
-    if (!data || !data.length) {
+      const data = await createQuizBySubject({
+        userId: user.id,
+        grade: user.grade,
+        subjectId,
+      });
+
+      if (!data || !data.length) {
+        setLoader(false);
+        return;
+      }
+      router.push(`/science-quiz/${data[0].id}`);
+    } catch (error) {
+      console.log(error);
+    } finally {
       setLoader(false);
-      return;
     }
-    router.push(`/chat/${data[0].id}`);
-    setLoader(false);
   };
 
   // Get the current question
@@ -114,18 +120,30 @@ export default function Chat({
   }, [bottom.current, currentQuestion, submissions, hasEnded]);
 
   const checkScore = async () => {
-    const quiz_stats = await getQuizStats(quizId);
-
-    let totalCorrect = quiz_stats.submissions?.reduce(
-      (acc: any, question: any) => {
+    if (submissions.length > 0) {
+      let totalCorrect = submissions?.reduce((acc: any, question: any) => {
         if (question.isCorrect) {
           return acc + 1;
         }
         return acc;
-      },
-      0
-    );
-    setScore(totalCorrect);
+      }, 0);
+
+      setScore(totalCorrect);
+    } else {
+      const quiz_stats = await getQuizStats(quizId);
+
+      let totalCorrect = quiz_stats?.submissions?.reduce(
+        (acc: any, question: any) => {
+          if (question.isCorrect) {
+            return acc + 1;
+          }
+          return acc;
+        },
+        0
+      );
+
+      setScore(totalCorrect);
+    }
   };
 
   // Check if the selected answer is correct
@@ -137,18 +155,28 @@ export default function Chat({
   useEffect(() => {
     // Store the user submission to the db
     (async () => {
-      await storeUserSubmission(quizId, user.id, submissions);
-      if (currentSubmission?.isCorrect) {
-        await storeCorrectSubmission(
-          user.id,
-          currentSubmission.questionId,
-          quizData.id,
-          quizData.topic,
-          user.grade
-        );
+      await storeUserSubmission({ quizId, userId: user.id, submissions });
+      if (currentSubmission?.questionIntId && currentSubmission?.selected) {
+        await storeUserSubmissionToSubmissions({
+          quizId: parseInt(quizId),
+          questionId: currentSubmission?.questionIntId!,
+          isCorrect: currentSubmission?.isCorrect!,
+          optionSelected: currentSubmission?.selected.text!,
+          correctOption: currentSubmission?.correctOption!,
+        });
       }
-      router.refresh();
+      if (currentSubmission?.isCorrect) {
+        await storeCorrectSubmission({
+          grade: user.grade,
+          questionId: currentSubmission.questionId,
+          quizId: quizData.id,
+          topicId: topicId!,
+          userId: user.id,
+          subjectId: quizData.subject_id,
+        });
+      }
     })();
+    router.refresh();
   }, [submissions]);
 
   // Handle the next button click
@@ -161,12 +189,15 @@ export default function Chat({
       const isCorrect = checkAnswer(index);
 
       setCurrentSubmission({
+        questionIntId: currentQuestion?.id,
         questionId: currentQuestion?.uuid!,
         selected: options[index!],
         isCorrect,
+        correctOption: options.find((option: any) => option.correct === "true")
+          ?.text,
       });
 
-      setSubmissions((submissions: any) => [
+      setSubmissions((submissions) => [
         ...submissions,
         {
           questionId: currentQuestion?.uuid,
@@ -229,17 +260,22 @@ export default function Chat({
   const endGame = async () => {
     // Update the quiz stats
     await checkScore();
-    const { success } = await updateQuizStats(quizId, user.id);
+    const { success } = await updateQuizToComplete({ quizId, userId: user.id });
     if (!success) {
       toast({ title: "Something went wrong!", duration: 3000 });
     }
   };
 
   useEffect(() => {
-    // If the quiz is complete, redirect to the home page
-    if (isComplete) {
-      // router.push("/");
-    }
+    (async () => {
+      if (!quizData.topic_id) return;
+      const topicName = await getTopicNameFromDB({
+        topicId: quizData.topic_id,
+        subjectId: quizData.subject_id,
+      });
+      setQuizTopic(topicName);
+    })();
+
     setIsMounted(true);
   }, []);
 
@@ -258,6 +294,8 @@ export default function Chat({
             quizId={quizId}
             setQuizTopic={setQuizTopic}
             assignStatus={assignStatus}
+            setTopicId={setTopicId}
+            subjectId={quizData.subject_id}
           />
           {quizTopic && (
             <TopicMessage

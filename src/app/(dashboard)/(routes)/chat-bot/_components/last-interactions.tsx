@@ -34,7 +34,7 @@ const LastInteractions = ({ recentChats }: Props) => {
               className="bg-[#F0F6FA] p-[12px] flex justify-between rounded-lg"
             >
               <span className="text-[#5B8989] text-sm font-medium">
-                {data.payload.title.length > 100
+                {data.payload.title?.length > 100
                   ? `${data.payload.title.slice(1, 100)}...`
                   : data.payload.title}
               </span>
