@@ -18,15 +18,17 @@ const NoahHeader = ({
 }) => {
   const userId = getCookie("userId");
   const grade = parseInt(getCookie("grade")!);
-  const studentName = getCookie("studentName");
+  const studentName = getCookie("userName");
   const [isMount, setIsMount] = React.useState(false);
-  const welcomeMessage =
-    welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+  const [welcomeMessage, setWelcomeMessage] = React.useState("");
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
 
   useEffect(() => {
     setIsMount(true);
+    const message =
+      welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+    setWelcomeMessage(message.text);
   }, []);
 
   const createQuiz = async () => {
@@ -62,7 +64,7 @@ const NoahHeader = ({
         <div className="fact-card-container">
           <Card className="fact-card">
             <Typography className="fact-card-txt">
-              {welcomeMessage.text.replace(
+              {welcomeMessage.replace(
                 "{name}",
                 studentName?.split(" ")[0] || ""
               )}

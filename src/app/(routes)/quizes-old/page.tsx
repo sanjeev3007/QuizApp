@@ -5,7 +5,7 @@ import React from "react";
 import noahSmallIcon from "@/assets/Images/noahSmallIcon.png";
 import Image from "next/image";
 import Card from "./_components/quiz-card";
-import { getNumberOfCompletedMathQuiz } from "@/actions/math.server";
+import { getNumberOfCompletedQuiz } from "@/actions/quiz.server";
 import { redirect } from "next/navigation";
 import ChatCard from "./_components/chat-card";
 
@@ -23,7 +23,10 @@ export default async function PageContent() {
   const gk_quiz = await gkQuiz(userId!);
   const total_chats = await doubtSolveDashboard(userId!);
 
-  const completedMathQuiz = await getNumberOfCompletedMathQuiz(userId!);
+  const completedMathQuiz = await getNumberOfCompletedQuiz({
+    userId,
+    subjectId: 1,
+  });
 
   return (
     <div className="flex flex-col justify-center content-center items-center">

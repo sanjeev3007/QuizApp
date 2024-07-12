@@ -121,7 +121,6 @@ export const getQuestions = async ({
     topicId: topicData?.id,
     subjectId,
   });
-  console.log(questionIds);
 
   const level1 = await fetchQuestionsByLevel(
     "easy",
@@ -174,7 +173,6 @@ const fetchQuestionsByLevel = async (
     rpc_function = "db_coding_rpc";
   }
 
-  console.log(rpc_function);
   if (!rpc_function) return console.log("Invalid subjectId");
 
   const { data, error } = await supabase.rpc(rpc_function, {
@@ -184,8 +182,6 @@ const fetchQuestionsByLevel = async (
     uuids: questionIds,
     selected_grade: grade,
   });
-
-  console.log(data);
 
   if (error) {
     console.log(error);
@@ -291,13 +287,14 @@ export const fetchCorrectSubmissions = async ({
 }) => {
   const supabase = createClientComponentClient();
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("correct_submissions")
     .select("question_id")
     .eq("user_id", userId)
     .eq("topic_id", topicId)
     .eq("subject_id", subjectId);
 
+  if (error) console.log(error);
   if (!data) {
     return [];
   }

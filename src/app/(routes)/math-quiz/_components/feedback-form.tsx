@@ -1,6 +1,6 @@
 "use client";
 
-import { feedbackQuiz } from "@/actions/math";
+import { feedbackQuiz } from "@/actions/quiz.client";
 import { cn } from "@/lib/utils";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { useState } from "react";

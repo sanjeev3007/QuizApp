@@ -22,10 +22,10 @@ import {
   getInCompletedGKQuiz,
 } from "@/actions/gk-quiz";
 import {
-  createMathQuiz,
-  getInCompletedMathQuiz,
-  getNumberOfCompletedMathQuiz,
-} from "@/actions/math";
+  createQuizBySubject,
+  getInCompletedQuiz,
+  getNumberOfCompletedQuiz,
+} from "@/actions/quiz.client";
 import { useQuery } from "@tanstack/react-query";
 
 type Props = {
@@ -74,7 +74,7 @@ const Card = ({
     try {
       setLoader(true);
 
-      const inCompleteQuiz = await getInCompletedMathQuiz(userId);
+      const inCompleteQuiz = await getInCompletedQuiz({ userId, subjectId: 1 });
 
       if (inCompleteQuiz && inCompleteQuiz?.length! > 0) {
         router.push(`/math-quiz/${inCompleteQuiz[0]?.id}`);
@@ -83,7 +83,7 @@ const Card = ({
       }
 
       // create quiz and redirect to quiz page
-      const data = await createMathQuiz(userId, grade!);
+      const data = await createQuizBySubject({ userId, grade, subjectId: 1 });
       if (!data) return;
       router.push(`/math-quiz/${data[0]?.id}`);
     } catch (error) {
