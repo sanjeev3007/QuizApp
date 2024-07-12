@@ -33,6 +33,57 @@ export async function createQuizBySubject({
   return data;
 }
 
+// create quiz
+export async function generateQuiz({
+  grade,
+  subjectId,
+  userId,
+  topicId,
+  start,
+}: {
+  userId: string;
+  grade: number;
+  subjectId: number;
+  topicId: number;
+  start: boolean;
+}) {
+  const supabase = createClientComponentClient();
+
+  const metadata = {
+    grade: grade,
+    topic: topicId,
+  };
+
+  const { questions } = await getQuestionsByTopicId({
+    grade,
+    userId,
+    subjectId,
+    topicId,
+  });
+
+  if (questions.length === 0) return { data: null };
+
+  const { data, error } = await supabase
+    .from("quiz")
+    .insert({
+      userid: userId,
+      metadata: metadata,
+      subject_id: subjectId,
+      topic_id: topicId,
+      questions,
+      start,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error(error);
+    return { data: null };
+  }
+
+  return data;
+}
+
 export async function updateQuiz({
   userId,
   questions,
@@ -88,6 +139,52 @@ export async function updateQuiz({
   return data;
 }
 
+export const getQuestionsByTopicId = async ({
+  subjectId,
+  userId,
+  grade,
+  topicId,
+}: {
+  grade: number;
+  userId: string;
+  subjectId: number;
+  topicId: number;
+}) => {
+  const questionIds = await fetchCorrectSubmissions({
+    userId,
+    topicId: topicId,
+    subjectId,
+  });
+
+  const level1 = await fetchQuestionsByLevel(
+    "easy",
+    4,
+    topicId,
+    questionIds,
+    grade,
+    subjectId
+  );
+  const level2 = await fetchQuestionsByLevel(
+    "medium",
+    4,
+    topicId,
+    questionIds,
+    grade,
+    subjectId
+  );
+  const level3 = await fetchQuestionsByLevel(
+    "hard",
+    2,
+    topicId,
+    questionIds,
+    grade,
+    subjectId
+  );
+
+  const questions = [...level1, ...level2, ...level3];
+  return { questions };
+};
+
 export const getQuestions = async ({
   subjectId,
   userId,
@@ -113,7 +210,6 @@ export const getQuestions = async ({
     grade = user_grade;
     if (grade > 8) grade = 8;
     topicData = await generateRandomTopic({ grade, subjectId });
-    console.log(topicData);
   }
 
   const questionIds = await fetchCorrectSubmissions({
@@ -125,7 +221,7 @@ export const getQuestions = async ({
   const level1 = await fetchQuestionsByLevel(
     "easy",
     4,
-    topicData?.topic,
+    topicData?.id,
     questionIds,
     grade,
     subjectId
@@ -133,7 +229,7 @@ export const getQuestions = async ({
   const level2 = await fetchQuestionsByLevel(
     "medium",
     4,
-    topicData?.topic,
+    topicData?.id,
     questionIds,
     grade,
     subjectId
@@ -141,7 +237,7 @@ export const getQuestions = async ({
   const level3 = await fetchQuestionsByLevel(
     "hard",
     2,
-    topicData?.topic,
+    topicData?.id,
     questionIds,
     grade,
     subjectId
@@ -155,7 +251,7 @@ export const getQuestions = async ({
 const fetchQuestionsByLevel = async (
   level: "easy" | "medium" | "hard",
   limit: number,
-  topic: string,
+  topicId: number,
   questionIds: string[],
   grade: number,
   subjectId: number
@@ -164,13 +260,13 @@ const fetchQuestionsByLevel = async (
 
   let rpc_function;
   if (subjectId === 1) {
-    rpc_function = "db_math_rpc";
+    rpc_function = "db_math_rpc_topicid";
   } else if (subjectId === 2) {
-    rpc_function = "db_science_rpc";
+    rpc_function = "db_science_rpc_topicid";
   } else if (subjectId === 3) {
-    rpc_function = "db_english_rpc";
+    rpc_function = "db_english_rpc_topicid";
   } else if (subjectId === 4) {
-    rpc_function = "db_coding_rpc";
+    rpc_function = "db_coding_rpc_topicid";
   }
 
   if (!rpc_function) return console.log("Invalid subjectId");
@@ -178,7 +274,7 @@ const fetchQuestionsByLevel = async (
   const { data, error } = await supabase.rpc(rpc_function, {
     level: level,
     rows_limit: limit,
-    subject_topic: topic,
+    selected_topic_id: topicId,
     uuids: questionIds,
     selected_grade: grade,
   });

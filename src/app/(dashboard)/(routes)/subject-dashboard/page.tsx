@@ -29,6 +29,9 @@ const PageContent = () => {
   const params = useSearchParams();
   const subject = params.get("subject");
 
+  const userId = getCookie("userId");
+  const userGrade = getCookie("grade");
+
   let sub = "";
   let subjectId: any = null;
   let quizPath: string = "#";
@@ -48,7 +51,6 @@ const PageContent = () => {
   }
 
   useEffect(() => {
-    const userId = getCookie("userId");
     const fetchData = async () => {
       setDashboardLoader(true);
       try {
@@ -80,8 +82,6 @@ const PageContent = () => {
   }, []);
 
   useEffect(() => {
-    const userId = getCookie("userId");
-    const grade = getCookie("grade");
     const fetchData = async () => {
       setTopicLoader(true);
       try {
@@ -89,8 +89,9 @@ const PageContent = () => {
           const data2 = await getStudentTopics({
             studentId: userId,
             course: subject == "mathematics" ? "math" : subject,
-            grade: grade || null,
+            grade: userGrade || null,
           });
+          console.log(data2);
           setTopicData(data2.response);
         }
       } catch (err) {
@@ -136,7 +137,13 @@ const PageContent = () => {
             <span className="gradient-title-3">practice</span>
           </div>
           <div className="lg:mt-20 md:mt-12">
-            <TopicCardCarousel items={topicData} loading={topicLoader} />
+            <TopicCardCarousel
+              items={topicData}
+              loading={topicLoader}
+              subjectId={subjectId}
+              userId={userId!}
+              userGrade={userGrade!}
+            />
           </div>
         </div>
       </div>

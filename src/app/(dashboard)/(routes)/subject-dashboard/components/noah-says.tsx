@@ -31,12 +31,16 @@ const NoahHeader = ({
     setWelcomeMessage(message.text);
   }, []);
 
+  const redirectToInsights = () => {
+    router.push("/view-insights/" + subjectId);
+  };
+
   const createQuiz = async () => {
     if (!userId || !grade) return;
     try {
       setLoading(true);
       const data = await createQuizBySubject({ userId, grade, subjectId });
-      console.log(data);
+
       if (data && data.length > 0) {
         router.push(`${quizPath}/${data[0].id}`);
       }
@@ -74,6 +78,7 @@ const NoahHeader = ({
             variant="text"
             className="insights-btn"
             endIcon={<ArrowOutwardRoundedIcon />}
+            onClick={redirectToInsights}
           >
             View detailed insights
           </Button>
