@@ -90,6 +90,12 @@ const ActivityDialog: React.FC<EditProfileDialogProps> = ({
       key: "shimy",
       count: avatarCount["Animes"],
     },
+    7: {
+      name: "Basic",
+      folder: "basic",
+      key: "basic",
+      count: avatarCount["Basic"],
+    },
   };
 
   const handleSubmit = async () => {

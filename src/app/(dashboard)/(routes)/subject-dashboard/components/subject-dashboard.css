@@ -70,7 +70,7 @@
 }
 
 .topic-card-rating-container {
-  width: 322px;
+  width: 385px;
   height: 103px;
   padding: 12px 16px 12px 12px;
   gap: 16px;
@@ -136,6 +136,18 @@
     height: 103px;
     padding: 8px;
   }
+
+  .topic-card-heading {
+    font-size: 16px;
+  }
+
+  .topic-card-rating-text {
+    font-size: 10px;
+  }
+
+  .topic-card-rating-level {
+    font-size: 12px;
+  }
 }
 
 @media only screen and (max-width: 767px) {
@@ -149,6 +161,18 @@
 
   .topic-card-rating-container {
     width: 310px;
+  }
+
+  .topic-card-heading {
+    font-size: 16px;
+  }
+
+  .topic-card-rating-text {
+    font-size: 10px;
+  }
+
+  .topic-card-rating-level {
+    font-size: 12px;
   }
 
   .topic-card-hr {

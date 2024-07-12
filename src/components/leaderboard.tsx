@@ -1,15 +1,18 @@
 import React from "react";
 import Image from "next/image";
 import "./leaderboard.css";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const GlobalLeaderboard = ({
   leaderboardData,
   studentData,
   avatar,
+  loading,
 }: {
   leaderboardData: any;
   studentData: any;
   avatar: string;
+  loading: boolean;
 }) => {
   return (
     <div
@@ -18,6 +21,17 @@ const GlobalLeaderboard = ({
       <div className="text-xl font-semibold leading-[24.2px] text-center text-[#5B8989] mt-5 mb-6">
         Global Leaderboard
       </div>
+      {loading && (
+        <div className="flex flex-row justify-center mt-44 mb-44">
+          <ClipLoader
+            color={"#C4C3C1"}
+            loading={loading}
+            size={30}
+            aria-label="Loading Spinner"
+            data-testid="loading"
+          />
+        </div>
+      )}
       {leaderboardData &&
         leaderboardData.topTenStudentList &&
         leaderboardData.topTenStudentList.map((entry: any, index: number) => {

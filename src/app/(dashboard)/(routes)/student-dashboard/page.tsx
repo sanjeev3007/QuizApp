@@ -46,10 +46,13 @@ const PageContent = () => {
   const [streakData, setStreakData] = useState({});
   const [studentData, setStudentData] = useState(null);
   const [avatar, setAvatar] = useState<string>("");
+  const [subjectWiseLoader, setSubjectWiseLoader] = useState<boolean>(false);
+  const [dashboardLoader, setDashboardLoader] = useState<boolean>(false);
 
   useEffect(() => {
     const userId = getCookie("userId");
     const fetchData = async () => {
+      setSubjectWiseLoader(true);
       try {
         if (userId) {
           const data = await getSubjectWise({ userId, subjectId: null });
@@ -62,7 +65,21 @@ const PageContent = () => {
             );
           });
           setSubjectData(updatedSubjectData);
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      }
+      setSubjectWiseLoader(false);
+    };
+    fetchData();
+  }, []);
 
+  useEffect(() => {
+    const userId = getCookie("userId");
+    const fetchData = async () => {
+      setDashboardLoader(true);
+      try {
+        if (userId) {
           const data2 = await getStudentDashboard({
             studentId: userId,
             subjectId: null,
@@ -84,6 +101,7 @@ const PageContent = () => {
       } catch (err) {
         console.error("Error fetching data:", err);
       }
+      setDashboardLoader(false);
     };
     fetchData();
   }, []);
@@ -111,6 +129,7 @@ const PageContent = () => {
                 answeredCount={subjectData["math"].answeredCount}
                 status={true}
                 cardClassName={"math"}
+                loading={subjectWiseLoader}
               />
               <SubjectCard
                 subjectName={subjectData["science"].subjectName}
@@ -118,6 +137,7 @@ const PageContent = () => {
                 answeredCount={subjectData["science"].answeredCount}
                 status={true}
                 cardClassName={"science"}
+                loading={subjectWiseLoader}
               />
             </div>
             <div className="flex justify-center md:flex-row xs:flex-col">
@@ -127,6 +147,7 @@ const PageContent = () => {
                 answeredCount={subjectData["english"].answeredCount}
                 status={true}
                 cardClassName={"english"}
+                loading={subjectWiseLoader}
               />
               <SubjectCard
                 subjectName={subjectData["coding"].subjectName}
@@ -134,6 +155,7 @@ const PageContent = () => {
                 answeredCount={subjectData["coding"].answeredCount}
                 status={false}
                 cardClassName={"coding"}
+                loading={subjectWiseLoader}
               />
             </div>
           </div>
@@ -154,11 +176,13 @@ const PageContent = () => {
               studentData={studentData}
               avatar={avatar}
               setAvatar={setAvatar}
+              loading={dashboardLoader}
             />
             <GlobalLeaderboard
               leaderboardData={leaderboardData}
               studentData={studentData}
               avatar={avatar}
+              loading={dashboardLoader}
             />
           </div>
         </div>

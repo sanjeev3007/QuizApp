@@ -23,6 +23,8 @@ const PageContent = () => {
   const [studentData, setStudentData] = useState(null);
   const [topicData, setTopicData] = useState([]);
   const [avatar, setAvatar] = useState<string>("");
+  const [topicLoader, setTopicLoader] = useState<boolean>(false);
+  const [dashboardLoader, setDashboardLoader] = useState<boolean>(false);
 
   const params = useSearchParams();
   const subject = params.get("subject");
@@ -43,8 +45,8 @@ const PageContent = () => {
 
   useEffect(() => {
     const userId = getCookie("userId");
-    const grade = getCookie("grade");
     const fetchData = async () => {
+      setDashboardLoader(true);
       try {
         if (userId) {
           const data = await getStudentDashboard({
@@ -64,7 +66,22 @@ const PageContent = () => {
             rank: currentStudent?.rank,
           });
           setAvatar(data.response.currentStudentMeta?.pic || "");
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      }
+      setDashboardLoader(false);
+    };
+    fetchData();
+  }, []);
 
+  useEffect(() => {
+    const userId = getCookie("userId");
+    const grade = getCookie("grade");
+    const fetchData = async () => {
+      setTopicLoader(true);
+      try {
+        if (userId) {
           const data2 = await getStudentTopics({
             studentId: userId,
             course: subject == "mathematics" ? "math" : subject,
@@ -75,6 +92,7 @@ const PageContent = () => {
       } catch (err) {
         console.error("Error fetching data:", err);
       }
+      setTopicLoader(false);
     };
     fetchData();
   }, []);
@@ -96,11 +114,13 @@ const PageContent = () => {
               studentData={studentData}
               avatar={avatar}
               setAvatar={setAvatar}
+              loading={dashboardLoader}
             />
             <GlobalLeaderboard
               leaderboardData={leaderboardData}
               studentData={studentData}
               avatar={avatar}
+              loading={dashboardLoader}
             />
           </div>
           <div className="lg:text-4xl md:text-2xl xs:text-xl font-semibold leading-[38.73px] text-center lg:mt-10 md:mt-8 xs:mt-6">
@@ -112,7 +132,7 @@ const PageContent = () => {
             <span className="gradient-title-3">practice</span>
           </div>
           <div className="lg:mt-20 md:mt-12">
-            <TopicCardCarousel items={topicData} />
+            <TopicCardCarousel items={topicData} loading={topicLoader} />
           </div>
         </div>
       </div>

@@ -9,6 +9,7 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import EditProfileDialog from "@/components/edit-avatar/avatar-dialog";
 import noahFireStreak from "@/assets/Images/noah_fire_streak_transparent_v1.gif";
 import ActivityStreak from "./activity-streak";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const activity = ({
   subject,
@@ -17,6 +18,7 @@ const activity = ({
   studentData,
   avatar,
   setAvatar,
+  loading,
 }: {
   subject: string | null;
   studentActivity: any;
@@ -24,6 +26,7 @@ const activity = ({
   studentData: any;
   avatar: string;
   setAvatar: Function;
+  loading: boolean;
 }) => {
   const [openDialog, setOpenDialog] = React.useState(false);
   const handleOpenDialog = () => setOpenDialog(true);
@@ -142,19 +145,31 @@ const activity = ({
             </>
           ) : (
             <div className="grid justify-center content-center xs:mt-36 md:mt-24">
-              <div className="flex flex-row md:w-[429px] xs:w-[300px] justify-center">
-                <Image
-                  src={noahFireStreak}
-                  alt="noahFireStreak"
-                  width={66}
-                  height={72}
-                  className="mt-auto mb-auto"
-                />
-                <Typography className="streakTxt mt-auto mb-auto">
-                  Keep completing your daily activities and watch your learning
-                  streak burning brightly here!
-                </Typography>
-              </div>
+              {loading ? (
+                <span>
+                  <ClipLoader
+                    color={"#C4C3C1"}
+                    loading={loading}
+                    size={30}
+                    aria-label="Loading Spinner"
+                    data-testid="loading"
+                  />
+                </span>
+              ) : (
+                <div className="flex flex-row md:w-[429px] xs:w-[300px] justify-center">
+                  <Image
+                    src={noahFireStreak}
+                    alt="noahFireStreak"
+                    width={66}
+                    height={72}
+                    className="mt-auto mb-auto"
+                  />
+                  <Typography className="streakTxt mt-auto mb-auto">
+                    Keep completing your daily activities and watch your
+                    learning streak burning brightly here!
+                  </Typography>
+                </div>
+              )}
             </div>
           )}
         </div>

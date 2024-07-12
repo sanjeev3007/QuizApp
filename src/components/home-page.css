@@ -2,15 +2,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 1024px;
 }
 
 .titleSectionWrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
   width: 100%;
   margin-bottom: 1rem;
+  align-self: flex-start;
 }
 
 .titleTxt {
@@ -35,6 +36,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100%;
 }
 
 .cardHeading {
@@ -51,14 +53,18 @@
   display: flex;
   justify-content: space-between;
   gap: 20px;
+  width: 1024px;
+  height: 300px;
 }
 
 .cardLayout {
   flex: 1;
   background: -webkit-linear-gradient(99.24deg, #f9fafa 0%, #f2f7f7 100%);
   border: 1px solid #e6efef;
-  border-radius: 8px;
+  border-radius: 16px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  height: 300px;
 }
 
 .cardContent {
@@ -86,11 +92,15 @@
   font-size: 16px;
   font-weight: 400;
   color: #a3a3a3;
-  margin-bottom: 20px;
+  margin-bottom: 80px;
+  position: absolute;
+  bottom: 0;
 }
 
 .btnContainer {
   margin-top: 30px;
+  position: absolute;
+  bottom: 0;
 }
 
 .getStartedBtn {
@@ -102,6 +112,9 @@
   color: #ffffff;
   background: #e98451;
   box-shadow: none;
+  height: 48px;
+  width: 156px;
+  border-radius: 8px;
 }
 
 .getStartedBtn:hover {
@@ -534,6 +547,15 @@
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
+  .parentDiv {
+    width: 704px;
+  }
+
+  .noahHeadingImg {
+    width: 144px;
+    height: 40px;
+  }
+
   .titleTxt .subHeadingTxt {
     font-size: 28px;
     line-height: 33.89px;
@@ -541,20 +563,33 @@
 
   .cardContainer {
     width: 100%;
+    height: 100%;
   }
 
   .cardsWrapper {
     flex-direction: column;
+    width: 704px;
+    height: 714px;
   }
 
   .cardLayout {
     width: 100%;
+    margin-top: 0;
   }
 
   .cardHeading,
   .cardHeadingTxt {
     font-size: 20px;
     line-height: 24.2px;
+  }
+
+  .cardDescription {
+    margin-bottom: 20px;
+    position: inherit;
+  }
+
+  .btnContainer {
+    position: inherit;
   }
 
   .noahHomeIcon {
@@ -615,27 +650,37 @@
 }
 
 @media only screen and (max-width: 767px) {
+  .parentDiv {
+    width: 343px;
+  }
   .titleSectionWrapper {
     flex-direction: column-reverse;
     align-items: center;
   }
   .noahHeadingImg {
-    display: flex;
-    justify-content: center;
+    width: 100px;
+    height: 28px;
   }
   .titleTxt .subHeadingTxt {
     font-size: 20px;
     line-height: 24.2px;
+    text-align: center;
   }
   .noahHomeIcon {
-    margin: 0;
+    margin-right: 15px;
   }
   .cardContainer {
     width: 100%;
+    height: 100%;
+  }
+  .cardLayout {
+    margin-top: 0;
   }
   .cardsWrapper {
     flex-direction: column;
     text-align: left;
+    width: 343px;
+    height: 680px;
   }
   .cardHeading {
     font-size: 16px;
@@ -654,6 +699,11 @@
   .cardDescription {
     font-size: 14px;
     line-height: 16.94px;
+    margin-bottom: 20px;
+    position: inherit;
+  }
+  .btnContainer {
+    position: inherit;
   }
   .profileWrapper {
     flex-direction: column;
