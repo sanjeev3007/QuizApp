@@ -104,7 +104,7 @@ const SubjectCard = ({
           className={`w-[156px] h-[48px] top-[137px] left-[32px] p-[14px_20px] gap-[10px] rounded-[8px] 
           ${
             status
-              ? "bg-[#E98451] hover:bg-[#E98451]"
+              ? "bg-[#E98451] hover:bg-[#F1AD7E]"
               : "bg-[#C3B5AC] hover:bg-[#C3B5AC]"
           } text-[#FFF] `}
           disabled={!status}

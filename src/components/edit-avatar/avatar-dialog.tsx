@@ -105,6 +105,7 @@ const ActivityDialog: React.FC<EditProfileDialogProps> = ({
         studentId,
       });
       setAvatar(selectedAvatar);
+      localStorage.setItem("user-avatar", selectedAvatar);
     } catch (err) {
       console.error("🚀 ~ handleSubmit ~ err:", err);
     }

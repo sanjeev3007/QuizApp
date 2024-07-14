@@ -134,7 +134,7 @@ const HomePage: React.FC<Props> = ({
     if (title === "Fun Trivia") {
       generateGKQuiz();
     } else if (title === "Ask a Doubt") {
-      router.push("/chat-home");
+      router.push("/chat-bot");
     } else if (title === "Learn") {
       router.push("/student-dashboard");
     }

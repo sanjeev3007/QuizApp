@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import "@/components/home-page.css";
+import "./subject-dashboard.css";
 import Image from "next/image";
 import NoahImage from "@/assets/Images/noah_doubt_solve_dp.svg";
 import { Button, Card, CircularProgress, Typography } from "@mui/material";
@@ -69,7 +69,7 @@ const NoahHeader = ({
           <Card className="fact-card">
             <Typography className="fact-card-txt">
               {welcomeMessage.replace(
-                "{name}",
+                /{name}/g,
                 studentName?.split(" ")[0] || ""
               )}
             </Typography>
@@ -92,7 +92,13 @@ const NoahHeader = ({
           <Button
             variant="contained"
             className="resume-quizz-btn"
-            endIcon={loading ? <CircularProgress /> : <EastRoundedIcon />}
+            endIcon={
+              loading ? (
+                <CircularProgress size={10} color={"secondary"} />
+              ) : (
+                <EastRoundedIcon />
+              )
+            }
             onClick={async () => createQuiz()}
             disabled={loading}
           >
@@ -106,19 +112,19 @@ const NoahHeader = ({
 
 const welcomeMessages = [
   {
-    text: "Hey {name}, We're thrilled to continue this learning journey with you! I'm here to help you master new concepts and overcome challenges as you work towards your academic goals. Together, we'll explore fascinating topics that spark your curiosity. Remember, Alex, each question you ask is a building block for your future success!",
+    text: "Hey {name}, We're thrilled to continue this learning journey with you! I'm here to help you master new concepts and overcome challenges as you work towards your academic goals. Together, we'll explore fascinating topics that spark your curiosity. Remember, {name}, each question you ask is a building block for your future success!",
   },
   {
-    text: "Welcome back, {name}! Your dedication to learning is inspiring. I'm excited to guide you through new concepts and help you tackle any obstacles that come your way. We'll dive into thought-provoking subjects and sharpen your analytical skills. Alex, always remember that your growth mindset is your greatest asset!",
+    text: "Welcome back, {name}! Your dedication to learning is inspiring. I'm excited to guide you through new concepts and help you tackle any obstacles that come your way. We'll dive into thought-provoking subjects and sharpen your analytical skills. {name}, always remember that your growth mindset is your greatest asset!",
   },
   {
-    text: "{name}, great to see you! Ready for another exciting learning adventure? I'm pumped to help you uncover new ideas and conquer academic hurdles. We're a team in this journey, exploring intriguing topics and boosting your problem-solving abilities. Hey Alex, don't forget - your questions are the fuel that powers our learning rocket!",
+    text: "{name}, great to see you! Ready for another exciting learning adventure? I'm pumped to help you uncover new ideas and conquer academic hurdles. We're a team in this journey, exploring intriguing topics and boosting your problem-solving abilities. Hey {name}, don't forget - your questions are the fuel that powers our learning rocket!",
   },
   {
-    text: "Welcome, {name}! It's wonderful to have you back on this learning expedition. My role is to support you in grasping complex ideas and turning challenges into victories. We'll embark on fascinating intellectual explorations together, enhancing your critical thinking along the way. Alex, always remember that your curiosity is the key to unlocking new understanding!",
+    text: "Welcome, {name}! It's wonderful to have you back on this learning expedition. My role is to support you in grasping complex ideas and turning challenges into victories. We'll embark on fascinating intellectual explorations together, enhancing your critical thinking along the way. {name}, always remember that your curiosity is the key to unlocking new understanding!",
   },
   {
-    text: "{name}, welcome aboard! I'm thrilled to continue guiding you towards academic excellence. Together, we'll crack tough concepts and transform obstacles into stepping stones for your success. Get ready to dive into captivating subjects that will expand your intellectual horizons. Remember, Alex - every 'aha!' moment brings you closer to your goals!",
+    text: "{name}, welcome aboard! I'm thrilled to continue guiding you towards academic excellence. Together, we'll crack tough concepts and transform obstacles into stepping stones for your success. Get ready to dive into captivating subjects that will expand your intellectual horizons. Remember, {name} - every 'aha!' moment brings you closer to your goals!",
   },
 ];
 

@@ -103,7 +103,7 @@
   bottom: 0;
 }
 
-.getStartedBtn {
+button.MuiButton-root.getStartedBtn {
   font-family: var(--font-inter);
   font-size: 16px;
   font-weight: 600;
@@ -117,9 +117,9 @@
   border-radius: 8px;
 }
 
-.getStartedBtn:hover {
+button.MuiButton-root.getStartedBtn:hover {
   color: #ffffff;
-  background: #e98451;
+  background: #f1ad7e;
   box-shadow: none;
 }
 
@@ -431,121 +431,6 @@
   color: #ffffff;
 }
 
-.noah-heading-wrapper {
-  margin-top: 50px;
-  display: flex;
-  justify-content: space-between;
-  width: 1120px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.noah-image-txtContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  margin-bottom: auto;
-  height: 151px;
-}
-
-.noah-image-txt {
-  font-family: var(--font-inter);
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 19.36px;
-  text-align: left;
-  color: #8f8f8f;
-  margin-top: 4px;
-}
-
-.fact-card-container {
-  display: flex;
-  flex-direction: column;
-}
-
-.fact-card {
-  max-width: 598px;
-  border: 1px solid #ffc2f3;
-  border-radius: 10px;
-  padding: 10px;
-  box-shadow: -4px -4px 16px 2px #f85e1214, 4px 4px 16px 2px #1245f814,
-    16px 16px 48px 8px #fc84843d inset, -16px -16px 48px 8px #849ffc3d inset;
-}
-
-.fact-card-txt {
-  font-family: var(--font-inter);
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 16.94px;
-  text-align: left;
-  background: linear-gradient(94.29deg, #d53434 1.02%, #1463fc 100.34%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-}
-
-.insights-btn {
-  font-family: var(--font-inter);
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 19.36px;
-  text-align: left;
-  text-transform: none;
-  color: #eb9b3a;
-  margin-top: 10px;
-}
-
-.noah-subject-quiz {
-  padding: 20px;
-  background: linear-gradient(99.24deg, #f6f9f8 0%, #f1f3f3 100%);
-  border: 1px solid #e1eae7;
-  border-radius: 12px;
-  box-shadow: 0px 0px 8px 0px #0053f429;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.noah-subject-text {
-  font-family: var(--font-inter);
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 16.94px;
-  text-align: left;
-  color: #6c9d9d;
-  margin-top: 8px;
-}
-
-.resume-quizz-btn {
-  font-family: var(--font-inter);
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 19.36px;
-  text-align: left;
-  color: #ffffff;
-  background: #eb9b3a;
-  text-transform: none;
-  margin-top: 16px;
-  border-radius: 8px;
-  padding: 10px 20px;
-  max-width: 180px;
-  box-shadow: none;
-}
-
-.resume-quizz-btn:hover {
-  color: #ffffff;
-  background: #eb9b3a;
-  box-shadow: none;
-}
-
-.noah-image-fact-wrap {
-  display: flex;
-  justify-content: space-around;
-  gap: 30px;
-}
-
 @media only screen and (min-width: 768px) and (max-width: 991px) {
   .parentDiv {
     width: 704px;
@@ -614,27 +499,6 @@
 
   .avatar-grid {
     gap: 3px;
-  }
-
-  .fact-card {
-    max-width: 560px;
-  }
-
-  .noah-heading-wrapper {
-    flex-direction: column;
-    justify-content: center;
-    width: 701px;
-    height: 357px;
-    gap: 24px;
-    margin-top: 10px;
-  }
-
-  .noah-subject-wrap {
-    margin-top: 0;
-  }
-
-  .noah-image-txtContainer {
-    justify-content: flex-start;
   }
 
   .activityCardContainer {
@@ -749,44 +613,6 @@
     gap: 3px;
     justify-content: center;
     margin-top: 0;
-  }
-
-  .noah-heading-wrapper {
-    flex-direction: column;
-    justify-content: center;
-    width: 343px;
-    gap: 12px;
-    margin-top: 10px;
-  }
-
-  .fact-card {
-    margin-top: 10px;
-  }
-  .fact-card-txt {
-    font-size: 14px;
-    line-height: 16.94px;
-  }
-  .noah-subject-quiz {
-    margin-top: 30px;
-    padding: 10px;
-  }
-  .noah-subject-text {
-    font-size: 14px;
-    line-height: 16.94px;
-  }
-
-  .noah-image-fact-wrap {
-    flex-direction: column;
-    justify-content: center;
-    gap: 0px;
-    height: 400px;
-  }
-
-  .fact-card {
-    height: 219px;
-    font-size: 14px;
-    font-weight: 500;
-    padding: 16px;
   }
 
   .activityCardContainer {
