@@ -124,7 +124,7 @@ const activity = ({
                         className={`font-bowlby text-4xl font-normal ${
                           streakData?.streak > 0
                             ? getBackgroundColor(subject) +
-                              "gradient-text-addon"
+                              " gradient-text-addon"
                             : "text-[#C4C3C1]"
                         } text-center`}
                       >
