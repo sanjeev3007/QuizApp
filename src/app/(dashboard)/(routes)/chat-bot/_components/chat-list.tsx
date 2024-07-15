@@ -5,7 +5,7 @@ import FeedBackForm from "./feedback-form";
 import { UseChatHelpers } from "ai/react";
 import ChatSolved from "./chat-cta";
 import { doubtSolved } from "@/actions/chat-doubt";
-import { useRouter } from "next/navigation";
+import saveGTMEvents from "@/lib/gtm";
 
 export interface ChatList {
   messages: UseChatHelpers["messages"];
@@ -30,9 +30,7 @@ export function ChatList({
   isLoading,
   setDoubtSolveStatus,
   doubtSolveStatus,
-  onSubmit,
 }: ChatList) {
-  const router = useRouter();
   if (!messages.length) {
     return null;
   }
@@ -69,6 +67,14 @@ export function ChatList({
                       id,
                       content: value,
                       role: "user",
+                    });
+                    saveGTMEvents({
+                      eventAction: "doubt_resolved",
+                      label: "student",
+                      label1: user_id,
+                      label2: null,
+                      label3: null,
+                      label4: null,
                     });
                     setDoubtSolveStatus(true);
                     doubtSolved(user_id, chat_id);

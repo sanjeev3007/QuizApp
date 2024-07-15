@@ -1,4 +1,6 @@
 "use client";
+import saveGTMEvents from "@/lib/gtm";
+import { getCookie } from "cookies-next";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -31,6 +33,19 @@ const SubjectCard = ({
     science: "#40b59b",
     english: "#4096b5",
     coding: "#b58440",
+  };
+
+  const handleGetStarted = (subjectName: string) => {
+    const userId = getCookie("userId");
+    saveGTMEvents({
+      eventAction: "subject_clicked",
+      label: userId ? "student" : "guest",
+      label1: userId || null,
+      label2: subjectName,
+      label3: null,
+      label4: null,
+    });
+    router.push(`/subject-dashboard?subject=${subjectName}`);
   };
 
   return (
@@ -108,9 +123,7 @@ const SubjectCard = ({
           } text-[#FFF] font-semibold md:text-base xs:text-sm`}
           disabled={!status}
           onClick={() => {
-            router.push(
-              `/subject-dashboard?subject=${subjectName.toLowerCase()}`
-            );
+            handleGetStarted(subjectName.toLowerCase());
           }}
         >
           <span className="flex flex-row justify-center items-center gap-2">

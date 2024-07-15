@@ -12,13 +12,14 @@ import Avatars from "./avatars";
 import CloseIcon from "@mui/icons-material/Close";
 import avatarCount from "@/constants/avatarCount.json";
 import apiService from "@/lib/apiService";
+import saveGTMEvents from "@/lib/gtm";
 
 type EditProfileDialogProps = {
   open: boolean;
   onClose: () => void;
   userName: String;
   grade: String;
-  studentId: String;
+  studentId: string;
   setAvatar: Function;
   avatar: string;
 };
@@ -104,6 +105,14 @@ const ActivityDialog: React.FC<EditProfileDialogProps> = ({
       });
       setAvatar(selectedAvatar);
       localStorage.setItem("user-avatar", selectedAvatar);
+      saveGTMEvents({
+        eventAction: "pic_changed",
+        label: "student",
+        label1: studentId,
+        label2: null,
+        label3: null,
+        label4: null,
+      });
     } catch (err) {
       console.error("🚀 ~ handleSubmit ~ err:", err);
     }

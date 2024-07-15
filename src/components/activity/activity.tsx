@@ -10,6 +10,8 @@ import EditProfileDialog from "@/components/edit-avatar/avatar-dialog";
 import noahFireStreak from "@/assets/Images/noah_fire_streak_transparent_v1.gif";
 import ActivityStreak from "./activity-streak";
 import ClipLoader from "react-spinners/ClipLoader";
+import { getCookie } from "cookies-next";
+import saveGTMEvents from "@/lib/gtm";
 
 const activity = ({
   subject,
@@ -29,7 +31,18 @@ const activity = ({
   loading: boolean;
 }) => {
   const [openDialog, setOpenDialog] = React.useState(false);
-  const handleOpenDialog = () => setOpenDialog(true);
+  const handleOpenDialog = () => {
+    const userId = getCookie("userId");
+    saveGTMEvents({
+      eventAction: "edit_clicked",
+      label: userId ? "student" : "guest",
+      label1: userId || null,
+      label2: null,
+      label3: null,
+      label4: null,
+    });
+    setOpenDialog(true);
+  };
   const handleCloseDialog = () => setOpenDialog(false);
 
   const getBackgroundColor = (subject: string | null) => {

@@ -1,7 +1,6 @@
 import React from "react";
 import "@/components/home-page.css";
 import "./activity.css";
-import { format } from "date-fns";
 
 type StudentActivity = {
   date: string;
@@ -42,9 +41,7 @@ const ActivityStreak: React.FC<ActivityStreakProps> = ({
           >
             <span className="bar-numbers">{item.numberOfQuestion}</span>
           </div>
-          <div className="activityStreakTxt">
-            {format(new Date(item.date), "d LLL")}
-          </div>
+          <div className="activityStreakTxt">{item.date}</div>
         </div>
       ))}
     </div>

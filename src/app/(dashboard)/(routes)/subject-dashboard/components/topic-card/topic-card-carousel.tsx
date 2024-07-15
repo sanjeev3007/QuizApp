@@ -7,12 +7,14 @@ const TopicCardCarousel = ({
   items,
   loading,
   subjectId,
+  subjectName,
   userId,
   userGrade,
 }: {
   items: any;
   loading: boolean;
   subjectId: number;
+  subjectName: string | null;
   userId: string;
   userGrade: string;
 }) => {
@@ -93,6 +95,7 @@ const TopicCardCarousel = ({
                   rating={item.totalScore}
                   totalQnsAnswered={item.totalQuestion}
                   subjectId={subjectId}
+                  subjectName={subjectName}
                   topicId={item.topicId}
                   userId={userId}
                   userGrade={userGrade}

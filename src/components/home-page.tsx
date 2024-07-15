@@ -11,6 +11,8 @@ import {
   doubtSolveDashboard,
   getNumberOfSubmittedAnswers,
 } from "@/app/supabase-server";
+import { getCookie } from "cookies-next";
+import saveGTMEvents from "@/lib/gtm";
 
 type Props = {
   userId: string;
@@ -27,6 +29,8 @@ const HomePage: React.FC<Props> = ({
   userId,
   totalChats: initialTotalChats,
 }: Props) => {
+  const router = useRouter();
+
   const [quizData, setQuizData] = useState<QuizData | null>({
     numberOfCompletedQuiz: 0,
     level: 1,
@@ -36,15 +40,6 @@ const HomePage: React.FC<Props> = ({
     useState<number>(initialTotalChats);
   const [numberOfCompletedQuiz, setNumberOfCompletedQuiz] = useState<number>(0);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const x = await getNumberOfSubmittedAnswers(userId);
-      setNumberOfCompletedQuiz(x);
-    };
-    fetchData();
-  }, []);
-
-  const router = useRouter();
   const cards = [
     {
       title: "Learn",
@@ -85,6 +80,26 @@ const HomePage: React.FC<Props> = ({
         ),
     },
   ];
+
+  useEffect(() => {
+    const userId = getCookie("userId");
+    saveGTMEvents({
+      eventAction: "noah_homepage",
+      label: userId ? "student" : "guest",
+      label1: userId || null,
+      label2: null,
+      label3: null,
+      label4: null,
+    });
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const x = await getNumberOfSubmittedAnswers(userId);
+      setNumberOfCompletedQuiz(x);
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -128,11 +143,36 @@ const HomePage: React.FC<Props> = ({
   };
 
   const handleButtonClick = (title: string) => {
+    const userId = getCookie("userId");
     if (title === "Fun Trivia") {
+      saveGTMEvents({
+        eventAction: "general_opened",
+        label: userId ? "student" : "guest",
+        label1: userId || null,
+        label2: null,
+        label3: null,
+        label4: null,
+      });
       generateGKQuiz();
     } else if (title === "Ask a Doubt") {
+      saveGTMEvents({
+        eventAction: "doubt_clicked",
+        label: userId ? "student" : "guest",
+        label1: userId || null,
+        label2: null,
+        label3: null,
+        label4: null,
+      });
       router.push("/chat-bot");
     } else if (title === "Learn") {
+      saveGTMEvents({
+        eventAction: "academics_opened",
+        label: userId ? "student" : "guest",
+        label1: userId || null,
+        label2: null,
+        label3: null,
+        label4: null,
+      });
       router.push("/student-dashboard");
     }
   };

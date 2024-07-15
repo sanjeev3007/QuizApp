@@ -7,12 +7,15 @@ import { useRouter } from "next/navigation";
 import { getCookie } from "cookies-next";
 import { createQuizBySubject } from "@/actions/quiz.client";
 import { grey } from "@mui/material/colors";
+import saveGTMEvents from "@/lib/gtm";
 
 const NoahHeader = ({
   subjectId,
+  subjectName,
   quizPath,
 }: {
   subjectId: number;
+  subjectName: string | null;
   quizPath: string;
 }) => {
   const userId = getCookie("userId");
@@ -31,6 +34,14 @@ const NoahHeader = ({
   }, []);
 
   const redirectToInsights = () => {
+    saveGTMEvents({
+      eventAction: "insights_opened",
+      label: userId ? "student" : "guest",
+      label1: userId || null,
+      label2: subjectName,
+      label3: null,
+      label4: null,
+    });
     router.push("/view-insights/" + subjectId);
   };
 
@@ -93,7 +104,17 @@ const NoahHeader = ({
           </div>
           <button
             className="resume-quizz-btn"
-            onClick={async () => createQuiz()}
+            onClick={async () => {
+              saveGTMEvents({
+                eventAction: "noah_quiz_initiated",
+                label: userId ? "student" : "guest",
+                label1: userId || null,
+                label2: subjectName,
+                label3: null,
+                label4: null,
+              });
+              createQuiz();
+            }}
             disabled={loading}
           >
             <span className="flex flex-row justify-center items-center gap-2">

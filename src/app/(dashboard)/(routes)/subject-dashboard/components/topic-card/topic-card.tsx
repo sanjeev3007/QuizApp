@@ -4,6 +4,7 @@ import "../subject-dashboard.css";
 import { generateQuiz } from "@/actions/quiz.client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import saveGTMEvents from "@/lib/gtm";
 
 const TopicCard = ({
   badge,
@@ -11,6 +12,7 @@ const TopicCard = ({
   rating,
   totalQnsAnswered,
   subjectId,
+  subjectName,
   topicId,
   userGrade,
   userId,
@@ -20,6 +22,7 @@ const TopicCard = ({
   rating: number;
   totalQnsAnswered: number;
   subjectId: number;
+  subjectName: string | null;
   topicId: number;
   userId: string;
   userGrade: string;
@@ -63,11 +66,11 @@ const TopicCard = ({
       });
 
       if (subjectId == 1) {
-        router.push(`/math-quiz/${data.id}`);
+        router.push(`/math-quiz/${data.id}?topicId=${topicId}`);
       } else if (subjectId == 2) {
-        router.push(`/science-quiz/${data.id}`);
+        router.push(`/science-quiz/${data.id}?topicId=${topicId}`);
       } else if (subjectId == 3) {
-        router.push(`/english-quiz/${data.id}`);
+        router.push(`/english-quiz/${data.id}?topicId=${topicId}`);
       } else {
         console.log("Invalid subjectId");
       }
@@ -174,7 +177,17 @@ const TopicCard = ({
         <button
           className="font-sans w-[120px] h-[37px] rounded-lg padding-[10px 20px 10px 20px] bg-[#EB9B3A] text-[#FFF] gap-1 hover:bg-[#F0B46B]"
           style={{ textTransform: "none" }}
-          onClick={async () => await createQuizByTopic()}
+          onClick={async () => {
+            saveGTMEvents({
+              eventAction: "practice_initiated",
+              label: "student",
+              label1: userId,
+              label2: subjectName,
+              label3: topic,
+              label4: null,
+            });
+            await createQuizByTopic();
+          }}
           disabled={loading}
         >
           <span className="flex flex-row justify-center items-center gap-2 text-sm font-semibold">

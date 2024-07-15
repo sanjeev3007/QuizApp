@@ -20,6 +20,7 @@ import { nanoid } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import LastInteractions from "./last-interactions";
 import useChatQuery from "@/store/chat-query";
+import saveGTMEvents from "@/lib/gtm";
 
 type chatData = {
   id: string;
@@ -56,6 +57,18 @@ const ChatHome = ({ user_Id, recentChats }: Props) => {
 
     return () => clearInterval(intervalId); // Cleanup the interval on component unmount
   }, []);
+
+  useEffect(() => {
+    saveGTMEvents({
+      eventAction: "doubt_homepage",
+      label: "student",
+      label1: user_Id,
+      label2: null,
+      label3: null,
+      label4: null,
+    });
+  }, []);
+
   const facts = [
     "A single strand of human hair can support up to 100 grams in weight.",
     "The Eiffel Tower can be 15 cm taller during the summer due to thermal expansion.",
@@ -97,6 +110,15 @@ const ChatHome = ({ user_Id, recentChats }: Props) => {
 
     setUserInput("");
     chatQuery.setQuery(optimizedAnswer);
+
+    saveGTMEvents({
+      eventAction: "new_chat_opened",
+      label: "student",
+      label1: user_Id,
+      label2: null,
+      label3: null,
+      label4: null,
+    });
 
     router.push(`/chat-bot/${user_Id}/${id}`);
   };

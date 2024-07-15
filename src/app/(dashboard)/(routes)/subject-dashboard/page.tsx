@@ -117,7 +117,11 @@ const PageContent = () => {
             <span className="gradient-title-1">Supercharge</span>
             <span className="text-[#5B8989]">{` your ${sub} learning`}</span>
           </div>
-          <NoahHeader subjectId={subjectId} quizPath={quizPath} />
+          <NoahHeader
+            subjectId={subjectId}
+            subjectName={subject}
+            quizPath={quizPath}
+          />
           <div className="flex lg:flex-row xs:flex-col justify-center gap-8 lg:mt-14 md:mt-6 xs:mt-12 mb-10">
             <Activity
               subject={subject}
@@ -148,6 +152,7 @@ const PageContent = () => {
               items={topicData}
               loading={topicLoader}
               subjectId={subjectId}
+              subjectName={subject}
               userId={userId!}
               userGrade={userGrade!}
             />
