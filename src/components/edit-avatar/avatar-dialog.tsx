@@ -4,8 +4,6 @@ import {
   DialogTitle,
   DialogContent,
   Avatar,
-  Typography,
-  Button,
   Tab,
   Tabs,
 } from "@mui/material";
@@ -115,10 +113,10 @@ const ActivityDialog: React.FC<EditProfileDialogProps> = ({
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle className="dialog-title">
-        <Typography className="activityDialogHeading">Edit Profile</Typography>
-        <Button onClick={onClose} className="close-icon">
+        <div className="activityDialogHeading">Edit Profile</div>
+        <button onClick={onClose} className="close-icon">
           <CloseIcon />
-        </Button>
+        </button>
       </DialogTitle>
       <DialogContent className="dialog-content">
         <div className="dialog-profile">
@@ -127,8 +125,8 @@ const ActivityDialog: React.FC<EditProfileDialogProps> = ({
             style={{ width: 80, height: 80, marginRight: 20 }}
           />
           <div>
-            <Typography className="nameTag">{userName}</Typography>
-            <Typography className="gradeTag">Grade {grade}</Typography>
+            <div className="nameTag">{userName}</div>
+            <div className="gradeTag">Grade {grade}</div>
           </div>
         </div>
 
@@ -150,13 +148,9 @@ const ActivityDialog: React.FC<EditProfileDialogProps> = ({
         />
 
         <div className="submitBtnContainer">
-          <Button
-            variant="contained"
-            onClick={handleSubmit}
-            className="submitBtn"
-          >
+          <button onClick={handleSubmit} className="submitBtn">
             Submit
-          </Button>
+          </button>
         </div>
       </DialogContent>
     </Dialog>

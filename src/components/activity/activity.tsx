@@ -1,6 +1,6 @@
 "use client";
-import { Avatar, Button, CardContent, Typography } from "@mui/material";
-import React, { useEffect } from "react";
+import { Avatar } from "@mui/material";
+import React from "react";
 import "@/components/home-page.css";
 import Image from "next/image";
 import rank_active from "@/assets/Images/rank_active.svg";
@@ -47,8 +47,8 @@ const activity = ({
 
   return (
     <>
-      <CardContent className="activityCardContainer">
-        <Typography className="cardHeadingTxt">My Activity</Typography>
+      <div className="activityCardContainer">
+        <div className="cardHeadingTxt">My Activity</div>
         <div className="profileWrapper">
           <div className="profileSection">
             <Avatar
@@ -60,17 +60,19 @@ const activity = ({
               <span className="nameTag">
                 {studentData?.studentName || "N/A"}
               </span>
-              <Typography className="gradeTag">
+              <div className="gradeTag">
                 Grade {studentData?.grade || "N/A"}
-              </Typography>
-              <Button
-                variant="text"
+              </div>
+              <button
                 className="editBtn"
-                endIcon={<EditOutlinedIcon fontSize="small" />}
                 onClick={handleOpenDialog}
+                disabled={loading}
               >
-                Edit
-              </Button>
+                <span className="flex flex-row justify-center items-center gap-1">
+                  Edit
+                  <EditOutlinedIcon fontSize="small" />
+                </span>
+              </button>
             </div>
           </div>
           <div className="rankContainer">
@@ -81,24 +83,24 @@ const activity = ({
                 width={126}
                 height={80}
               />
-              <Typography className="rankNumber">
+              <div className="rankNumber">
                 {studentData?.rank > 0 ? studentData?.rank : ""}
-              </Typography>
+              </div>
             </div>
-            <Typography
+            <div
               className={studentData?.rank > 0 ? "rankTitle" : "rankTitleGray"}
             >
               {studentData?.rank > 0 ? "Your Rank" : "Unranked"}
-            </Typography>
+            </div>
           </div>
         </div>
         <div className="activitiesTrackerContainer">
           {streakData?.totalQuestions > 0 ? (
             <>
               <div className="streaksGraphContainer">
-                <Typography className="activityTrackHeading">
+                <div className="activityTrackHeading">
                   Activities in last 7 days
-                </Typography>
+                </div>
               </div>
               <div className="streaksContainer">
                 <div className="streakGraph">
@@ -131,15 +133,13 @@ const activity = ({
                         {`${streakData?.streak}x`}
                       </div>
 
-                      <Typography className="streakTxt">
-                        daily streak
-                      </Typography>
+                      <div className="streakTxt">daily streak</div>
                     </div>
                   </div>
-                  <Typography className="streakDescription">
+                  <div className="streakDescription">
                     <strong>{`${streakData?.totalQuestions}`}</strong> questions
                     completed
-                  </Typography>
+                  </div>
                 </div>
               </div>
             </>
@@ -164,16 +164,16 @@ const activity = ({
                     height={72}
                     className="mt-auto mb-auto"
                   />
-                  <Typography className="streakTxt mt-auto mb-auto">
+                  <div className="streakTxt mt-auto mb-auto">
                     Keep completing your daily activities and watch your
                     learning streak burning brightly here!
-                  </Typography>
+                  </div>
                 </div>
               )}
             </div>
           )}
         </div>
-      </CardContent>
+      </div>
       {openDialog && (
         <EditProfileDialog
           open={openDialog}
