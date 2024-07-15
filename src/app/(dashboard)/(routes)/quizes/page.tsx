@@ -6,8 +6,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import HomePage from "@/components/home-page";
 
 const PageContent = async () => {
-  const user_Id =
-    getCookie("userId", { cookies }) || process.env.NEXT_PUBLIC_DEMO_USER_ID;
+  const user_Id = getCookie("userId", { cookies });
   const total_chats = await doubtSolveDashboard(user_Id!);
 
   return <HomePage userId={user_Id!} totalChats={total_chats} />;

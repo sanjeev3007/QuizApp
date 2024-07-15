@@ -242,9 +242,11 @@ export const getInsight = async (
 const getLast10Quizes = async ({
   limit,
   userid,
+  subjectId,
 }: {
   limit: any;
   userid: string;
+  subjectId: number;
 }) => {
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
@@ -252,6 +254,7 @@ const getLast10Quizes = async ({
     .select("*")
     .eq("complete", "true")
     .eq("userid", userid)
+    .eq("subject_id", subjectId)
     .order("created_at", { ascending: false })
     .limit(limit);
   return data || [];
@@ -295,7 +298,11 @@ export const getDashboard = async (userid: string, subjectId: number) => {
   //   .eq("complete", "true")
 
   const quizCurrentStatus = await getNumberOfCompletedQuiz(userid, subjectId);
-  const last10Quizes = await getLast10Quizes({ limit: 10, userid });
+  const last10Quizes = await getLast10Quizes({
+    limit: 10,
+    userid,
+    subjectId,
+  });
 
   const quizNumber =
     quizCurrentStatus.numberOfCompletedQuiz <= 10

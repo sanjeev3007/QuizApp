@@ -10,12 +10,14 @@ type Props = {
 };
 
 const PageContent = async (props: Props) => {
-  const user_Id =
-    getCookie("userId", { cookies }) || process.env.NEXT_PUBLIC_DEMO_USER_ID!;
-  const grade =
-    getCookie("grade", { cookies }) || process.env.NEXT_PUBLIC_DEMO_USER_GRADE!;
+  const user_Id = getCookie("userId", { cookies });
+  const grade = getCookie("grade", { cookies });
   const dashboardData = await getDashboard(user_Id!, props.subjectId);
-  const insights = await getInsight(user_Id!, parseInt(grade), props.subjectId);
+  const insights = await getInsight(
+    user_Id!,
+    parseInt(grade!),
+    props.subjectId
+  );
   return (
     <div className="p-5 md:p-12 w-full md:max-w-5xl mx-auto bg-[#FFF] !important">
       <QuizScore dashboardData={dashboardData} insights={insights} />

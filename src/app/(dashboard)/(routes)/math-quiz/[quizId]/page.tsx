@@ -10,12 +10,9 @@ export default async function ChatPage({
   params: { quizId: string };
 }) {
   const quizData = await getQuizById(quizId);
-  const userName =
-    getCookie("userName", { cookies }) || process.env.NEXT_PUBLIC_DEMO_USER_ID;
-  const userId =
-    getCookie("userId", { cookies }) || process.env.NEXT_PUBLIC_DEMO_USER_ID;
-  const grade =
-    getCookie("grade", { cookies }) || process.env.NEXT_PUBLIC_DEMO_USER_GRADE!;
+  const userName = getCookie("userName", { cookies });
+  const userId = getCookie("userId", { cookies });
+  const grade = getCookie("grade", { cookies });
   const assignStatus = await getAssignStatus(userId!);
 
   if (!quizData?.length)
@@ -34,11 +31,12 @@ export default async function ChatPage({
         quizId={quizId}
         user={{
           name: userName!,
-          grade: parseInt(grade),
+          grade: parseInt(grade!),
           id: userId!,
         }}
         numberOfCompletedQuizData={numberOfCompletedQuizData}
         assignStatus={assignStatus}
+        subjectId={subjectId}
       />
     </div>
   );
