@@ -32,7 +32,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             onClick={() => {
               router.back();
             }}
-            className="absolute left-0 md:ml-6 lg:text-sm md:text-xs font-bold leading-tight text-left text-[#569090] flex flex-row justify-center"
+            className="absolute left-0 md:ml-6 xs:ml-5 lg:text-sm md:text-xs font-bold leading-tight text-left text-[#569090] flex flex-row justify-center"
           >
             <Image
               src={"/images/icons/arrow-left.svg"}
