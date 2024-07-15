@@ -2,12 +2,11 @@ import React, { useEffect } from "react";
 import "./subject-dashboard.css";
 import Image from "next/image";
 import NoahImage from "@/assets/Images/noah_doubt_solve_dp.svg";
-import { Button, Card, CircularProgress, Typography } from "@mui/material";
-import ArrowOutwardRoundedIcon from "@mui/icons-material/ArrowOutwardRounded";
-import EastRoundedIcon from "@mui/icons-material/EastRounded";
+import { CircularProgress } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { getCookie } from "cookies-next";
 import { createQuizBySubject } from "@/actions/quiz.client";
+import { grey } from "@mui/material/colors";
 
 const NoahHeader = ({
   subjectId,
@@ -63,48 +62,61 @@ const NoahHeader = ({
             height={104}
             className="h-[104px]"
           />
-          <Typography className="noah-image-txt">Noah says</Typography>
+          <div className="noah-image-txt">Noah says</div>
         </div>
         <div className="fact-card-container">
-          <Card className="fact-card">
-            <Typography className="fact-card-txt">
+          <div className="fact-card">
+            <div className="fact-card-txt">
               {welcomeMessage.replace(
                 /{name}/g,
                 studentName?.split(" ")[0] || ""
               )}
-            </Typography>
-          </Card>
-          <Button
-            variant="text"
-            className="insights-btn"
-            endIcon={<ArrowOutwardRoundedIcon />}
-            onClick={redirectToInsights}
-          >
-            View detailed insights
-          </Button>
+            </div>
+          </div>
+          <button className="insights-btn" onClick={redirectToInsights}>
+            <span className="flex flex-row justify-center items-center gap-[0.5px]">
+              View detailed insights
+              <Image
+                src="/images/icons/arrow-up-right.png"
+                alt="arrow-up-right"
+                width={20}
+                height={20}
+              />
+            </span>
+          </button>
         </div>
       </div>
       <div className="noah-subject-wrap">
-        <Card className="noah-subject-quiz">
-          <Typography className="noah-subject-text">
+        <div className="noah-subject-quiz">
+          <div className="noah-subject-text">
             Noah curates quizzes to help you learn better
-          </Typography>
-          <Button
-            variant="contained"
+          </div>
+          <button
             className="resume-quizz-btn"
-            endIcon={
-              loading ? (
-                <CircularProgress size={10} color={"secondary"} />
-              ) : (
-                <EastRoundedIcon />
-              )
-            }
             onClick={async () => createQuiz()}
             disabled={loading}
           >
-            Continue Quiz
-          </Button>
-        </Card>
+            <span className="flex flex-row justify-center items-center gap-2">
+              Continue Quiz
+              {loading ? (
+                <CircularProgress
+                  size={10}
+                  sx={{
+                    color: grey[50],
+                  }}
+                />
+              ) : (
+                <Image
+                  src="/images/icons/arrow-right.png"
+                  alt="arrow-right"
+                  width={16}
+                  height={16}
+                  className="mb-1"
+                />
+              )}
+            </span>
+          </button>
+        </div>
       </div>
     </div>
   );

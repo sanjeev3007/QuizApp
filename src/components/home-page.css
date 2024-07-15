@@ -103,7 +103,7 @@
   bottom: 0;
 }
 
-button.MuiButton-root.getStartedBtn {
+.getStartedBtn {
   font-family: var(--font-inter);
   font-size: 16px;
   font-weight: 600;
@@ -117,7 +117,7 @@ button.MuiButton-root.getStartedBtn {
   border-radius: 8px;
 }
 
-button.MuiButton-root.getStartedBtn:hover {
+.getStartedBtn:hover {
   color: #ffffff;
   background: #f1ad7e;
   box-shadow: none;
@@ -568,6 +568,13 @@ button.MuiButton-root.getStartedBtn:hover {
   }
   .btnContainer {
     position: inherit;
+  }
+  .getStartedBtn {
+    width: 156px;
+    height: 41px;
+    padding: 12px 20px 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
   }
   .profileWrapper {
     flex-direction: column;

@@ -34,6 +34,7 @@
   line-height: 24.2px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-align: left;
@@ -188,6 +189,13 @@
   text-transform: none;
   color: #eb9b3a;
   margin-top: 10px;
+  border-radius: 4px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.insights-btn:hover {
+  background-color: #f6fafd;
 }
 
 .noah-subject-wrap {
@@ -328,12 +336,12 @@
     flex-direction: column;
     justify-content: center;
     gap: 0px;
-    height: 400px;
+    height: auto;
   }
 
   .fact-card {
     margin-top: 10px;
-    height: 219px;
+    height: auto;
     font-size: 14px;
     font-weight: 500;
     padding: 16px;

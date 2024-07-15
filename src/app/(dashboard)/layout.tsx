@@ -4,7 +4,6 @@ import sandboxLogo from "@/assets/Images/sandboxLogo.svg";
 import Image from "next/image";
 import Link from "next/link";
 import { Inter } from "next/font/google";
-import { Button } from "@mui/material";
 import { usePathname, useRouter } from "next/navigation";
 
 const inter = Inter({
@@ -29,7 +28,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     <div className={`${inter.variable} font-sans h-full w-full bg-[#FFF]`}>
       <div className="w-full border-b-2 flex items-center justify-between bg-[#FFF] py-4 sticky top-0">
         {showBackButton && (
-          <Button
+          <button
             onClick={() => {
               router.back();
             }}
@@ -40,10 +39,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               alt="arrow-left"
               width={16}
               height={16}
-              className="md:mt-0 xs:mt-1 md:mb-[0.5px] lg:mr-2 md:mr-1 xs:mr-3 lg:w-[16px] lg:h-[16px] md:w-[15px] md:h-[15px] xs:w-[16px] xs:h-[16px]"
+              className="lg:mt-[0.5px] md:mt-0 xs:mt-1 md:mb-[0.5px] lg:mr-2 md:mr-1 xs:mr-3 lg:w-[16px] lg:h-[16px] md:w-[15px] md:h-[15px] xs:w-[16px] xs:h-[16px]"
             />
             <span className="xs:hidden md:block">Go Back</span>
-          </Button>
+          </button>
         )}
         <Link href="/" className="mx-auto">
           <Image src={sandboxLogo} alt="sandbox-logo" />
