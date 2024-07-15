@@ -41,7 +41,7 @@ export function InitialChatMessage({
   const getTopicByMentor = async () => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SANDBOX_API}/noah/topic/assigned?studentId=${user.id}`,
+        `${process.env.NEXT_PUBLIC_SANDBOX_API}/noah/topic/assigned?studentId=${user.id}}&subjectId=${subjectId}`,
         {
           method: "GET",
           headers: {
