@@ -97,6 +97,13 @@ const PageContent = () => {
             rank: currentStudent?.rank,
           });
           setAvatar(data2.response.currentStudentMeta?.pic || "");
+
+          if (data2.response.currentStudentMeta?.pic) {
+            localStorage.setItem(
+              "user-avatar",
+              data2.response.currentStudentMeta?.pic
+            );
+          }
         }
       } catch (err) {
         console.error("Error fetching data:", err);

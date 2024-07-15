@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -100,13 +99,13 @@ const SubjectCard = ({
         />
       </div>
       <div className="ml-8 mt-4 mb-5">
-        <Button
-          className={`w-[156px] h-[48px] top-[137px] left-[32px] p-[14px_20px] gap-[10px] rounded-[8px] 
+        <button
+          className={`md:w-[156px] md:h-[48px] xs:w-[145px] xs:h-[39px] top-[137px] left-[32px] md:p-[14px_20px] p-[11px_20px] gap-[10px] rounded-[8px] grid justify-center content-center
           ${
             status
-              ? "bg-[#E98451] hover:bg-[#E98451]"
+              ? "bg-[#E98451] hover:bg-[#F1AD7E]"
               : "bg-[#C3B5AC] hover:bg-[#C3B5AC]"
-          } text-[#FFF] `}
+          } text-[#FFF] font-semibold md:text-base xs:text-sm`}
           disabled={!status}
           onClick={() => {
             router.push(
@@ -114,8 +113,19 @@ const SubjectCard = ({
             );
           }}
         >
-          {status ? "Get Started" : "Coming soon!"}
-        </Button>
+          <span className="flex flex-row justify-center items-center gap-2">
+            {status ? "Get Started" : "Coming soon!"}
+            {status && (
+              <Image
+                src="/images/icons/arrow-right.png"
+                alt="arrow-right"
+                width={16}
+                height={16}
+                className="mb-[0.5px]"
+              />
+            )}
+          </span>
+        </button>
       </div>
     </div>
   );

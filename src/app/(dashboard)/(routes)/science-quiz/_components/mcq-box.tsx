@@ -4,7 +4,7 @@ import { Bot } from "lucide-react";
 import OptionsBox from "./options-box";
 import QuestionBox from "./question-box";
 import Image from "next/image";
-import botIcon from "@/assets/Images/bot_icon.png";
+import botIcon from "@/assets/Images/noah_dp.svg";
 import FeedBackForm from "./feedback-form";
 export default function MCQBox({
   currentQuestion,

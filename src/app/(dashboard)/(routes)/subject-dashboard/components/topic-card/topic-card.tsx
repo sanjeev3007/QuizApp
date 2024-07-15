@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Button } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import "../subject-dashboard.css";
 import { generateQuiz } from "@/actions/quiz.client";
 import { useRouter } from "next/navigation";
@@ -171,22 +171,26 @@ const TopicCard = ({
         <div className="text-[#A3A3A3] text-sm mt-auto mb-auto">
           {`${totalQnsAnswered} questions answered`}
         </div>
-        <Button
-          className="font-sans w-[120px] h-[37px] rounded-lg padding-[10px 20px 10px 20px] bg-[#EB9B3A] text-[#FFF] gap-1 hover:bg-[#EB9B3A]"
+        <button
+          className="font-sans w-[120px] h-[37px] rounded-lg padding-[10px 20px 10px 20px] bg-[#EB9B3A] text-[#FFF] gap-1 hover:bg-[#F0B46B]"
           style={{ textTransform: "none" }}
           onClick={async () => await createQuizByTopic()}
           disabled={loading}
         >
-          <span className="text-sm font-semibold">Practice</span>
-          <span>
-            <Image
-              src="/images/icons/arrow-right.png"
-              alt="arrow"
-              width={16}
-              height={16}
-            />
+          <span className="flex flex-row justify-center items-center gap-2 text-sm font-semibold">
+            Practice
+            {loading ? (
+              <CircularProgress size={10} color={"secondary"} />
+            ) : (
+              <Image
+                src="/images/icons/arrow-right.png"
+                alt="arrow"
+                width={16}
+                height={16}
+              />
+            )}
           </span>
-        </Button>
+        </button>
       </div>
     </div>
   );

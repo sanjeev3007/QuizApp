@@ -1,13 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import "@/components/home-page.css";
-import { Button, Card, CardContent, Typography } from "@mui/material";
 import Image from "next/image";
 import noahImage from "@/assets/Images/noahHomepageImage.png";
 import noahHeadingImage from "@/assets/Images/NoahHeading.png";
-import EastRoundedIcon from "@mui/icons-material/EastRounded";
 import { useRouter } from "next/navigation";
-import CircularProgress from "@mui/material/CircularProgress";
 import { getNumberOfCompletedGKQuiz } from "@/actions/gk-quiz.server";
 import { createGKQuiz, getGKQuestions } from "@/actions/gk-quiz";
 import {
@@ -134,7 +131,7 @@ const HomePage: React.FC<Props> = ({
     if (title === "Fun Trivia") {
       generateGKQuiz();
     } else if (title === "Ask a Doubt") {
-      router.push("/chat-home");
+      router.push("/chat-bot");
     } else if (title === "Learn") {
       router.push("/student-dashboard");
     }
@@ -154,9 +151,7 @@ const HomePage: React.FC<Props> = ({
                 className="noahHeadingImg"
               />
             </div>
-            <Typography className="subHeadingTxt">
-              Built to make you better.
-            </Typography>
+            <div className="subHeadingTxt">Built to make you better.</div>
           </div>
           <div className="noahHomeIcon">
             <Image
@@ -169,32 +164,33 @@ const HomePage: React.FC<Props> = ({
           </div>
         </div>
         <div className="cardContainer">
-          <Typography className="cardHeading">
-            What do you want to do today?
-          </Typography>
+          <div className="cardHeading">What do you want to do today?</div>
           <div className="cardsWrapper">
             {cards.map((card, index) => (
-              <Card key={index} className="cardLayout">
-                <CardContent className="lg:m-6 md:m-2 lg:p-0 h-5/6 relative">
-                  <Typography className="cardTitle">{card.title}</Typography>
-                  <Typography className="cardSubTitle">
-                    {card.subtitle}
-                  </Typography>
-                  <Typography className="cardDescription">
-                    {card.description}
-                  </Typography>
+              <div key={index} className="cardLayout">
+                <div className="lg:m-6 md:m-2 lg:p-0 xs:p-4 h-5/6 relative">
+                  <div className="cardTitle">{card.title}</div>
+                  <div className="cardSubTitle">{card.subtitle}</div>
+                  <div className="cardDescription">{card.description}</div>
                   <div className="btnContainer">
-                    <Button
+                    <button
                       className="getStartedBtn"
-                      endIcon={<EastRoundedIcon />}
-                      variant="contained"
                       onClick={() => handleButtonClick(card.title)}
                     >
-                      Get Started
-                    </Button>
+                      <span className="flex flex-row justify-center gap-2">
+                        Get Started
+                        <Image
+                          src="/images/icons/arrow-right.png"
+                          alt="arrow-right"
+                          width={16}
+                          height={16}
+                          className="mb-1"
+                        />
+                      </span>
+                    </button>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
         </div>
