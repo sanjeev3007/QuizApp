@@ -39,15 +39,15 @@ const PageContent = () => {
   if (subject == "mathematics") {
     sub = "Math";
     subjectId = constants.SUBJECT_IDS.MATH;
-    quizPath = "/math-quiz";
+    quizPath = "math";
   } else if (subject == "science") {
     sub = "Science";
     subjectId = constants.SUBJECT_IDS.SCIENCE;
-    quizPath = "/science-quiz";
+    quizPath = "science";
   } else if (subject == "english") {
     sub = "English";
     subjectId = constants.SUBJECT_IDS.ENGLISH;
-    quizPath = "/english-quiz";
+    quizPath = "english";
   }
 
   useEffect(() => {

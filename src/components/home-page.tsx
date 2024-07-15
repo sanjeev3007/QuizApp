@@ -11,6 +11,7 @@ import {
   doubtSolveDashboard,
   getNumberOfSubmittedAnswers,
 } from "@/app/supabase-server";
+import { setCookie } from "cookies-next";
 
 type Props = {
   userId: string;

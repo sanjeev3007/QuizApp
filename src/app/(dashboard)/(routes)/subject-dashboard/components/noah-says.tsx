@@ -36,12 +36,13 @@ const NoahHeader = ({
 
   const createQuiz = async () => {
     if (!userId || !grade) return;
+
     try {
       setLoading(true);
       const data = await createQuizBySubject({ userId, grade, subjectId });
-
+      console.log(data);
       if (data && data.length > 0) {
-        router.push(`${quizPath}/${data[0].id}`);
+        router.push(`/quiz/${quizPath}/${data[0].id}`);
       }
     } catch (error) {
       console.log(error);

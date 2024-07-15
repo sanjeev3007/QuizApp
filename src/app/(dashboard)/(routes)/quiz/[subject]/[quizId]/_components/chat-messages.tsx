@@ -171,9 +171,9 @@ export function EndChatMessage({
   const router = useRouter();
   const pathname = usePathname();
 
-  const redirectPathParam = pathname.includes("science-quiz")
+  const redirectPathParam = pathname.includes("science")
     ? "science"
-    : pathname.includes("english-quiz")
+    : pathname.includes("english")
     ? "english"
     : "mathematics";
   return (
@@ -206,7 +206,9 @@ export function EndChatMessage({
             <Button
               className="min-w-[164px] mt-2 border-2 border-[#E98451] bg-transparent text-[#E98451] hover:bg-transparent md:ml-2"
               onClick={() =>
-                router.push(`/subject-dashboard?subject=${redirectPathParam}`)
+                router.replace(
+                  `/subject-dashboard?subject=${redirectPathParam}`
+                )
               }
             >
               End Quiz & Exit{" "}
