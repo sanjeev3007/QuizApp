@@ -46,6 +46,7 @@ type ChatProps = {
   numberOfCompletedQuizData: any;
   assignStatus: boolean;
   subjectId: number;
+  subjectName: string;
 };
 
 export default function Chat({
@@ -55,12 +56,17 @@ export default function Chat({
   numberOfCompletedQuizData,
   assignStatus,
   subjectId,
+  subjectName,
 }: ChatProps) {
   const bottom = useRef<HTMLDivElement>(null);
   const [questionIndex, setQuestionIndex] = useState(
     quizData.submissions?.length || 0
   );
-  const [hasEnded, setHasEnded] = useState(false);
+  const [hasEnded, setHasEnded] = useState(
+    quizData.questions?.length > 0
+      ? quizData.submissions?.length === quizData.questions?.length
+      : false
+  );
   const [submissions, setSubmissions] = useState<SubmissionType[]>(
     quizData?.submissions || []
   );
@@ -93,7 +99,7 @@ export default function Chat({
         setLoader(false);
         return;
       }
-      router.push(`/science-quiz/${data[0].id}`);
+      router.replace(`/quiz/${subjectName}/${data[0].id}`);
     } catch (error) {
       console.log(error);
     } finally {
@@ -177,7 +183,7 @@ export default function Chat({
       }
     })();
     router.refresh();
-  }, [submissions]);
+  }, [submissions, quizTopic, started]);
 
   // Handle the next button click
   const handleNext = useCallback(
@@ -279,6 +285,16 @@ export default function Chat({
     setIsMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (hasEnded) {
+      router.push(
+        `/subject-dashboard?subject=${
+          subjectName === "math" ? "mathematics" : subjectName
+        }`
+      );
+    }
+  }, []);
+
   if (!isMounted) return null;
 
   return (
@@ -327,7 +343,7 @@ export default function Chat({
               startNewQuiz={startNewQuiz}
               loader={loader}
               score={score}
-              questionsLength={questionList.length}
+              questionsLength={questionList?.length}
             />
           )}
         </div>

@@ -1,13 +1,13 @@
-import Chat from "../_components/chat-box";
+import Chat from "./_components/chat-box";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 import { getAssignStatus } from "@/lib/utils";
 import { getNumberOfCompletedQuiz, getQuizById } from "@/actions/quiz.server";
 
 export default async function ChatPage({
-  params: { quizId },
+  params: { subject, quizId },
 }: {
-  params: { quizId: string };
+  params: { subject: string; quizId: string };
 }) {
   const quizData = await getQuizById(quizId);
   const userName = getCookie("userName", { cookies });
@@ -36,6 +36,8 @@ export default async function ChatPage({
         }}
         numberOfCompletedQuizData={numberOfCompletedQuizData}
         assignStatus={assignStatus}
+        subjectId={subjectId}
+        subjectName={subject}
       />
     </div>
   );

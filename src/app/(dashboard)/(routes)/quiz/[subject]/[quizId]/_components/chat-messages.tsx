@@ -1,10 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { BarChart, Bot } from "lucide-react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import botIcon from "@/assets/Images/noah_dp.svg";
-import lucide_trophy from "@/assets/Images/lucide_trophy.png";
 import Image from "next/image";
 import EastOutlinedIcon from "@mui/icons-material/EastOutlined";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -41,7 +39,7 @@ export function InitialChatMessage({
   const getTopicByMentor = async () => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SANDBOX_API}/noah/topic/assigned?studentId=${user.id}`,
+        `${process.env.NEXT_PUBLIC_SANDBOX_API}/noah/topic/assigned?studentId=${user.id}}&subjectId=${subjectId}`,
         {
           method: "GET",
           headers: {
@@ -65,7 +63,6 @@ export function InitialChatMessage({
         userId: user.id,
         subjectId,
       });
-      console.log(questions, topicName, topicId);
       setQuestionList(questions);
       setQuizTopic(topicName);
       setTopicId(topicId);
@@ -174,9 +171,9 @@ export function EndChatMessage({
   const router = useRouter();
   const pathname = usePathname();
 
-  const redirectPathParam = pathname.includes("science-quiz")
+  const redirectPathParam = pathname.includes("science")
     ? "science"
-    : pathname.includes("english-quiz")
+    : pathname.includes("english")
     ? "english"
     : "mathematics";
   return (
@@ -209,7 +206,9 @@ export function EndChatMessage({
             <Button
               className="min-w-[164px] mt-2 border-2 border-[#E98451] bg-transparent text-[#E98451] hover:bg-transparent md:ml-2"
               onClick={() =>
-                router.push(`/subject-dashboard?subject=${redirectPathParam}`)
+                router.replace(
+                  `/subject-dashboard?subject=${redirectPathParam}`
+                )
               }
             >
               End Quiz & Exit{" "}
