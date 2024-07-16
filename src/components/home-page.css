@@ -339,33 +339,39 @@
   justify-content: flex-start;
 }
 
-.MuiTabs-indicator {
-  display: none;
+.categoryTabs {
+  overflow: hidden;
+  gap: 8px;
+  min-height: 48px;
+  display: flex;
 }
 
-.MuiTab-root {
+.scrollableTabs {
+  position: relative;
+  display: inline-block;
+  flex: 1 1 auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  overflow: auto hidden;
+}
+
+.categoryTab {
   font-family: var(--font-roboto-mono);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 14px;
   line-height: 14.06px;
   text-transform: none;
   color: #5b8989;
   min-width: 0;
   min-height: 0;
-  padding: 6px 12px;
+  padding: 5px 10px;
   white-space: nowrap;
-  overflow-x: auto;
+  overflow: hidden;
 }
 
-.MuiTab-root.Mui-selected {
+.categoryTab.selectedTab {
   background-color: #e98451;
   color: #ffffff;
-  gap: 10px;
   border-radius: 8px;
-}
-
-.MuiTabs-flexContainer {
-  gap: 8px;
 }
 
 .submitBtnContainer {
@@ -623,6 +629,9 @@
     gap: 3px;
     justify-content: center;
     margin-top: 0;
+  }
+  .categoryTab {
+    font-size: 12px;
   }
 
   .activityCardContainer {

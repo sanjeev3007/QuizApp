@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Avatar,
-  Tab,
-  Tabs,
-} from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, Avatar } from "@mui/material";
 import "@/components/home-page.css";
 import Avatars from "./avatars";
 import CloseIcon from "@mui/icons-material/Close";
@@ -139,16 +132,23 @@ const ActivityDialog: React.FC<EditProfileDialogProps> = ({
           </div>
         </div>
 
-        <Tabs
-          value={selectedTab}
-          onChange={handleTabChange}
-          variant="scrollable"
-          scrollButtons={false}
-        >
-          {Object.keys(avatarCount).map((category, index) => (
-            <Tab key={index} label={category} />
-          ))}
-        </Tabs>
+        <div className="categoryTabs">
+          <div className="scrollableTabs">
+            {Object.keys(avatarCount).map((category, index) => (
+              <button
+                key={index}
+                className={`categoryTab ${
+                  index == selectedTab ? "selectedTab" : ""
+                }`}
+                onClick={(e) => {
+                  handleTabChange(e, index);
+                }}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <Avatars
           categoryList={categoryList}
