@@ -181,7 +181,7 @@ const HomePage: React.FC<Props> = ({
   };
 
   return (
-    <div className="flex flex-row justify-center">
+    <div className="flex flex-row justify-center pb-5">
       <div className="parentDiv">
         <div className="titleSectionWrapper">
           <div className="titleTxt">

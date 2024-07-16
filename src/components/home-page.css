@@ -1,3 +1,7 @@
+.level-card {
+  background: -webkit-linear-gradient(77.69deg, #f0f6fa 17.91%, #fffbeb 82.09%);
+}
+
 .parentDiv {
   display: flex;
   flex-direction: column;
