@@ -5,10 +5,13 @@ import { cn } from "@/lib/utils";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { useState } from "react";
 import FeedBackPopup from "./feedback-popup";
+import saveGTMEvents from "@/lib/gtm";
 
 export default function FeedBackForm({
   questionId,
   user,
+  subjectName,
+  topic,
 }: {
   questionId: string;
   user: {
@@ -16,6 +19,8 @@ export default function FeedBackForm({
     grade: number;
     id: string;
   };
+  subjectName: string;
+  topic: string | null;
 }) {
   const [response, setResponse] = useState<string | null>(null);
   const [feedbackDone, setFeedbackDone] = useState<boolean>(false);
@@ -24,6 +29,14 @@ export default function FeedBackForm({
   const [open, setOpen] = useState<boolean>(false);
 
   const handleClickOpen = () => {
+    saveGTMEvents({
+      eventAction: "feedback_selected",
+      label: "student",
+      label1: user?.id,
+      label2: subjectName,
+      label3: topic ? "Topic" : "Noah",
+      label4: null,
+    });
     setOpen(true);
   };
   const handleClose = () => {
@@ -76,6 +89,14 @@ export default function FeedBackForm({
   const submitFeedback = async (res: string | null, reason: string | null) => {
     const userId = user.id;
     if (!userId) return;
+    saveGTMEvents({
+      eventAction: "feedback_submitted",
+      label: "student",
+      label1: user?.id,
+      label2: subjectName,
+      label3: topic ? "Topic" : "Noah",
+      label4: null,
+    });
     setLoader(true);
     await feedbackQuiz({
       questionId: questionId,

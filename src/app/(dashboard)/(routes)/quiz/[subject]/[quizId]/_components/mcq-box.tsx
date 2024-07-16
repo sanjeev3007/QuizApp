@@ -1,11 +1,9 @@
 "use client";
 
-import { Bot } from "lucide-react";
 import OptionsBox from "./options-box";
 import QuestionBox from "./question-box";
 import Image from "next/image";
 import botIcon from "@/assets/Images/noah_dp.svg";
-import ExplainationPopover from "./explaination-popover";
 import FeedBackForm from "./feedback-form";
 export default function MCQBox({
   currentQuestion,
@@ -15,6 +13,8 @@ export default function MCQBox({
   user,
   hasEnded,
   explanation,
+  subjectName,
+  topic,
 }: {
   currentQuestion: any;
   handleNext: any;
@@ -27,6 +27,8 @@ export default function MCQBox({
   };
   hasEnded: boolean;
   explanation: string;
+  subjectName: string;
+  topic: string | null;
 }) {
   const correctAnswer = currentQuestion?.options.find(
     (option: any) => option.correct == "true"
@@ -54,8 +56,16 @@ export default function MCQBox({
           question={currentQuestion?.question}
           answer={correctAnswer}
           hasEnded={hasEnded}
+          user={user}
+          subjectName={subjectName}
+          topic={topic}
         />
-        <FeedBackForm questionId={currentQuestion?.uuid} user={user} />
+        <FeedBackForm
+          questionId={currentQuestion?.uuid}
+          user={user}
+          subjectName={subjectName}
+          topic={topic}
+        />
       </div>
     </div>
   );

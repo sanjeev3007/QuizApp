@@ -3,12 +3,16 @@ import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 import { getAssignStatus } from "@/lib/utils";
 import { getNumberOfCompletedQuiz, getQuizById } from "@/actions/quiz.server";
+import { useSearchParams } from "next/navigation";
 
 export default async function ChatPage({
   params: { subject, quizId },
 }: {
   params: { subject: string; quizId: string };
 }) {
+  const queryParams = useSearchParams();
+  const topic = queryParams.get("topic");
+
   const quizData = await getQuizById(quizId);
   const userName = getCookie("userName", { cookies });
   const userId = getCookie("userId", { cookies });
@@ -38,6 +42,7 @@ export default async function ChatPage({
         assignStatus={assignStatus}
         subjectId={subjectId}
         subjectName={subject}
+        topic={topic}
       />
     </div>
   );

@@ -5,6 +5,7 @@ import { generateQuiz } from "@/actions/quiz.client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import saveGTMEvents from "@/lib/gtm";
+import { grey } from "@mui/material/colors";
 
 const TopicCard = ({
   badge,
@@ -66,11 +67,11 @@ const TopicCard = ({
       });
 
       if (subjectId == 1) {
-        router.push(`/math-quiz/${data.id}?topicId=${topicId}`);
+        router.push(`/quiz/math/${data.id}?topic=${topicId}`);
       } else if (subjectId == 2) {
-        router.push(`/science-quiz/${data.id}?topicId=${topicId}`);
+        router.push(`/quiz/science/${data.id}?topic=${topicId}`);
       } else if (subjectId == 3) {
-        router.push(`/english-quiz/${data.id}?topicId=${topicId}`);
+        router.push(`/quiz/english/${data.id}?topic=${topicId}`);
       } else {
         console.log("Invalid subjectId");
       }
@@ -193,7 +194,7 @@ const TopicCard = ({
           <span className="flex flex-row justify-center items-center gap-2 text-sm font-semibold">
             Practice
             {loading ? (
-              <CircularProgress size={10} color={"secondary"} />
+              <CircularProgress size={10} sx={{ color: grey[50] }} />
             ) : (
               <Image
                 src="/images/icons/arrow-right.png"

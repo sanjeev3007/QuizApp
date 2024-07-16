@@ -29,6 +29,7 @@ import {
   storeUserSubmissionInGKQuiz,
   updateGKQuizStats,
 } from "@/actions/gk-quiz";
+import saveGTMEvents from "@/lib/gtm";
 
 type SubmissionType = {
   questionId: string;
@@ -83,10 +84,31 @@ export default function QuizBox({
 
     const data = await createGKQuiz(user.id, QuestionLists, topics);
 
+    saveGTMEvents({
+      eventAction: "next_quiz",
+      label: "student",
+      label1: user?.id,
+      label2: "general",
+      label3: "Noah",
+      label4: null,
+    });
+
     if (data && data.length > 0) {
       router.push(`/gk-quiz/${data[0].id}`);
     }
     setLoader(false);
+  };
+
+  const endQuiz = async () => {
+    saveGTMEvents({
+      eventAction: "end_quiz",
+      label: "student",
+      label1: user?.id,
+      label2: "general",
+      label3: "Noah",
+      label4: null,
+    });
+    router.push(`/quizes`);
   };
 
   // Get the current question
@@ -120,6 +142,18 @@ export default function QuizBox({
     const isCorrect = options[index!].correct === "true";
     return isCorrect;
   };
+
+  // GTM
+  useEffect(() => {
+    saveGTMEvents({
+      eventAction: "quiz_opened",
+      label: "student",
+      label1: user?.id,
+      label2: "general",
+      label3: "Noah",
+      label4: null,
+    });
+  }, []);
 
   useEffect(() => {
     // Store the user submission to the db
@@ -176,6 +210,14 @@ export default function QuizBox({
   useEffect(() => {
     // Show the quiz score
     if (allQuestionsAnswered) {
+      saveGTMEvents({
+        eventAction: "quiz_completed",
+        label: "student",
+        label1: user?.id,
+        label2: "general",
+        label3: "Noah",
+        label4: null,
+      });
       setHasEnded(true);
       endGame();
       return;
@@ -245,6 +287,7 @@ export default function QuizBox({
               showQuizScore={showQuizScore}
               user={user}
               startNewQuiz={startNewQuiz}
+              endQuiz={endQuiz}
               loader={loader}
             />
           )}

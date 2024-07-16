@@ -121,12 +121,7 @@ const NoahHeader = ({
             <span className="flex flex-row justify-center items-center gap-2">
               Continue Quiz
               {loading ? (
-                <CircularProgress
-                  size={10}
-                  sx={{
-                    color: grey[50],
-                  }}
-                />
+                <CircularProgress size={10} sx={{ color: grey[50] }} />
               ) : (
                 <Image
                   src="/images/icons/arrow-right.png"

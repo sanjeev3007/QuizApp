@@ -5,6 +5,7 @@ import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { useState } from "react";
 import FeedBackPopup from "./feedback-popup";
 import { feedbackGKQuiz } from "@/actions/gk-quiz";
+import saveGTMEvents from "@/lib/gtm";
 
 export default function FeedBackForm({
   questionId,
@@ -24,6 +25,14 @@ export default function FeedBackForm({
   const [open, setOpen] = useState<boolean>(false);
 
   const handleClickOpen = () => {
+    saveGTMEvents({
+      eventAction: "feedback_selected",
+      label: "studentId",
+      label1: user?.id,
+      label2: "general",
+      label3: "Noah",
+      label4: null,
+    });
     setOpen(true);
   };
   const handleClose = () => {
@@ -76,6 +85,14 @@ export default function FeedBackForm({
   const submitFeedback = async (res: string | null, reason: string | null) => {
     const userId = user.id;
     if (!userId) return;
+    saveGTMEvents({
+      eventAction: "feedback_submitted",
+      label: "studentId",
+      label1: user?.id,
+      label2: "general",
+      label3: "Noah",
+      label4: null,
+    });
     setLoader(true);
     await feedbackGKQuiz({
       questionId: questionId,

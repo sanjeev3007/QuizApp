@@ -41,7 +41,7 @@ const SubjectCard = ({
       eventAction: "subject_clicked",
       label: userId ? "student" : "guest",
       label1: userId || null,
-      label2: subjectName,
+      label2: subjectName == "mathematics" ? "math" : subjectName,
       label3: null,
       label4: null,
     });

@@ -49,11 +49,13 @@ export function EndChatMessage({
   showQuizScore,
   user,
   startNewQuiz,
+  endQuiz,
   loader,
 }: {
   showQuizScore: Dispatch<SetStateAction<boolean>>;
   user: { name: string; grade: number; id: string };
   startNewQuiz: any;
+  endQuiz: any;
   loader: boolean;
 }) {
   const router = useRouter();
@@ -98,7 +100,7 @@ export function EndChatMessage({
             </Button>
             <Button
               className="min-w-[164px] mt-2 border-2 border-[#E98451] bg-transparent text-[#E98451] hover:bg-transparent md:ml-2"
-              onClick={() => router.push(`/quizes`)}
+              onClick={() => endQuiz()}
             >
               End Quiz & Exit{" "}
             </Button>

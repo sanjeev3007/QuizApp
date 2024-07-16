@@ -152,7 +152,7 @@ const PageContent = () => {
               items={topicData}
               loading={topicLoader}
               subjectId={subjectId}
-              subjectName={subject}
+              subjectName={quizPath}
               userId={userId!}
               userGrade={userGrade!}
             />

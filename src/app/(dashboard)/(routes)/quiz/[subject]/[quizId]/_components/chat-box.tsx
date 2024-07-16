@@ -34,6 +34,7 @@ import {
   storeUserSubmissionToSubmissions,
   updateQuizToComplete,
 } from "@/actions/quiz.client";
+import saveGTMEvents from "@/lib/gtm";
 
 type ChatProps = {
   quizData: QuizDataType;
@@ -47,6 +48,7 @@ type ChatProps = {
   assignStatus: boolean;
   subjectId: number;
   subjectName: string;
+  topic: string | null;
 };
 
 export default function Chat({
@@ -57,6 +59,7 @@ export default function Chat({
   assignStatus,
   subjectId,
   subjectName,
+  topic,
 }: ChatProps) {
   const bottom = useRef<HTMLDivElement>(null);
   const [questionIndex, setQuestionIndex] = useState(
@@ -99,12 +102,33 @@ export default function Chat({
         setLoader(false);
         return;
       }
+
+      saveGTMEvents({
+        eventAction: "next_quiz",
+        label: "student",
+        label1: user?.id,
+        label2: subjectName,
+        label3: topic ? "Topic" : "Noah",
+        label4: null,
+      });
       router.replace(`/quiz/${subjectName}/${data[0].id}`);
     } catch (error) {
       console.log(error);
     } finally {
       setLoader(false);
     }
+  };
+
+  const endQuiz = (redirectPathParam: string) => {
+    saveGTMEvents({
+      eventAction: "end_quiz",
+      label: "student",
+      label1: user?.id,
+      label2: subjectName,
+      label3: topic ? "Topic" : "Noah",
+      label4: null,
+    });
+    router.replace(`/subject-dashboard?subject=${redirectPathParam}`);
   };
 
   // Get the current question
@@ -157,6 +181,18 @@ export default function Chat({
     const isCorrect = options[index!].correct === "true";
     return isCorrect;
   };
+
+  // GTM
+  useEffect(() => {
+    saveGTMEvents({
+      eventAction: "quiz_opened",
+      label: "student",
+      label1: user?.id,
+      label2: subjectName,
+      label3: topic ? "Topic" : "Noah",
+      label4: null,
+    });
+  }, []);
 
   useEffect(() => {
     // Store the user submission to the db
@@ -228,6 +264,14 @@ export default function Chat({
   useEffect(() => {
     // Show the quiz score
     if (allQuestionsAnswered) {
+      saveGTMEvents({
+        eventAction: "quiz_completed",
+        label: "student",
+        label1: user?.id,
+        label2: subjectName,
+        label3: topic ? "Topic" : "Noah",
+        label4: null,
+      });
       setHasEnded(true);
       endGame();
       return;
@@ -330,6 +374,8 @@ export default function Chat({
                     submissions={submissions}
                     questionIndex={i + 1}
                     user={user}
+                    subjectName={subjectName}
+                    topic={topic}
                     hasEnded={hasEnded}
                     explanation={question.explanation}
                   />
@@ -341,6 +387,7 @@ export default function Chat({
               showQuizScore={showQuizScore}
               user={user}
               startNewQuiz={startNewQuiz}
+              endQuiz={endQuiz}
               loader={loader}
               score={score}
               questionsLength={questionList?.length}

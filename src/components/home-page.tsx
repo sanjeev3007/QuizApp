@@ -91,6 +91,9 @@ const HomePage: React.FC<Props> = ({
       label3: null,
       label4: null,
     });
+    if (!userId) {
+      window.open(process.env.NEXT_PUBLIC_SANDBOX_URL, "_self");
+    }
   }, []);
 
   useEffect(() => {

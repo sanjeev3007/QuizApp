@@ -5,7 +5,6 @@ import OptionsBox from "./options-box";
 import QuestionBox from "./question-box";
 import Image from "next/image";
 import botIcon from "@/assets/Images/noah_dp.svg";
-import ExplainationPopover from "./explaination-popover";
 import FeedBackForm from "./feedback-form";
 export default function MCQBox({
   currentQuestion,
@@ -47,6 +46,7 @@ export default function MCQBox({
           completedQuestion={completedQuestion}
           question={currentQuestion?.question}
           answer={correctAnswer}
+          user={user}
         />
         <FeedBackForm questionId={currentQuestion?.uuid} user={user} />
       </div>

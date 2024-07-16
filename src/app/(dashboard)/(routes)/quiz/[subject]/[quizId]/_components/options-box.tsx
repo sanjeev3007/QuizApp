@@ -13,6 +13,9 @@ export default function OptionsBox({
   question,
   answer,
   hasEnded,
+  user,
+  subjectName,
+  topic,
 }: {
   options: any;
   handleNext: any;
@@ -20,6 +23,13 @@ export default function OptionsBox({
   question: string;
   answer: string;
   hasEnded: boolean;
+  user: {
+    name: string;
+    grade: number;
+    id: string;
+  };
+  subjectName: string;
+  topic: string | null;
 }) {
   const handleOptionClick = (index: number) => {
     if (completedQuestion) {
@@ -75,7 +85,13 @@ export default function OptionsBox({
               </div>
               <p className="text-sm">{option.text}</p>
               {showIncorrect && (
-                <ExplainationPopover question={question} answer={answer} />
+                <ExplainationPopover
+                  question={question}
+                  answer={answer}
+                  user={user}
+                  subjectName={subjectName}
+                  topic={topic}
+                />
               )}
             </button>
           );

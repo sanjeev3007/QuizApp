@@ -157,6 +157,7 @@ export function EndChatMessage({
   showQuizScore,
   user,
   startNewQuiz,
+  endQuiz,
   loader,
   score,
   questionsLength,
@@ -164,6 +165,7 @@ export function EndChatMessage({
   showQuizScore: Dispatch<SetStateAction<boolean>>;
   user: { name: string; grade: number; id: string };
   startNewQuiz: any;
+  endQuiz: any;
   loader: boolean;
   score: number;
   questionsLength: number;
@@ -205,11 +207,7 @@ export function EndChatMessage({
             </Button>
             <Button
               className="min-w-[164px] mt-2 border-2 border-[#E98451] bg-transparent text-[#E98451] hover:bg-transparent md:ml-2"
-              onClick={() =>
-                router.replace(
-                  `/subject-dashboard?subject=${redirectPathParam}`
-                )
-              }
+              onClick={() => endQuiz(redirectPathParam)}
             >
               End Quiz & Exit{" "}
             </Button>
