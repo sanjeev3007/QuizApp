@@ -12,7 +12,6 @@ export default function MCQBox({
   questionIndex,
   user,
   hasEnded,
-  explanation,
   subjectName,
   topic,
 }: {

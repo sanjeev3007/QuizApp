@@ -154,7 +154,6 @@ export function InitialChatMessage({
 }
 
 export function EndChatMessage({
-  showQuizScore,
   user,
   startNewQuiz,
   endQuiz,

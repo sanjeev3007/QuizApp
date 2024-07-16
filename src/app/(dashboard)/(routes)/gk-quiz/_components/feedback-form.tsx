@@ -27,7 +27,7 @@ export default function FeedBackForm({
   const handleClickOpen = () => {
     saveGTMEvents({
       eventAction: "feedback_selected",
-      label: "studentId",
+      label: "student",
       label1: user?.id,
       label2: "general",
       label3: "Noah",
@@ -87,7 +87,7 @@ export default function FeedBackForm({
     if (!userId) return;
     saveGTMEvents({
       eventAction: "feedback_submitted",
-      label: "studentId",
+      label: "student",
       label1: user?.id,
       label2: "general",
       label3: "Noah",

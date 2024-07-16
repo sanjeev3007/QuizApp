@@ -34,7 +34,7 @@ export default function ExplainationPopover({
           onClick={() => {
             saveGTMEvents({
               eventAction: "explanation_clicked",
-              label: "studentId",
+              label: "student",
               label1: user?.id,
               label2: "general",
               label3: "Noah",

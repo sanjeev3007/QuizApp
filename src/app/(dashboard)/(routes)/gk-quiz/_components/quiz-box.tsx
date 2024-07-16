@@ -108,7 +108,7 @@ export default function QuizBox({
       label3: "Noah",
       label4: null,
     });
-    router.push(`/quizes`);
+    router.push(`/`);
   };
 
   // Get the current question
