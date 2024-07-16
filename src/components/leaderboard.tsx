@@ -38,7 +38,7 @@ const GlobalLeaderboard = ({
           const studentMeta = leaderboardData.studentMeta[entry.userid];
           return (
             <div
-              key={entry.rank}
+              key={index}
               className={`grid grid-cols-4 grid-cols-[2fr_5.5fr_1fr_1.5fr] h-10 gap-2 text-[14px] font-medium leading-[16.94px] text-left text-[#6C9D9D] p-2 pr-4 ${
                 index % 2 === 0 ? "bg-[#F2F4FD]" : "bg-white"
               } ${

@@ -23,7 +23,7 @@ import {
   TopicMessage,
 } from "./chat-messages";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { QuizDataType, SubmissionType } from "@/types/quiz.types";
 import { getQuizStats } from "@/app/supabase-client-provider";
 import {
@@ -48,7 +48,6 @@ type ChatProps = {
   assignStatus: boolean;
   subjectId: number;
   subjectName: string;
-  topic: string | null;
 };
 
 export default function Chat({
@@ -59,8 +58,10 @@ export default function Chat({
   assignStatus,
   subjectId,
   subjectName,
-  topic,
 }: ChatProps) {
+  const queryParams = useSearchParams();
+  const topic = queryParams.get("topic");
+
   const bottom = useRef<HTMLDivElement>(null);
   const [questionIndex, setQuestionIndex] = useState(
     quizData.submissions?.length || 0

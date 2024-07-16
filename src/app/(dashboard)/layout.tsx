@@ -30,7 +30,24 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         {showBackButton && (
           <button
             onClick={() => {
-              router.back();
+              if (pathname.includes("student-dashboard")) {
+                router.push("/");
+              } else if (pathname.includes("subject-dashboard")) {
+                router.push("/student-dashboard");
+              } else if (pathname.includes("gk-quiz")) {
+                router.push("/");
+              } else if (pathname.includes("/quiz/")) {
+                const subjectName = pathname.split("/")[2];
+                router.push(
+                  `/subject-dashboard?subject=${
+                    subjectName == "math" ? "mathematics" : subjectName
+                  }`
+                );
+              } else if (pathname.includes("chat-bot")) {
+                router.push("/");
+              } else {
+                router.back();
+              }
             }}
             className="absolute left-0 md:ml-6 xs:ml-5 lg:text-sm md:text-xs font-bold leading-tight text-left text-[#569090] flex flex-row justify-center"
           >
