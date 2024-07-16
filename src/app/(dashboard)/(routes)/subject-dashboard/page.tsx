@@ -4,7 +4,7 @@ import "./components/subject-dashboard.css";
 import Activity from "@/components/activity/activity";
 import GlobalLeaderboard from "@/components/leaderboard";
 import NoahHeader from "./components/noah-says";
-import { getCookie, setCookie } from "cookies-next";
+import { getCookie } from "cookies-next";
 import {
   getStudentDashboard,
   getStudentTopics,
@@ -12,6 +12,23 @@ import {
 import { Suspense, useEffect, useState } from "react";
 import constants from "@/constants/constants";
 import TopicCardCarousel from "./components/topic-card/topic-card-carousel";
+import saveGTMEvents from "@/lib/gtm";
+import TopicCard from "./components/topic-card/topic-card";
+import ClipLoader from "react-spinners/ClipLoader";
+
+type TopicCardLayout = {
+  badge: string | null;
+  topicName: string;
+  totalScore: number;
+  totalQuestion: number;
+  subjectId: number;
+  subjectName: string | null;
+  topicId: number;
+  userId: string;
+  userGrade: string;
+};
+
+type TopicCardLayoutArr = TopicCardLayout[];
 
 const PageContent = () => {
   const [leaderboardData, setLeaderboardData] = useState({
@@ -21,7 +38,7 @@ const PageContent = () => {
   const [studentActivity, setStudentActivity] = useState([]);
   const [streakData, setStreakData] = useState({});
   const [studentData, setStudentData] = useState(null);
-  const [topicData, setTopicData] = useState([]);
+  const [topicData, setTopicData] = useState<TopicCardLayoutArr>([]);
   const [avatar, setAvatar] = useState<string>("");
   const [topicLoader, setTopicLoader] = useState<boolean>(false);
   const [dashboardLoader, setDashboardLoader] = useState<boolean>(false);
@@ -49,6 +66,17 @@ const PageContent = () => {
     subjectId = constants.SUBJECT_IDS.ENGLISH;
     quizPath = "english";
   }
+
+  useEffect(() => {
+    saveGTMEvents({
+      eventAction: "subject_opened",
+      label: userId ? "student" : "guest",
+      label1: userId || null,
+      label2: quizPath,
+      label3: null,
+      label4: null,
+    });
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -98,7 +126,6 @@ const PageContent = () => {
             course: subject == "mathematics" ? "math" : subject,
             grade: userGrade || null,
           });
-          console.log(data2);
           setTopicData(data2.response);
         }
       } catch (err) {
@@ -147,7 +174,7 @@ const PageContent = () => {
             <span className="text-[#5B8989]">Improve ratings with more </span>
             <span className="gradient-title-3">practice</span>
           </div>
-          <div className="lg:mt-20 md:mt-12">
+          <div className="lg:mt-20 md:mt-12 md:inline xs:hidden">
             <TopicCardCarousel
               items={topicData}
               loading={topicLoader}
@@ -157,6 +184,38 @@ const PageContent = () => {
               userGrade={userGrade!}
             />
           </div>
+          {topicLoader ? (
+            <div className="md:hidden flex flex-row justify-center mt-16 mb-16">
+              <ClipLoader
+                color={"#C4C3C1"}
+                loading={topicLoader}
+                size={30}
+                aria-label="Loading Spinner"
+                data-testid="loading"
+              />
+            </div>
+          ) : (
+            <div className="flex flex-col md:hidden mt-2">
+              {topicData &&
+                topicData.map((item, index) => {
+                  return (
+                    <div key={index}>
+                      <TopicCard
+                        topic={item.topicName}
+                        badge={item.badge}
+                        rating={item.totalScore}
+                        totalQnsAnswered={item.totalQuestion}
+                        subjectId={subjectId}
+                        subjectName={quizPath}
+                        topicId={item.topicId}
+                        userId={userId}
+                        userGrade={userGrade}
+                      />
+                    </div>
+                  );
+                })}
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -25,8 +25,8 @@ const TopicCard = ({
   subjectId: number;
   subjectName: string | null;
   topicId: number;
-  userId: string;
-  userGrade: string;
+  userId: any;
+  userGrade: any;
 }) => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);

@@ -91,7 +91,7 @@ const TopicCardCarousel = ({
               <div key={index}>
                 <TopicCard
                   topic={item.topicName}
-                  badge="assigned"
+                  badge={item.badge}
                   rating={item.totalScore}
                   totalQnsAnswered={item.totalQuestion}
                   subjectId={subjectId}

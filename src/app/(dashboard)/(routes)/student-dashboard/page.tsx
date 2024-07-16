@@ -200,7 +200,7 @@ const PageContent = () => {
 
 const Page = () => {
   return (
-    <div className="w-full md:max-w-7xl mx-auto bg-[#FFF] overflow-x-hidden !important">
+    <div className="w-full md:max-w-7xl mx-auto bg-[#FFF] overflow-hidden !important">
       <PageContent />
     </div>
   );
