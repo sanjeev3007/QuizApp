@@ -25,7 +25,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   }, [pathname]);
 
   return (
-    <div className={`${inter.variable} font-sans h-full w-full bg-[#FFF] z-10`}>
+    <div
+      className={`${inter.variable} font-sans h-full w-full bg-[#FFF] z-100`}
+    >
       <div className="w-full border-b-2 flex items-center justify-between bg-[#FFF] py-4 sticky top-0">
         {showBackButton && (
           <button
@@ -49,14 +51,15 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 router.back();
               }
             }}
-            className="absolute left-0 md:ml-6 xs:ml-5 lg:text-sm md:text-xs font-bold leading-tight text-left text-[#569090] flex flex-row justify-center"
+            className="absolute left-0 md:ml-6 xs:ml-5 lg:text-sm md:text-xs font-bold leading-tight 
+            text-left text-[#569090] flex flex-row justify-center items-center lg:hover:bg-[#FFF] xs:hover:bg-[#f2f7f7] p-2 rounded-full"
           >
             <Image
               src={"/images/icons/arrow-left.svg"}
               alt="arrow-left"
               width={16}
               height={16}
-              className="lg:mt-[0.5px] md:mt-0 xs:mt-1 md:mb-[0.5px] lg:mr-2 md:mr-1 xs:mr-3 lg:w-[16px] lg:h-[16px] md:w-[15px] md:h-[15px] xs:w-[16px] xs:h-[16px]"
+              className="md:mb-[0.5px] lg:mr-2 md:mr-1 lg:w-[16px] lg:h-[16px] md:w-[15px] md:h-[15px] xs:w-[16px] xs:h-[16px]"
             />
             <span className="xs:hidden md:block">Go Back</span>
           </button>
