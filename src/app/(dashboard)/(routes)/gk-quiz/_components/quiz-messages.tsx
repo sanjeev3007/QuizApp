@@ -1,9 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { BarChart, Bot } from "lucide-react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import botIcon from "@/assets/Images/bot_icon.png";
+import { Dispatch, SetStateAction } from "react";
+import botIcon from "@/assets/Images/noah_dp.svg";
 import lucide_trophy from "@/assets/Images/lucide_trophy.png";
 import Image from "next/image";
 import EastOutlinedIcon from "@mui/icons-material/EastOutlined";
@@ -50,11 +49,13 @@ export function EndChatMessage({
   showQuizScore,
   user,
   startNewQuiz,
+  endQuiz,
   loader,
 }: {
   showQuizScore: Dispatch<SetStateAction<boolean>>;
   user: { name: string; grade: number; id: string };
   startNewQuiz: any;
+  endQuiz: any;
   loader: boolean;
 }) {
   const router = useRouter();
@@ -99,7 +100,7 @@ export function EndChatMessage({
             </Button>
             <Button
               className="min-w-[164px] mt-2 border-2 border-[#E98451] bg-transparent text-[#E98451] hover:bg-transparent md:ml-2"
-              onClick={() => router.push(`/quizes`)}
+              onClick={() => endQuiz()}
             >
               End Quiz & Exit{" "}
             </Button>

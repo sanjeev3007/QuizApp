@@ -4,7 +4,6 @@ import { makeStyles } from "@mui/styles";
 import styles from "./scores.module.css";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import LoadingPage from "../Loader";
 

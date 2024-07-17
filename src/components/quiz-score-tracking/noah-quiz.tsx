@@ -27,7 +27,7 @@ const NoahQuiz = (props: Props) => {
       <div className="flex md:justify-self-center md:self-center justify-center">
         <Image src={quizNoahIcon} alt="noah" />
       </div>
-      <div className="flex-col justify-center md:w-[50%] pt-5 pb-5 xs:w-full">
+      <div className="flex-col justify-center md:w-[50%] pt-5 pb-5 xs:w-full mx-auto">
         <div className="flex justify-center text-center">
           Noah will focus on aligning your future quizzes to master your areas
           of improvement

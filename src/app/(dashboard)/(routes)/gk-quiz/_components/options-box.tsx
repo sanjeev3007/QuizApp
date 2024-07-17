@@ -1,6 +1,5 @@
 "use client";
 
-import { toast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
@@ -12,12 +11,18 @@ export default function OptionsBox({
   completedQuestion,
   question,
   answer,
+  user,
 }: {
   options: any;
   handleNext: any;
   completedQuestion: any;
   question: string;
   answer: string;
+  user: {
+    name: string;
+    grade: number;
+    id: string;
+  };
 }) {
   const handleOptionClick = (index: number) => {
     if (completedQuestion) {
@@ -72,7 +77,11 @@ export default function OptionsBox({
             <p className="text-sm">{option.text}</p>
             {completedQuestion?.selected.text === option.text &&
               option.correct === "false" && (
-                <ExplainationPopover question={question} answer={answer} />
+                <ExplainationPopover
+                  question={question}
+                  answer={answer}
+                  user={user}
+                />
               )}
           </button>
         ))}

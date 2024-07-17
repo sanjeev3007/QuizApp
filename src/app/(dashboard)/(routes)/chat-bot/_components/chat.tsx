@@ -12,12 +12,14 @@ import { ChatList } from "./chat-list";
 import { Message } from "ai";
 import SuggestedQuestionForm from "./suggestion-form";
 import useChatQuery from "@/store/chat-query";
+import saveGTMEvents from "@/lib/gtm";
 
 type ChatProps = {
   id: string;
   user_id: string;
   initialMessages: Message[];
   doubtSolved: boolean;
+  chatTitle: string;
 };
 
 export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
@@ -74,7 +76,7 @@ export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
       messages[messages.length - 1]?.role === "assistant"
     ) {
       setSuggestions(
-        JSON.parse(messages[messages.length - 1].content).nextPossibleQuestions
+        JSON.parse(messages[messages.length - 1].content)?.nextPossibleQuestions
       );
     }
   }, [initialMessages]);
@@ -121,6 +123,14 @@ export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
                   setInput={setInput}
                   onSubmit={async (value) => {
                     setSuggestions(null);
+                    saveGTMEvents({
+                      eventAction: "chat_suggestion_clicked",
+                      label: "student",
+                      label1: user_id,
+                      label2: null,
+                      label3: null,
+                      label4: null,
+                    });
                     await append({
                       id,
                       content: value,

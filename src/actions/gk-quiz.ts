@@ -238,7 +238,7 @@ export const getNumberOfCompletedGKQuiz = async (userid: string) => {
     .from("quiz_gk")
     .select("questions, submissions")
     .eq("userid", userid)
-    .eq("complete", "True");
+    .eq("complete", true);
 
   if (error) {
     console.error(error);

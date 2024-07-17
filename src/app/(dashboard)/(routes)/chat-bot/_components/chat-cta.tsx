@@ -26,7 +26,7 @@ const ChatSolved = ({ setInput, onSubmit }: ChatMessageProps) => {
             e.preventDefault();
             setInput("");
             await onSubmit("My doubt is solved");
-            router.push("/quizes")
+            router.push("/");
           }}
         >
           <button

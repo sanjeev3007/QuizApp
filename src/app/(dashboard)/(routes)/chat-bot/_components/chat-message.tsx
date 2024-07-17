@@ -1,12 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import botIcon from "@/assets/Images/bot_icon.png";
+import botIcon from "@/assets/Images/noah_dp.svg";
 import userIcon from "@/assets/Images/user_icon.png";
 import { Message } from "ai";
 import { UseChatHelpers } from "ai/react";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export interface ChatMessageProps
   extends Pick<UseChatHelpers, "append" | "setInput"> {
@@ -18,18 +18,26 @@ export interface ChatMessageProps
   isLoading?: boolean;
   doubtSolveStatus?: boolean;
 }
-export default function ChatMessage({
-  message,
-  isLoading,
-  doubtSolveStatus,
-}: ChatMessageProps) {
-  const router = useRouter();
+export default function ChatMessage({ message, isLoading }: ChatMessageProps) {
+  const [userAvatar, setUserAvatar] = useState<any>(userIcon);
+  useEffect(() => {
+    if (localStorage.getItem("user-avatar")) {
+      setUserAvatar(localStorage.getItem("user-avatar"));
+    }
+  }, []);
+
   return (
     <div className="flex-1 relative w-full">
       <div className="flex w-full justify-start gap-x-2 mt-4">
         <div className="bg-white border border-orange-200 w-10 h-10 rounded-full grid place-items-center">
           {message.role === "user" ? (
-            <Image src={userIcon} alt="user" className="stroke-white" />
+            <Image
+              src={userAvatar}
+              alt="user"
+              className="stroke-white rounded-[20px]"
+              width={32}
+              height={32}
+            />
           ) : (
             <Image src={botIcon} alt="user" className="stroke-orange-300" />
           )}
