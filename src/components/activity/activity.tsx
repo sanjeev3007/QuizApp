@@ -89,7 +89,7 @@ const activity = ({
             </div>
           </div>
           {loading ? (
-            <div className="flex justify-center items-center w-[126px]">
+            <div className="flex justify-center items-center w-[126px] self-center">
               <ClipLoader
                 color={"#C4C3C1"}
                 loading={loading}
