@@ -53,7 +53,11 @@ const GlobalLeaderboard = ({
                     <div className="mt-auto mb-auto">
                       {["1", "2", "3"].includes(entry.rank) ? (
                         <Image
-                          src={`/images/icons/rank_${entry.rank}.svg`}
+                          src={`/images/icons/rank${
+                            studentData?.studentId == entry.userid
+                              ? "_current_"
+                              : "_"
+                          }${entry.rank}.svg`}
                           alt={entry.rank}
                           height={20}
                           width={20}
