@@ -8,7 +8,7 @@ import EastOutlinedIcon from "@mui/icons-material/EastOutlined";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import { usePathname, useRouter } from "next/navigation";
-import { getQuestions, updateQuiz } from "@/actions/quiz.client";
+import { generateQuiz, getQuestions, updateQuiz } from "@/actions/quiz.client";
 
 if (typeof window !== "undefined") {
 }
@@ -160,23 +160,59 @@ export function EndChatMessage({
   loader,
   score,
   questionsLength,
+  subjectId,
+  topicId,
 }: {
-  showQuizScore: Dispatch<SetStateAction<boolean>>;
   user: { name: string; grade: number; id: string };
   startNewQuiz: any;
   endQuiz: any;
   loader: boolean;
   score: number;
   questionsLength: number;
+  subjectId: number;
+  topicId: number;
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const subjectName = pathname.split("/")[2];
+  const [generatingQuiz, setGeneratingQuiz] = useState(false);
 
   const redirectPathParam = pathname.includes("science")
     ? "science"
     : pathname.includes("english")
     ? "english"
     : "mathematics";
+
+  const startQuizWithSameTopic = async () => {
+    try {
+      setGeneratingQuiz(true);
+      let grade = user.grade;
+
+      if (subjectName === "science" && user.grade < 3) {
+        grade = 3;
+      }
+
+      const data = await generateQuiz({
+        grade: grade,
+        start: true,
+        subjectId,
+        topicId,
+        userId: user.id,
+      });
+
+      if (!data) {
+        console.log("Error in generating quiz");
+        return;
+      }
+
+      router.push(`/quiz/${subjectName}/${data.id}`);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setGeneratingQuiz(false);
+    }
+  };
+
   return (
     <div className="max-w-3xl my-2 flex items-start w-full gap-x-2">
       <div className="bg-orange-300 w-10 h-10 rounded-full grid place-items-center">
@@ -192,9 +228,9 @@ export function EndChatMessage({
             The correct and wrong answers are highlighted above. You can click
             on the O icon for the wrong answers to see the explanation.
           </p>
-          <div className="flex-col md:flex-row">
+          <div className="flex flex-col md:flex-row gap-2">
             <Button
-              className="min-w-[164px] mt-2 border-2 border-[#E98451] bg-transparent text-[#E98451] hover:bg-transparent"
+              className="min-w-[164px] border-2 border-[#E98451] bg-transparent text-[#E98451] hover:bg-transparent"
               onClick={() => startNewQuiz()}
             >
               Start New Quiz{" "}
@@ -205,7 +241,18 @@ export function EndChatMessage({
               )}
             </Button>
             <Button
-              className="min-w-[164px] mt-2 border-2 border-[#E98451] bg-transparent text-[#E98451] hover:bg-transparent md:ml-2"
+              className="min-w-[164px] border-2 border-[#E98451] bg-transparent text-[#E98451] hover:bg-transparent"
+              onClick={() => startQuizWithSameTopic()}
+            >
+              Start Quiz with Same Topic
+              {generatingQuiz ? (
+                <CircularProgress color="inherit" size={25} className="ml-2" />
+              ) : (
+                <EastOutlinedIcon className="ml-[0.5rem]" fontSize="small" />
+              )}
+            </Button>
+            <Button
+              className="min-w-[164px] border-2 border-[#E98451] bg-transparent text-[#E98451] hover:bg-transparent"
               onClick={() => endQuiz(redirectPathParam)}
             >
               End Quiz & Exit{" "}
