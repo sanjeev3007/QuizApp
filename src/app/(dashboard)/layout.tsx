@@ -25,7 +25,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   }, [pathname]);
 
   return (
-    <div className={`${inter.variable} font-sans h-full w-full bg-[#FFF]`}>
+    <div className={`${inter.variable} font-sans h-full w-full bg-[#FFF] z-10`}>
       <div className="w-full border-b-2 flex items-center justify-between bg-[#FFF] py-4 sticky top-0">
         {showBackButton && (
           <button
