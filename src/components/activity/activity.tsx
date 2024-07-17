@@ -88,24 +88,38 @@ const activity = ({
               </button>
             </div>
           </div>
-          <div className="rankContainer">
-            <div className="rankSection">
-              <Image
-                src={studentData?.rank > 0 ? rank_active : rank_gray}
-                alt="rank"
-                width={126}
-                height={80}
+          {loading ? (
+            <div className="flex justify-center items-center w-[126px]">
+              <ClipLoader
+                color={"#C4C3C1"}
+                loading={loading}
+                size={30}
+                aria-label="Loading Spinner"
+                data-testid="loading"
               />
-              <div className="rankNumber">
-                {studentData?.rank > 0 ? studentData?.rank : ""}
+            </div>
+          ) : (
+            <div className="rankContainer">
+              <div className="rankSection">
+                <Image
+                  src={studentData?.rank > 0 ? rank_active : rank_gray}
+                  alt="rank"
+                  width={126}
+                  height={80}
+                />
+                <div className="rankNumber">
+                  {studentData?.rank > 0 ? studentData?.rank : ""}
+                </div>
+              </div>
+              <div
+                className={
+                  studentData?.rank > 0 ? "rankTitle" : "rankTitleGray"
+                }
+              >
+                {studentData?.rank > 0 ? "Your Rank" : "Unranked"}
               </div>
             </div>
-            <div
-              className={studentData?.rank > 0 ? "rankTitle" : "rankTitleGray"}
-            >
-              {studentData?.rank > 0 ? "Your Rank" : "Unranked"}
-            </div>
-          </div>
+          )}
         </div>
         <div className="activitiesTrackerContainer">
           {streakData?.totalQuestions > 0 ? (

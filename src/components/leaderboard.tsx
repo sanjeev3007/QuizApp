@@ -32,70 +32,76 @@ const GlobalLeaderboard = ({
           />
         </div>
       )}
-      {leaderboardData &&
-        leaderboardData.topTenStudentList &&
-        leaderboardData.topTenStudentList.map((entry: any, index: number) => {
-          const studentMeta = leaderboardData.studentMeta[entry.userid];
-          return (
-            <div
-              key={index}
-              className={`grid grid-cols-4 grid-cols-[2fr_5.5fr_1fr_1.5fr] h-10 gap-2 text-[14px] font-medium leading-[16.94px] text-left text-[#6C9D9D] p-2 pr-4 ${
-                index % 2 === 0 ? "bg-[#F2F4FD]" : "bg-white"
-              } ${
-                studentData?.studentId == entry.userid
-                  ? "current-user-highlight"
-                  : ""
-              }`}
-            >
-              <div className="mt-auto mb-auto">
-                {[1, 2, 3].includes(entry.rank) ? (
-                  <Image
-                    src={`/images/icons/rank_${entry.rank}.svg`}
-                    alt="rank"
-                    height={20}
-                    width={20}
-                    className={"h-[20px] w-[20px]"}
-                  />
-                ) : (
-                  <span className="ml-1">{entry.rank}</span>
-                )}
-              </div>
-              <span className="flex flex-row">
-                <Image
-                  src={
-                    studentMeta?.studentId == studentData?.studentId
-                      ? avatar || "/images/default-profile.png"
-                      : studentMeta?.pic || "/images/default-profile.png"
-                  }
-                  alt="pic"
-                  height={20}
-                  width={20}
-                  className="mr-2 mt-auto mb-auto"
-                />
-                <div className="truncate mt-auto mb-auto">
-                  {studentMeta?.studentName}
-                </div>
-              </span>
-              <div className="m-auto">
-                {" "}
-                <Image
-                  src={
-                    studentMeta?.countryName
-                      ? `/images/countries/${studentMeta?.countryName}.png`
-                      : "/images/countries/default_flag_globe.svg"
-                  }
-                  alt="country"
-                  height={20}
-                  width={20}
-                  className="mt-auto mb-auto"
-                />
-              </div>
-              <div className="mt-auto mb-auto mr-2 text-right">
-                {entry.count}
-              </div>
-            </div>
-          );
-        })}
+      {!loading && (
+        <div className="scroll-container">
+          {leaderboardData &&
+            leaderboardData.topTenStudentList &&
+            leaderboardData.topTenStudentList.map(
+              (entry: any, index: number) => {
+                const studentMeta = leaderboardData.studentMeta[entry.userid];
+                return (
+                  <div
+                    key={index}
+                    className={`grid-container text-[14px] font-medium leading-[16.94px] text-left text-[#6C9D9D] p-2 pr-4 ${
+                      index % 2 === 0 ? "bg-[#F2F4FD]" : "bg-white"
+                    } ${
+                      studentData?.studentId == entry.userid
+                        ? "current-user-highlight"
+                        : ""
+                    }`}
+                  >
+                    <div className="mt-auto mb-auto">
+                      {["1", "2", "3"].includes(entry.rank) ? (
+                        <Image
+                          src={`/images/icons/rank_${entry.rank}.svg`}
+                          alt={entry.rank}
+                          height={20}
+                          width={20}
+                          className={"h-[20px] w-[20px]"}
+                        />
+                      ) : (
+                        <span className="ml-1">{entry.rank}</span>
+                      )}
+                    </div>
+                    <span className="flex flex-row">
+                      <Image
+                        src={
+                          studentMeta?.studentId == studentData?.studentId
+                            ? avatar || "/images/default-profile.png"
+                            : studentMeta?.pic || "/images/default-profile.png"
+                        }
+                        alt="pic"
+                        height={20}
+                        width={20}
+                        className="mr-2 mt-auto mb-auto"
+                      />
+                      <div className="truncate mt-auto mb-auto">
+                        {studentMeta?.studentName}
+                      </div>
+                    </span>
+                    <div className="m-auto w-[20px]">
+                      {" "}
+                      <Image
+                        src={
+                          studentMeta?.countryName
+                            ? `/images/countries/${studentMeta?.countryName}.png`
+                            : "/images/countries/default_flag_globe.svg"
+                        }
+                        alt="country"
+                        height={20}
+                        width={20}
+                        className="mt-auto mb-auto"
+                      />
+                    </div>
+                    <div className="mt-auto mb-auto mr-2 text-right">
+                      {entry.count}
+                    </div>
+                  </div>
+                );
+              }
+            )}
+        </div>
+      )}
     </div>
   );
 };

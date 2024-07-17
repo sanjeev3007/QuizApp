@@ -51,10 +51,17 @@ const PageContent = () => {
 
   useEffect(() => {
     const userId = getCookie("userId");
+    if (!userId) {
+      window.open(process.env.NEXT_PUBLIC_SANDBOX_URL, "_self");
+    }
+  }, []);
+
+  useEffect(() => {
+    const userId = getCookie("userId");
     const fetchData = async () => {
-      setSubjectWiseLoader(true);
-      try {
-        if (userId) {
+      if (userId) {
+        setSubjectWiseLoader(true);
+        try {
           const data = await getSubjectWise({ userId, subjectId: null });
           let updatedSubjectData: any = subjectData;
           data.response.forEach((subject: any) => {
@@ -65,11 +72,11 @@ const PageContent = () => {
             );
           });
           setSubjectData(updatedSubjectData);
+        } catch (err) {
+          console.error("Error fetching data:", err);
         }
-      } catch (err) {
-        console.error("Error fetching data:", err);
+        setSubjectWiseLoader(false);
       }
-      setSubjectWiseLoader(false);
     };
     fetchData();
   }, []);
@@ -77,9 +84,9 @@ const PageContent = () => {
   useEffect(() => {
     const userId = getCookie("userId");
     const fetchData = async () => {
-      setDashboardLoader(true);
-      try {
-        if (userId) {
+      if (userId) {
+        setDashboardLoader(true);
+        try {
           const data2 = await getStudentDashboard({
             studentId: userId,
             subjectId: null,
@@ -104,11 +111,11 @@ const PageContent = () => {
               data2.response.currentStudentMeta?.pic
             );
           }
+        } catch (err) {
+          console.error("Error fetching data:", err);
         }
-      } catch (err) {
-        console.error("Error fetching data:", err);
+        setDashboardLoader(false);
       }
-      setDashboardLoader(false);
     };
     fetchData();
   }, []);

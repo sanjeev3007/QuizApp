@@ -76,13 +76,16 @@ const PageContent = () => {
       label3: null,
       label4: null,
     });
+    if (!userId) {
+      window.open(process.env.NEXT_PUBLIC_SANDBOX_URL, "_self");
+    }
   }, []);
 
   useEffect(() => {
     const fetchData = async () => {
-      setDashboardLoader(true);
-      try {
-        if (userId) {
+      if (userId) {
+        setDashboardLoader(true);
+        try {
           const data = await getStudentDashboard({
             studentId: userId,
             subjectId,
@@ -107,31 +110,31 @@ const PageContent = () => {
               data.response.currentStudentMeta?.pic
             );
           }
+        } catch (err) {
+          console.error("Error fetching data:", err);
         }
-      } catch (err) {
-        console.error("Error fetching data:", err);
+        setDashboardLoader(false);
       }
-      setDashboardLoader(false);
     };
     fetchData();
   }, []);
 
   useEffect(() => {
     const fetchData = async () => {
-      setTopicLoader(true);
-      try {
-        if (userId) {
+      if (userId) {
+        setTopicLoader(true);
+        try {
           const data2 = await getStudentTopics({
             studentId: userId,
             course: subject == "mathematics" ? "math" : subject,
             grade: userGrade || null,
           });
           setTopicData(data2.response);
+        } catch (err) {
+          console.error("Error fetching data:", err);
         }
-      } catch (err) {
-        console.error("Error fetching data:", err);
+        setTopicLoader(false);
       }
-      setTopicLoader(false);
     };
     fetchData();
   }, []);
@@ -166,14 +169,19 @@ const PageContent = () => {
               loading={dashboardLoader}
             />
           </div>
-          <div className="lg:text-4xl md:text-2xl xs:text-xl font-semibold leading-[38.73px] text-center lg:mt-10 md:mt-8 xs:mt-6">
-            <span className="gradient-title-2">Master</span>
-            <span className="text-[#5B8989]"> every topic</span>
-          </div>
-          <div className="lg:text-4xl md:text-2xl xs:text-xl font-semibold leading-[38.73px] text-center lg:mt-4 md:mt-3 xs:mt-2">
-            <span className="text-[#5B8989]">Improve ratings with more </span>
-            <span className="gradient-title-3">practice</span>
-          </div>
+
+          {(topicLoader || (topicData && topicData.length > 0)) && (
+            <div className="lg:text-4xl md:text-2xl xs:text-xl font-semibold leading-[38.73px] text-center lg:mt-10 md:mt-8 xs:mt-6">
+              <span className="gradient-title-2">Master</span>
+              <span className="text-[#5B8989]"> every topic</span>
+            </div>
+          )}
+          {(topicLoader || (topicData && topicData.length > 0)) && (
+            <div className="lg:text-4xl md:text-2xl xs:text-xl font-semibold leading-[38.73px] text-center lg:mt-4 md:mt-3 xs:mt-2">
+              <span className="text-[#5B8989]">Improve ratings with more </span>
+              <span className="gradient-title-3">practice</span>
+            </div>
+          )}
           <div className="lg:mt-20 md:mt-12 md:inline xs:hidden">
             <TopicCardCarousel
               items={topicData}
