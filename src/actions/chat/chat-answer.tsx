@@ -14,7 +14,7 @@ const openai = createOpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 });
 
-export async function StreamResponse({ uiStream, messages, answerId }: Props) {
+export async function ChatAnswer({ uiStream, messages, answerId }: Props) {
   const stream = createStreamableValue<PartialAnswer>();
 
   uiStream.append(<BotMessage message={stream.value} messageId={answerId} />);

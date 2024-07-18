@@ -1,4 +1,4 @@
-import { AI } from "@/actions/chat-stream";
+import { AI } from "@/actions/chat/chat-stream";
 import { nanoid } from "@/lib/utils";
 
 export default async function ChatLayout({

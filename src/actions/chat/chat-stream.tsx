@@ -5,14 +5,13 @@ import {
   createStreamableValue,
   getAIState,
   getMutableAIState,
-  StreamableValue,
 } from "ai/rsc";
-import { StreamResponse } from "@/utils/stream-response";
 import { UserMessage } from "@/app/(dashboard)/(routes)/chat-bot/_components/user-message";
 import { BotMessage } from "@/app/(dashboard)/(routes)/chat-bot/_components/bot-message";
-import { storeChat } from "@/utils/store-chat";
+import { storeChat } from "./chat.actions";
 import { revalidatePath } from "next/cache";
 import { nanoid } from "@/lib/utils";
+import { ChatAnswer } from "./chat-answer";
 
 async function submit(content: string, id: string) {
   "use server";
@@ -42,7 +41,7 @@ async function submit(content: string, id: string) {
 
   const processEvents = async () => {
     const answerId = nanoid();
-    const answer = await StreamResponse({ uiStream, messages, answerId });
+    const answer = await ChatAnswer({ uiStream, messages, answerId });
 
     aiState.done({
       ...aiState.get(),

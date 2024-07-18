@@ -1,4 +1,4 @@
-import { getChat } from "@/actions/chat-doubt.server";
+import { getChat } from "@/actions/chat/chat.actions";
 import { Chat } from "../../_components/chat";
 
 export default async function ChatPage({

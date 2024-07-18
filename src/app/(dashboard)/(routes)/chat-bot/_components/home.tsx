@@ -13,11 +13,9 @@ import { nanoid } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import LastInteractions from "./last-interactions";
 import { useActions, useAIState, useUIState } from "ai/rsc";
-import { AI } from "@/actions/chat-stream";
+import { AI } from "@/actions/chat/chat-stream";
 import { UserMessage } from "./user-message";
 import { CircularProgress } from "@mui/material";
-import { revalidatePath, revalidateTag } from "next/cache";
-import { Chat, getUIStateFromAIState } from "./chat";
 
 type chatData = {
   id: string;
@@ -181,7 +179,7 @@ const Home = ({ user_Id, recentChats }: Props) => {
       </div>
       {recentChats && recentChats.length > 0 && (
         <div className="w-full md:max-w-3xl mt-[3rem]">
-          {/* <LastInteractions recentChats={recentChats} /> */}
+          <LastInteractions recentChats={recentChats} />
         </div>
       )}
     </div>

@@ -9,12 +9,11 @@ import { Button } from "@/components/ui/button";
 import { Message } from "ai";
 import { nanoid } from "nanoid";
 import { useActions, useAIState, useUIState } from "ai/rsc";
-import { AI, AIState } from "@/actions/chat-stream";
+import { AI, AIState } from "@/actions/chat/chat-stream";
 import { UserMessage } from "./user-message";
 import { ChatMessage } from "./chat-message";
 import useChatQuery from "@/store/chat-query";
 import { StaticBotMessage } from "./bot-message";
-import { useRouter } from "next/navigation";
 
 type ChatProps = {
   id: string;

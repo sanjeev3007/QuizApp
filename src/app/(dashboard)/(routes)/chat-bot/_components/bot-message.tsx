@@ -1,5 +1,5 @@
 "use client";
-import { AI } from "@/actions/chat-stream";
+import { AI } from "@/actions/chat/chat-stream";
 import { PartialAnswer } from "@/schemas/chat";
 import {
   StreamableValue,
@@ -9,10 +9,13 @@ import {
   useUIState,
 } from "ai/rsc";
 import Image from "next/image";
-import botIcon from "@/assets/Images/bot_icon.png";
+import botIcon from "@/assets/Images/noah_dp.svg";
 import stars_icon from "@/assets/Images/stars_icon.png";
 import { cn, nanoid } from "@/lib/utils";
 import { UserMessage } from "./user-message";
+import ChatSolved from "./chat-cta";
+import FeedBackForm from "./feedback-form";
+import { getCookie } from "cookies-next";
 
 type BotMessageProps = {
   message: StreamableValue<PartialAnswer>;
@@ -23,10 +26,13 @@ export const BotMessage: React.FC<BotMessageProps> = ({
   message,
   messageId,
 }) => {
+  const userId = getCookie("userId");
   const [data] = useStreamableValue<PartialAnswer>(message);
   const [_, setMessages] = useUIState<typeof AI>();
   const [aiState] = useAIState<typeof AI>();
   const { submit } = useActions();
+  const showActions =
+    messageId === aiState?.messages[aiState?.messages.length - 1]?.id;
 
   const followUp = async (inputValue: string) => {
     setMessages((currentMessages) => [
@@ -57,13 +63,18 @@ export const BotMessage: React.FC<BotMessageProps> = ({
           {data?.answer}
         </div>
       </div>
-      <div
-        className={cn(
-          messageId === aiState?.messages[aiState?.messages.length - 1]?.id
-            ? "inline-block"
-            : "hidden"
-        )}
-      >
+      {showActions && (
+        <>
+          <FeedBackForm
+            answer={data?.answer!}
+            answerId={messageId}
+            chat_id={aiState.chatId}
+            user_id={userId!}
+          />
+          <ChatSolved chatId={aiState.chatId} userId={userId!} />
+        </>
+      )}
+      <div className={cn(showActions ? "inline-block" : "hidden")}>
         {!!data?.relatedQuestions?.length && (
           <div className="flex items-center max-w-3xl w-full mx-auto mt-[2rem] mb-2 text-[#2F4F4F] text-sm font-medium">
             Suggestions for you
@@ -96,22 +107,6 @@ export const StaticBotMessage: React.FC<{
   message: string;
   showSuggestions?: boolean;
 }> = ({ message, showSuggestions }) => {
-  const [_, setMessages] = useUIState<typeof AI>();
-  const { submit } = useActions();
-
-  const followUp = async (inputValue: string) => {
-    setMessages((currentMessages) => [
-      ...currentMessages,
-      {
-        id: nanoid(),
-        display: <UserMessage message={inputValue} />,
-      },
-    ]);
-
-    const res = await submit(inputValue);
-
-    setMessages((currentMessages) => [...currentMessages, res as any]);
-  };
   if (!message) return;
   return (
     <div className="flex-1 relative w-full">
@@ -125,31 +120,6 @@ export const StaticBotMessage: React.FC<{
           }
         >
           {JSON.parse(message)?.answer}
-        </div>
-      </div>
-      <div className={cn(showSuggestions ? "inline-block" : "hidden")}>
-        {!!JSON.parse(message)?.relatedQuestions?.length && (
-          <div className="flex items-center max-w-3xl w-full mx-auto mt-[2rem] mb-2 text-[#2F4F4F] text-sm font-medium">
-            Suggestions for you
-            <div className="ml-1">
-              <Image src={stars_icon} alt="" />
-            </div>
-          </div>
-        )}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-w-3xl w-full mx-auto">
-          {JSON.parse(message)?.relatedQuestions?.map((q: any, i: number) => (
-            <button
-              key={i}
-              type="button"
-              className="flex items-center w-full h-full cursor-pointer rounded-md border border-[#E4E2DC] bg-[#F6F5F4] px-3 py-2 text-sm text-[#5B8989] hover:bg-[#E4E2DC]"
-              onClick={() => followUp(q!)}
-            >
-              <div className="mr-1">
-                <Image src={stars_icon} alt="" />
-              </div>
-              <div className="text-left ml-2">{q}</div>
-            </button>
-          ))}
         </div>
       </div>
     </div>

@@ -2,9 +2,10 @@
 import { nanoid } from "ai";
 import { cookies } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { AIMessage } from "@/actions/chat-stream";
+import { AIMessage } from "./chat-stream";
 import { getCookie } from "cookies-next";
 import { revalidatePath } from "next/cache";
+import { Chat } from "@/types/chat.types";
 
 type StoreChats = {
   messages: AIMessage[];
@@ -37,3 +38,17 @@ export const storeChat = async ({ messages, chat_id }: StoreChats) => {
 
   revalidatePath("/", "layout");
 };
+
+export async function getChat(userid: string, chat_id: string) {
+  const supabase = createServerComponentClient({ cookies });
+  const { data, error } = await supabase
+    .from("chats_doubt_solve")
+    .select("*")
+    .eq("id", chat_id)
+    .single();
+
+  return {
+    chat: (data?.payload as Chat) ?? null,
+    doubtSolved: data?.solved ?? false,
+  };
+}
