@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { AIMessage } from "@/actions/chat-stream";
 import { getCookie } from "cookies-next";
+import { revalidatePath } from "next/cache";
 
 type StoreChats = {
   messages: AIMessage[];
@@ -33,4 +34,6 @@ export const storeChat = async ({ messages, chat_id }: StoreChats) => {
     .from("chats_doubt_solve")
     .upsert({ id, payload, user_id, createdAt: stringDate })
     .throwOnError();
+
+  revalidatePath("/", "layout");
 };

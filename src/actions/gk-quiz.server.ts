@@ -13,7 +13,10 @@ export const getNumberOfCompletedGKQuiz = async (userid: string) => {
   if (error) {
     console.error(error);
   }
-  let numberOfCompletedQuiz = allQuizes?.length || 0;
+  let numberOfCompletedQuiz = 0;
+  allQuizes?.forEach((quiz) => {
+    numberOfCompletedQuiz += quiz.submissions?.length || 0;
+  });
 
   const totalQuiz =
     numberOfCompletedQuiz <= 10

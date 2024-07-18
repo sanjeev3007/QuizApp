@@ -1,4 +1,4 @@
-import { CoreMessage, nanoid } from "ai";
+import { CoreMessage } from "ai";
 import {
   createAI,
   createStreamableUI,
@@ -8,17 +8,17 @@ import {
   StreamableValue,
 } from "ai/rsc";
 import { StreamResponse } from "@/utils/stream-response";
-import { UserMessage } from "@/app/(routes)/chat-bot/[userid]/[chatid]/_components/user-message";
-import { BotMessage } from "@/app/(routes)/chat-bot/[userid]/[chatid]/_components/bot-message";
+import { UserMessage } from "@/app/(dashboard)/(routes)/chat-bot/_components/user-message";
+import { BotMessage } from "@/app/(dashboard)/(routes)/chat-bot/_components/bot-message";
 import { storeChat } from "@/utils/store-chat";
 import { revalidatePath } from "next/cache";
+import { nanoid } from "@/lib/utils";
 
 async function submit(content: string, id: string) {
   "use server";
 
   const aiState = getMutableAIState<typeof AI>();
   const uiStream = createStreamableUI();
-  const isGenerating = createStreamableValue(false);
 
   const messages: CoreMessage[] = [...aiState.get()?.messages] as any[];
 
@@ -56,14 +56,12 @@ async function submit(content: string, id: string) {
       ],
     });
     uiStream.done();
-    isGenerating.done(true);
   };
 
   processEvents();
   return {
     id: nanoid(),
     display: uiStream.value,
-    isGenerating: isGenerating.value,
   };
 }
 
@@ -81,8 +79,6 @@ export type AIState = {
 export type UIState = {
   id: string;
   display: React.ReactNode;
-  isGenerating?: StreamableValue<boolean>;
-  suggestions?: React.ReactNode;
 }[];
 
 export interface Chat extends Record<string, any> {
@@ -136,14 +132,7 @@ export const getUIStateFromAIState = (aiState: Readonly<Chat>) => {
         answer.done(JSON.parse(content));
         return {
           id,
-          display: (
-            <BotMessage
-              message={answer.value}
-              messageId={id}
-              showSuggestions={false}
-            />
-          ),
-          suggestions: <div>Suggestions</div>,
+          display: <BotMessage message={answer.value} messageId={id} />,
         };
       default:
         return {

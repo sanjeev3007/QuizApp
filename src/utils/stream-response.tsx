@@ -2,7 +2,7 @@ import { answerSchema, PartialAnswer } from "@/schemas/chat";
 import { CoreMessage, streamObject } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 import { createStreamableUI, createStreamableValue } from "ai/rsc";
-import { BotMessage } from "@/app/(routes)/chat-bot/[userid]/[chatid]/_components/bot-message";
+import { BotMessage } from "@/app/(dashboard)/(routes)/chat-bot/_components/bot-message";
 
 type Props = {
   uiStream: ReturnType<typeof createStreamableUI>;
@@ -17,13 +17,7 @@ const openai = createOpenAI({
 export async function StreamResponse({ uiStream, messages, answerId }: Props) {
   const stream = createStreamableValue<PartialAnswer>();
 
-  uiStream.append(
-    <BotMessage
-      message={stream.value}
-      messageId={answerId}
-      showSuggestions={true}
-    />
-  );
+  uiStream.append(<BotMessage message={stream.value} messageId={answerId} />);
 
   let finalInquiry: PartialAnswer = {};
   await streamObject({
