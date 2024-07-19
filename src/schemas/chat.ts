@@ -2,7 +2,7 @@ import { DeepPartial } from "ai";
 import { z } from "zod";
 
 export const answerSchema = z.object({
-  answer: z.string().describe("answer of the question."),
+  answer: z.string().describe("answer of the question in structured way."),
   relatedQuestions: z
     .array(z.string())
     .length(2)

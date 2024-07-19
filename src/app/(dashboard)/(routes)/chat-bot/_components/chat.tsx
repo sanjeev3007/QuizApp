@@ -11,7 +11,7 @@ import { nanoid } from "nanoid";
 import { useActions, useAIState, useUIState } from "ai/rsc";
 import { AI, AIState } from "@/actions/chat/chat-stream";
 import { UserMessage } from "./user-message";
-import { ChatMessage } from "./chat-message";
+import ChatMessage from "./chat-message";
 import useChatQuery from "@/store/chat-query";
 import { StaticBotMessage } from "./bot-message";
 

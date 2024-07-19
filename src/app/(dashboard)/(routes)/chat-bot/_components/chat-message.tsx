@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
-import { UIState } from "@/actions/chat-stream";
-import { useEffect, useRef, useState } from "react";
+import { UIState } from "@/actions/chat/chat-stream";
+import { useEffect, useRef } from "react";
 
 export interface ChatMessageProps {
   messages: UIState;
@@ -8,7 +8,7 @@ export interface ChatMessageProps {
   initialMessages: any[];
 }
 
-export function ChatMessage({
+export default function ChatMessage({
   messages,
   aiState,
   initialMessages,

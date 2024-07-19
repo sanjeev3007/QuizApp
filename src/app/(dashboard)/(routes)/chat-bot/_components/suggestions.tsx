@@ -1,14 +1,19 @@
 "use client";
-import { AI } from "@/actions/chat-stream";
+import { AI } from "@/actions/chat/chat-stream";
 import stars_icon from "@/assets/Images/stars_icon.png";
 import { PartialAnswer } from "@/schemas/chat";
-import { useActions, useStreamableValue, useUIState } from "ai/rsc";
+import {
+  StreamableValue,
+  useActions,
+  useStreamableValue,
+  useUIState,
+} from "ai/rsc";
 import { nanoid } from "nanoid";
 import Image from "next/image";
 import { UserMessage } from "./user-message";
 
 type SuggestionsProps = {
-  message: PartialAnswer;
+  message: StreamableValue<PartialAnswer>;
 };
 
 export const SuggestionsBox: React.FC<SuggestionsProps> = ({ message }) => {

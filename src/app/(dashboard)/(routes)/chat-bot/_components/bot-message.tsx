@@ -57,7 +57,7 @@ export const BotMessage: React.FC<BotMessageProps> = ({
         </div>
         <div
           className={
-            "w-fit grid grid-cols-1 gap-2 border-2 font-medium text-sm leading-5 border-[#F0F6FA] text-[#5B8989] bg-[#F0F6FA] p-4 rounded-lg rounded-ss-none whitespace-pre-wrap"
+            "w-fit grid grid-cols-1 gap-2 border-2 font-medium text-sm leading-relaxed border-[#F0F6FA] text-[#5B8989] bg-[#F0F6FA] p-4 rounded-lg rounded-ss-none whitespace-pre-wrap"
           }
         >
           {data?.answer}
@@ -74,7 +74,7 @@ export const BotMessage: React.FC<BotMessageProps> = ({
           <ChatSolved chatId={aiState.chatId} userId={userId!} />
         </>
       )}
-      <div className={cn(showActions ? "inline-block" : "hidden")}>
+      <div className={cn(showActions ? "inline-block" : "hidden", "pb-2")}>
         {!!data?.relatedQuestions?.length && (
           <div className="flex items-center max-w-3xl w-full mx-auto mt-[2rem] mb-2 text-[#2F4F4F] text-sm font-medium">
             Suggestions for you
