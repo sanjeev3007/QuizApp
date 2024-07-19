@@ -64,17 +64,16 @@ const Home = ({ user_Id, recentChats }: Props) => {
 
       setMessages((currentMessages) => [...currentMessages, res as any]);
 
-      setInputValue("");
       setShowChat(true);
     } catch (error) {
       console.log(error);
-    } finally {
-      setLoading(false);
     }
   };
 
   useEffect(() => {
     if (aiState.messages.length && showChat) {
+      setInputValue("");
+      setLoading(false);
       router.push(`/chat-bot/${user_Id}/${aiState.chatId}`);
     }
   }, [aiState.messages]);
@@ -148,9 +147,10 @@ const Home = ({ user_Id, recentChats }: Props) => {
             <Input
               type="text"
               placeholder="Ask something..."
-              className="w-full border-0 focus-visible:outline-none focus-visible:border-0 focus-visible:ring-0"
+              className="w-full border-0 focus-visible:outline-none focus-visible:border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
+              disabled={loading}
             />
             <Button
               type="submit"
