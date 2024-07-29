@@ -78,7 +78,7 @@ const TopicCardCarousel = ({
           <ClipLoader
             color={"#C4C3C1"}
             loading={loading}
-            size={50}
+            size={30}
             aria-label="Loading Spinner"
             data-testid="loading"
           />
