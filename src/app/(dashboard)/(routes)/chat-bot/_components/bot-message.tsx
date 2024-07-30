@@ -16,6 +16,7 @@ import { UserMessage } from "./user-message";
 import ChatSolved from "./chat-cta";
 import FeedBackForm from "./feedback-form";
 import { getCookie } from "cookies-next";
+import { MemoizedReactMarkdown } from "@/components/markdown";
 
 type BotMessageProps = {
   message: StreamableValue<PartialAnswer>;
@@ -60,7 +61,30 @@ export const BotMessage: React.FC<BotMessageProps> = ({
             "w-fit grid grid-cols-1 gap-2 border-2 font-medium text-sm leading-relaxed border-[#F0F6FA] text-[#5B8989] bg-[#F0F6FA] p-4 rounded-lg rounded-ss-none whitespace-pre-wrap"
           }
         >
-          {data?.answer}
+          <MemoizedReactMarkdown
+            className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
+            components={{
+              li: ({ children }) => (
+                <li className="list-disc ml-4">{children}</li>
+              ),
+              h1: ({ children }) => (
+                <h1 className="text-xl font-bold">{children}</h1>
+              ),
+              h2: ({ children }) => (
+                <h2 className="text-lg font-bold">{children}</h2>
+              ),
+              h3: ({ children }) => (
+                <h3 className="text-base font-bold">{children}</h3>
+              ),
+              blockquote: ({ children }) => (
+                <blockquote className="italic bg-white px-4 rounded-md">
+                  {children}
+                </blockquote>
+              ),
+            }}
+          >
+            {data?.answer}
+          </MemoizedReactMarkdown>
         </div>
       </div>
       {showActions && (
@@ -105,8 +129,7 @@ export const BotMessage: React.FC<BotMessageProps> = ({
 
 export const StaticBotMessage: React.FC<{
   message: string;
-  showSuggestions?: boolean;
-}> = ({ message, showSuggestions }) => {
+}> = ({ message }) => {
   if (!message) return;
   return (
     <div className="flex-1 relative w-full">
@@ -119,7 +142,30 @@ export const StaticBotMessage: React.FC<{
             "w-fit grid grid-cols-1 gap-2 border-2 font-medium text-sm leading-5 border-[#F0F6FA] text-[#5B8989] bg-[#F0F6FA] p-4 rounded-lg rounded-ss-none whitespace-pre-wrap"
           }
         >
-          {JSON.parse(message)?.answer}
+          <MemoizedReactMarkdown
+            className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
+            components={{
+              li: ({ children }) => (
+                <li className="list-disc ml-4">{children}</li>
+              ),
+              h1: ({ children }) => (
+                <h1 className="text-xl font-bold">{children}</h1>
+              ),
+              h2: ({ children }) => (
+                <h2 className="text-lg font-bold">{children}</h2>
+              ),
+              h3: ({ children }) => (
+                <h3 className="text-base font-bold">{children}</h3>
+              ),
+              blockquote: ({ children }) => (
+                <blockquote className="italic bg-white px-4 rounded-md">
+                  {children}
+                </blockquote>
+              ),
+            }}
+          >
+            {JSON.parse(message)?.answer}
+          </MemoizedReactMarkdown>
         </div>
       </div>
     </div>

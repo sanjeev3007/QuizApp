@@ -31,13 +31,7 @@ export const getUIStateFromAIState = (aiState: AIState) => {
         message.role.toLowerCase() === "user" ? (
           <UserMessage message={message.content} />
         ) : (
-          <StaticBotMessage
-            message={message.content}
-            showSuggestions={
-              message?.id ===
-              aiState?.messages[aiState?.messages.length - 1]?.id
-            }
-          />
+          <StaticBotMessage message={message.content} />
         ),
     }));
 };
@@ -80,14 +74,6 @@ export function Chat({ id, user_id, initialMessages, doubtSolved }: ChatProps) {
       );
     }
   }, [id]);
-
-  const onReset = () => {
-    setAIState({
-      chatId: nanoid(),
-      messages: [],
-    });
-    setMessages([]);
-  };
 
   return (
     <ScrollArea className="h-full w-full flex flex-col">

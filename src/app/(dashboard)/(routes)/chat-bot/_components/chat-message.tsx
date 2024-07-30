@@ -17,7 +17,6 @@ export default function ChatMessage({
 
   useEffect(() => {
     bottomScrollRef.current?.scrollIntoView({ behavior: "smooth" });
-    console.log(messages);
   }, [messages, aiState?.messages, initialMessages]);
 
   return (
