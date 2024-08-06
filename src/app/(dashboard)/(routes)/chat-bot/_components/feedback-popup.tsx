@@ -26,7 +26,7 @@ type Props = {
   chat_id: string;
   user_id: string;
   answer: string;
-  answerId: number;
+  answerId: string;
 };
 
 export default function FeedBackPopup({

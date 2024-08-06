@@ -1,6 +1,5 @@
 "use client";
 
-import { feedbackQuiz } from "@/app/supabase-client-provider";
 import { cn } from "@/lib/utils";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { useState } from "react";
@@ -8,7 +7,7 @@ import FeedBackPopup from "./feedback-popup";
 
 type FeedbackProps = {
   answer: string;
-  answerId: number;
+  answerId: string;
   chat_id: string;
   user_id: string;
 };

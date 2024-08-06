@@ -16,9 +16,8 @@ import SelectedAnswer from "./selected-answer";
 import { Input } from "@/components/ui/input";
 import ion_send from "@/assets/Images/ion_send.png";
 import Image from "next/image";
-import QuizScore from "./quiz-score-diloag";
+import QuizScore from "./quiz-score-dialog";
 import { EndChatMessage, InitialChatMessage } from "./quiz-messages";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { QuizDataType } from "@/types/quiz.types";
@@ -278,6 +277,7 @@ export default function QuizBox({
                   submissions={submissions}
                   questionIndex={i + 1}
                   user={user}
+                  hasEnded={hasEnded}
                 />
                 <SelectedAnswer submissions={submissions} index={i} />
               </div>

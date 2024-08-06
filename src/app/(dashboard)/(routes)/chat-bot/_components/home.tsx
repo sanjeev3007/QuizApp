@@ -1,15 +1,8 @@
 "use client";
 
 import React from "react";
-import {
-  FormEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import noahDoubtSolvinDp from "@/assets/Images/noah_doubt_solve_dp.svg";
+import { FormEvent, useEffect, useState } from "react";
+import noahSmallIcon from "@/assets/Images/noahSmallIcon.png";
 import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import ion_send_white from "@/assets/Images/ion_send_white.png";
@@ -19,8 +12,10 @@ import "./home.css";
 import { nanoid } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import LastInteractions from "./last-interactions";
-import useChatQuery from "@/store/chat-query";
-import saveGTMEvents from "@/lib/gtm";
+import { useActions, useAIState, useUIState } from "ai/rsc";
+import { AI } from "@/actions/chat/chat-stream";
+import { UserMessage } from "./user-message";
+import { CircularProgress } from "@mui/material";
 
 type chatData = {
   id: string;
@@ -38,13 +33,58 @@ type Props = {
   recentChats: chatData[] | null;
 };
 
-const ChatHome = ({ user_Id, recentChats }: Props) => {
-  const id = nanoid();
-  const [userInput, setUserInput] = useState("");
+const Home = ({ user_Id, recentChats }: Props) => {
+  const [inputValue, setInputValue] = useState("");
   const router = useRouter();
   const [randomFact, setRandomFact] = useState("");
+  const [_, setMessages] = useUIState<typeof AI>();
+  const { submit } = useActions();
+  const [aiState, setAIState] = useAIState<typeof AI>();
+  const [loading, setLoading] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+
+  const handleUserInput = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      if (inputValue === "") {
+        toast({ title: "Enter the Question", duration: 3000 });
+      }
+
+      setMessages((currentMessages) => [
+        ...currentMessages,
+        {
+          id: nanoid(),
+          display: <UserMessage message={inputValue} />,
+        },
+      ]);
+
+      const res = await submit(inputValue, aiState.chatId);
+
+      setMessages((currentMessages) => [...currentMessages, res as any]);
+
+      setShowChat(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
+    if (aiState.messages.length && showChat) {
+      setInputValue("");
+      setLoading(false);
+      router.push(`/chat-bot/${user_Id}/${aiState.chatId}`);
+    }
+  }, [aiState.messages]);
+
+  useEffect(() => {
+    setAIState({
+      chatId: nanoid(),
+      messages: [],
+    });
+    setMessages([]);
+
     // Set a random fact when the component mounts
     const randomIndex = Math.floor(Math.random() * facts.length);
     setRandomFact(facts[randomIndex]);
@@ -56,17 +96,6 @@ const ChatHome = ({ user_Id, recentChats }: Props) => {
     }, 5000);
 
     return () => clearInterval(intervalId); // Cleanup the interval on component unmount
-  }, []);
-
-  useEffect(() => {
-    saveGTMEvents({
-      eventAction: "doubt_homepage",
-      label: "student",
-      label1: user_Id,
-      label2: null,
-      label3: null,
-      label4: null,
-    });
   }, []);
 
   const facts = [
@@ -97,39 +126,11 @@ const ChatHome = ({ user_Id, recentChats }: Props) => {
     "Your ears and nose continue growing throughout your entire life.",
     "The tongue of a blue whale can weigh as much as an elephant.",
   ];
-  const chatQuery = useChatQuery((state) => state);
 
-  const handleUserInput = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Handle user input
-    if (userInput === "") {
-      toast({ title: "Enter the Question", duration: 3000 });
-    }
-    // converting user input to lowercase and removing any extra spaces
-    const optimizedAnswer: string = userInput.toLowerCase().trim();
-
-    setUserInput("");
-    chatQuery.setQuery(optimizedAnswer);
-
-    saveGTMEvents({
-      eventAction: "new_chat_opened",
-      label: "student",
-      label1: user_Id,
-      label2: null,
-      label3: null,
-      label4: null,
-    });
-
-    router.push(`/chat-bot/${user_Id}/${id}`);
-  };
   return (
     <div className="flex flex-col justify-center content-center items-center">
       <div className="flex justify-between content-center items-center">
-        <Image
-          src={noahDoubtSolvinDp}
-          alt="noah"
-          className="h-[54px] w-[54px]"
-        />
+        <Image src={noahSmallIcon} alt="noah" className="h-[54px] w-[54px]" />
         <div className="ml-4 w-full text-2xl md:text-4xl text-[#2F4F4F] font-extrabold">
           Lets <span className="headerClrTxt">smash doubts</span> together!
         </div>
@@ -146,16 +147,24 @@ const ChatHome = ({ user_Id, recentChats }: Props) => {
             <Input
               type="text"
               placeholder="Ask something..."
-              className="w-full border-0 focus-visible:outline-none focus-visible:border-0 focus-visible:ring-0"
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
+              className="w-full border-0 focus-visible:outline-none focus-visible:border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              disabled={loading}
             />
             <Button
               type="submit"
+              disabled={loading}
               className="border-0 py-[4px]  text-sm fomt-semibold text-[#FFF] bg-[#E98451] hover:bg-[#E98451]"
             >
-              <span className="hidden sm:block">Start Chat</span>
-              <Image src={ion_send_white} alt="" className="sm:ml-2" />
+              {loading ? (
+                <CircularProgress color="inherit" size={20} />
+              ) : (
+                <div className="flex items-center pr-4">
+                  <span className="hidden sm:block">Start Chat</span>
+                  <Image src={ion_send_white} alt="" className="sm:ml-2" />
+                </div>
+              )}
             </Button>
           </div>
         </form>
@@ -177,4 +186,4 @@ const ChatHome = ({ user_Id, recentChats }: Props) => {
   );
 };
 
-export default ChatHome;
+export default Home;

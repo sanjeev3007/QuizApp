@@ -15,24 +15,24 @@ import { useTheme } from "@mui/material/styles";
 import CircularProgress from "@mui/material/CircularProgress";
 
 export default function FeedBackPopup({
-    open,
-    handleClickOpen,
-    handleClose,
-    showOptions,
-    reasons,
-    handleReason,
-    responses,
-    loader,
-  }: {
-    open: boolean;
-    handleClickOpen: (open: boolean) => void;
-    handleClose: any;
-    showOptions: boolean;
-    reasons: Array<{ id: number; text: string }>;
-    handleReason: any;
-    responses: string | null;
-    loader: boolean;
-  }) {
+  open,
+  handleClickOpen,
+  handleClose,
+  showOptions,
+  reasons,
+  handleReason,
+  responses,
+  loader,
+}: {
+  open: boolean;
+  handleClickOpen: (open: boolean) => void;
+  handleClose: any;
+  showOptions: boolean;
+  reasons: Array<{ id: number; text: string }>;
+  handleReason: any;
+  responses: string | null;
+  loader: boolean;
+}) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const [reasonId, setReasonId] = React.useState<number | null>(null);

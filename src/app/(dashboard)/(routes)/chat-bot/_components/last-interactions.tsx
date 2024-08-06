@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
 import Link from "next/link";
-import saveGTMEvents from "@/lib/gtm";
 type chatData = {
   id: string;
   user_id: string;
@@ -18,6 +17,15 @@ type Props = {
 };
 
 const LastInteractions = ({ recentChats }: Props) => {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null; // or a loading indicator
+  }
   return (
     <div>
       <div className="flex items-center mb-[1rem]">
@@ -33,19 +41,9 @@ const LastInteractions = ({ recentChats }: Props) => {
               href={data.payload.path}
               key={index}
               className="bg-[#F0F6FA] p-[12px] flex justify-between rounded-lg"
-              onClick={() => {
-                saveGTMEvents({
-                  eventAction: "past_chat_opened",
-                  label: "student",
-                  label1: data.payload.user_id,
-                  label2: null,
-                  label3: null,
-                  label4: null,
-                });
-              }}
             >
               <span className="text-[#5B8989] text-sm font-medium">
-                {data.payload.title?.length > 100
+                {data.payload.title.length > 100
                   ? `${data.payload.title.slice(1, 100)}...`
                   : data.payload.title}
               </span>
