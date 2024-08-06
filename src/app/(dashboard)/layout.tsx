@@ -45,8 +45,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                     subjectName == "math" ? "mathematics" : subjectName
                   }`
                 );
-              } else if (pathname.includes("chat-bot")) {
+              } else if (pathname.includes("chat-bot/")) {
                 router.push("/chat-bot");
+              } else if (pathname.includes("chat-bot")) {
+                router.push("/");
               } else {
                 router.back();
               }

@@ -58,7 +58,7 @@ export const BotMessage: React.FC<BotMessageProps> = ({
         </div>
         <div
           className={
-            "w-fit grid grid-cols-1 gap-2 border-2 font-medium text-sm leading-relaxed border-[#F0F6FA] text-[#5B8989] bg-[#F0F6FA] p-4 rounded-lg rounded-ss-none whitespace-pre-wrap"
+            "w-fit grid grid-cols-1 gap-2 border-2 font-medium text-sm leading-relaxed border-[#F0F6FA] text-[#5B8989] bg-[#F0F6FA] p-4 rounded-lg rounded-ss-none"
           }
         >
           <MemoizedReactMarkdown
@@ -81,6 +81,7 @@ export const BotMessage: React.FC<BotMessageProps> = ({
                   {children}
                 </blockquote>
               ),
+              p: ({ children }) => <p className="my-2">{children}</p>,
             }}
           >
             {data?.answer}
@@ -139,7 +140,7 @@ export const StaticBotMessage: React.FC<{
         </div>
         <div
           className={
-            "w-fit grid grid-cols-1 gap-2 border-2 font-medium text-sm leading-5 border-[#F0F6FA] text-[#5B8989] bg-[#F0F6FA] p-4 rounded-lg rounded-ss-none whitespace-pre-wrap"
+            "w-fit grid grid-cols-1 gap-2 border-2 font-medium text-sm leading-5 border-[#F0F6FA] text-[#5B8989] bg-[#F0F6FA] p-4 rounded-lg rounded-ss-none"
           }
         >
           <MemoizedReactMarkdown
@@ -162,6 +163,7 @@ export const StaticBotMessage: React.FC<{
                   {children}
                 </blockquote>
               ),
+              p: ({ children }) => <p className="my-2">{children}</p>,
             }}
           >
             {JSON.parse(message)?.answer}
