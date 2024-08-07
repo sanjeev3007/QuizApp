@@ -1,19 +1,4 @@
-import { Chat } from "@/types/chat.types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-
-export async function getChat(userid: string, chat_id: string) {
-  const supabase = createClientComponentClient();
-  const { data } = await supabase
-    .from("chats_doubt_solve")
-    .select("*")
-    .eq("id", chat_id)
-    .single();
-
-  return {
-    chat: (data?.payload as Chat) ?? null,
-    doubtSolved: data?.solved ?? false,
-  };
-}
 
 export async function addFeedback(
   user_id: string,

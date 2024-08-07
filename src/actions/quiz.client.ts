@@ -78,7 +78,7 @@ export async function generateQuiz({
 
   if (error) {
     console.error(error);
-    return { data: null };
+    return null;
   }
 
   return data;
@@ -209,6 +209,7 @@ export const getQuestions = async ({
   } else {
     grade = user_grade;
     if (grade > 8) grade = 8;
+    if (subjectId === 2 && grade < 3) grade = 3;
     topicData = await generateRandomTopic({ grade, subjectId });
   }
 
@@ -385,7 +386,7 @@ export const fetchCorrectSubmissions = async ({
 
   const { data, error } = await supabase
     .from("correct_submissions")
-    .select("question_id")
+    .select("questionid")
     .eq("user_id", userId)
     .eq("topic_id", topicId)
     .eq("subject_id", subjectId);
@@ -396,7 +397,7 @@ export const fetchCorrectSubmissions = async ({
   }
 
   const formattedData = data.map((quiz) => {
-    return quiz.question_id;
+    return quiz.questionid;
   });
 
   return formattedData;

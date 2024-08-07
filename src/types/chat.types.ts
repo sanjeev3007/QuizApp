@@ -1,5 +1,3 @@
-import { type Message } from "ai";
-
 // TODO refactor and remove unneccessary duplicate data.
 export interface Chat extends Record<string, any> {
   id: string;
@@ -7,6 +5,6 @@ export interface Chat extends Record<string, any> {
   createdAt: Date;
   userId: string;
   path: string;
-  messages: Message[];
+  messages: any[];
   sharePath?: string; // Refactor to use RLS
 }

@@ -51,7 +51,7 @@ const NoahHeader = ({
     try {
       setLoading(true);
       const data = await createQuizBySubject({ userId, grade, subjectId });
-      console.log(data);
+
       if (data && data.length > 0) {
         router.push(`/quiz/${quizPath}/${data[0].id}`);
       }

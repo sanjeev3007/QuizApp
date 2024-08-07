@@ -83,7 +83,7 @@ export default function Chat({
     useState<SubmissionType | null>(null);
   const [score, setScore] = useState(0);
   const [quizTopic, setQuizTopic] = useState<string | null>(null);
-  const [topicId, setTopicId] = useState<number | null>(null);
+  const [topicId, setTopicId] = useState<number | null>(quizData.topic_id);
   const router = useRouter();
 
   const { questions: qList, complete: isComplete } = quizData;
@@ -219,7 +219,6 @@ export default function Chat({
         });
       }
     })();
-    router.refresh();
   }, [submissions, quizTopic, started]);
 
   // Handle the next button click
@@ -385,13 +384,14 @@ export default function Chat({
               ))}
           {hasEnded && (
             <EndChatMessage
-              showQuizScore={showQuizScore}
               user={user}
               startNewQuiz={startNewQuiz}
               endQuiz={endQuiz}
               loader={loader}
               score={score}
               questionsLength={questionList?.length}
+              subjectId={quizData.subject_id}
+              topicId={topicId!}
             />
           )}
         </div>

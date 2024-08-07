@@ -1,6 +1,5 @@
 "use client";
 
-import { Bot } from "lucide-react";
 import OptionsBox from "./options-box";
 import QuestionBox from "./question-box";
 import Image from "next/image";
@@ -12,6 +11,7 @@ export default function MCQBox({
   submissions,
   questionIndex,
   user,
+  hasEnded,
 }: {
   currentQuestion: any;
   handleNext: any;
@@ -22,6 +22,7 @@ export default function MCQBox({
     grade: number;
     id: string;
   };
+  hasEnded: boolean;
 }) {
   const correctAnswer = currentQuestion?.options.find(
     (option: any) => option.correct == "true"
@@ -47,6 +48,7 @@ export default function MCQBox({
           question={currentQuestion?.question}
           answer={correctAnswer}
           user={user}
+          hasEnded={hasEnded}
         />
         <FeedBackForm questionId={currentQuestion?.uuid} user={user} />
       </div>

@@ -3,26 +3,16 @@
 import Image from "next/image";
 import botIcon from "@/assets/Images/bot_icon.png";
 import userIcon from "@/assets/Images/user_icon.png";
-import { useEffect, useState } from "react";
 
 export default function Loading() {
-  const [userAvatar, setUserAvatar] = useState<any>(userIcon);
-  useEffect(() => {
-    if (localStorage.getItem("user-avatar")) {
-      setUserAvatar(localStorage.getItem("user-avatar"));
-    }
-  }, []);
-
   return (
-    <div className="flex-1 relative w-full max-w-lg mx-auto px-2">
+    <div className="flex-1 relative w-full max-w-3xl mx-auto px-2">
       <div className="flex w-full justify-start gap-x-2 mt-4">
         <div className="bg-white border border-orange-200 w-10 h-10 rounded-full grid place-items-center">
           <Image
-            src={userAvatar}
+            src={userIcon}
             alt="user"
-            className="stroke-white rounded-[20px]"
-            width={32}
-            height={32}
+            className="stroke-white animate-pulse"
           />
         </div>
         <div
