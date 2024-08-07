@@ -65,16 +65,16 @@ export const BotMessage: React.FC<BotMessageProps> = ({
             className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
             components={{
               li: ({ children }) => (
-                <li className="list-disc ml-4">{children}</li>
+                <li className="list-disc ml-4 my-1">{children}</li>
               ),
               h1: ({ children }) => (
-                <h1 className="text-xl font-bold">{children}</h1>
+                <h1 className="text-xl font-bold my-4">{children}</h1>
               ),
               h2: ({ children }) => (
-                <h2 className="text-lg font-bold">{children}</h2>
+                <h2 className="text-lg font- my-4">{children}</h2>
               ),
               h3: ({ children }) => (
-                <h3 className="text-base font-bold">{children}</h3>
+                <h3 className="text-base font-bold my-4">{children}</h3>
               ),
               blockquote: ({ children }) => (
                 <blockquote className="italic bg-white px-4 rounded-md">
@@ -147,16 +147,16 @@ export const StaticBotMessage: React.FC<{
             className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
             components={{
               li: ({ children }) => (
-                <li className="list-disc ml-4">{children}</li>
+                <li className="list-disc ml-4 my-1">{children}</li>
               ),
               h1: ({ children }) => (
-                <h1 className="text-xl font-bold">{children}</h1>
+                <h1 className="text-xl font-bold my-4">{children}</h1>
               ),
               h2: ({ children }) => (
-                <h2 className="text-lg font-bold">{children}</h2>
+                <h2 className="text-lg font- my-4">{children}</h2>
               ),
               h3: ({ children }) => (
-                <h3 className="text-base font-bold">{children}</h3>
+                <h3 className="text-base font-bold my-4">{children}</h3>
               ),
               blockquote: ({ children }) => (
                 <blockquote className="italic bg-white px-4 rounded-md">
