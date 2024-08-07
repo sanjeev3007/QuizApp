@@ -386,7 +386,7 @@ export const fetchCorrectSubmissions = async ({
 
   const { data, error } = await supabase
     .from("correct_submissions")
-    .select("question_id")
+    .select("questionid")
     .eq("user_id", userId)
     .eq("topic_id", topicId)
     .eq("subject_id", subjectId);
@@ -397,7 +397,7 @@ export const fetchCorrectSubmissions = async ({
   }
 
   const formattedData = data.map((quiz) => {
-    return quiz.question_id;
+    return quiz.questionid;
   });
 
   return formattedData;

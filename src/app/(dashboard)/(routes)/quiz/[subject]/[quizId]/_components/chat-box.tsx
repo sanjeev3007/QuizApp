@@ -219,7 +219,6 @@ export default function Chat({
         });
       }
     })();
-    router.refresh();
   }, [submissions, quizTopic, started]);
 
   // Handle the next button click
