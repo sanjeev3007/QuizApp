@@ -61,8 +61,6 @@ export default function Chat({
 }: ChatProps) {
   const queryParams = useSearchParams();
   const topic = queryParams.get("topic");
-
-  const bottom = useRef<HTMLDivElement>(null);
   const [questionIndex, setQuestionIndex] = useState(
     quizData.submissions?.length || 0
   );
@@ -84,6 +82,7 @@ export default function Chat({
   const [score, setScore] = useState(0);
   const [quizTopic, setQuizTopic] = useState<string | null>(null);
   const [topicId, setTopicId] = useState<number | null>(quizData.topic_id);
+  const bottom = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   const { questions: qList, complete: isComplete } = quizData;

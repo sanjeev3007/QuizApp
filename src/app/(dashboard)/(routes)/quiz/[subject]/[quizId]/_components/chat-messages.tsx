@@ -6,6 +6,7 @@ import botIcon from "@/assets/Images/noah_dp.svg";
 import Image from "next/image";
 import EastOutlinedIcon from "@mui/icons-material/EastOutlined";
 import CircularProgress from "@mui/material/CircularProgress";
+import { BadgeInfo } from "lucide-react";
 
 import { usePathname, useRouter } from "next/navigation";
 import { generateQuiz, getQuestions, updateQuiz } from "@/actions/quiz.client";
@@ -226,7 +227,11 @@ export function EndChatMessage({
           </p>
           <p>
             The correct and wrong answers are highlighted above. You can click
-            on the O icon for the wrong answers to see the explanation.
+            on the{" "}
+            <div className="inline-block p-0.5 -mb-1 mr-1 rounded-full place-items-center bg-orange-300">
+              <BadgeInfo className="text-white" size={16} />
+            </div>
+            icon for the wrong answers to see the explanation.
           </p>
           <div className="flex flex-col md:flex-row gap-2">
             <Button

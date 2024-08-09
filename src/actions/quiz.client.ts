@@ -16,6 +16,18 @@ export async function createQuizBySubject({
     grade: grade,
   };
 
+  const { data: previousQuiz, error: previousQuizError } = await supabase
+    .from("quiz")
+    .select("id, userid, subject_id, complete")
+    .eq("userid", userId)
+    .eq("subject_id", subjectId)
+    .eq("complete", false)
+    .order("created_at", { ascending: false });
+
+  if (previousQuiz && previousQuiz.length > 0) {
+    return previousQuiz;
+  }
+
   const { data, error } = await supabase
     .from("quiz")
     .insert({
@@ -130,7 +142,6 @@ export async function updateQuiz({
     .eq("userid", userId)
     .select();
 
-  console.log(data, error);
   if (error) {
     console.error(error);
     return;
@@ -387,7 +398,7 @@ export const fetchCorrectSubmissions = async ({
   const { data, error } = await supabase
     .from("correct_submissions")
     .select("questionid")
-    .eq("user_id", userId)
+    .eq("userid", userId)
     .eq("topic_id", topicId)
     .eq("subject_id", subjectId);
 
@@ -425,7 +436,6 @@ export async function storeCorrectSubmission({
     userid: userId,
     questionid: questionId,
     quiz_id: quizId,
-    quizid: quizId,
     topic_id: topicId,
     grade,
     subject_id: subjectId,
