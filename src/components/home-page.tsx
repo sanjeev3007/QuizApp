@@ -5,12 +5,7 @@ import Image from "next/image";
 import noahImage from "@/assets/Images/noahHomepageImage.png";
 import noahHeadingImage from "@/assets/Images/NoahHeading.png";
 import { useRouter } from "next/navigation";
-import { getNumberOfCompletedGKQuiz } from "@/actions/gk-quiz.server";
 import { createGKQuiz, getGKQuestions } from "@/actions/gk-quiz";
-import {
-  doubtSolveDashboard,
-  getNumberOfSubmittedAnswers,
-} from "@/app/supabase-server";
 import { getCookie } from "cookies-next";
 import saveGTMEvents from "@/lib/gtm";
 

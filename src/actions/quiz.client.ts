@@ -25,7 +25,7 @@ export async function createQuizBySubject({
     .order("created_at", { ascending: false });
 
   if (previousQuiz && previousQuiz.length > 0) {
-    return previousQuiz;
+    return { quiz: previousQuiz, previous: true };
   }
 
   const { data, error } = await supabase
@@ -39,10 +39,10 @@ export async function createQuizBySubject({
 
   if (error) {
     console.error(error);
-    return;
+    return { quiz: null, previous: false };
   }
 
-  return data;
+  return { quiz: data, previous: false };
 }
 
 // create quiz

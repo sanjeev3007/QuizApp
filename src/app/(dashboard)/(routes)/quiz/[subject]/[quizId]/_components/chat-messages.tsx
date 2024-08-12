@@ -8,7 +8,7 @@ import EastOutlinedIcon from "@mui/icons-material/EastOutlined";
 import CircularProgress from "@mui/material/CircularProgress";
 import { BadgeInfo } from "lucide-react";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { generateQuiz, getQuestions, updateQuiz } from "@/actions/quiz.client";
 
 if (typeof window !== "undefined") {
@@ -276,6 +276,7 @@ export function TopicMessage({
   topic: string;
   questionsLength: number;
 }) {
+  const params = useSearchParams();
   return (
     <div className="max-w-3xl w-full space-y-3 my-2">
       <div className="flex items-start gap-x-2">
@@ -285,9 +286,15 @@ export function TopicMessage({
         <div className="flex-1 ">
           <div className="border-2 font-medium text-sm leading-5 border-[#DAE7E7] text-[#5B8989] bg-[#F9FBFB] p-4 rounded-lg rounded-ss-none">
             <div>
-              <p className="text-sm py-0.5">
-                The topic in this quiz will be {topic}
-              </p>
+              {params.get("previous") ? (
+                <p className="text-sm py-0.5">
+                  Let's continue with your previous quiz on {topic}
+                </p>
+              ) : (
+                <p className="text-sm py-0.5">
+                  The topic in this quiz will be {topic}
+                </p>
+              )}
               <p className="mt-2">
                 This quiz has {questionsLength} questions and your score will be
                 shown in the end of the quiz.

@@ -92,13 +92,13 @@ export default function Chat({
     try {
       setLoader(true);
 
-      const data = await createQuizBySubject({
+      const { quiz, previous } = await createQuizBySubject({
         userId: user.id,
         grade: user.grade,
         subjectId,
       });
 
-      if (!data || !data.length) {
+      if (!quiz || !quiz.length) {
         setLoader(false);
         return;
       }
@@ -111,7 +111,7 @@ export default function Chat({
         label3: topic ? "Topic" : "Noah",
         label4: null,
       });
-      router.replace(`/quiz/${subjectName}/${data[0].id}`);
+      router.replace(`/quiz/${subjectName}/${quiz[0].id}`);
     } catch (error) {
       console.log(error);
     } finally {

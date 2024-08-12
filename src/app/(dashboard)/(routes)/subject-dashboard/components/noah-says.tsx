@@ -50,10 +50,16 @@ const NoahHeader = ({
 
     try {
       setLoading(true);
-      const data = await createQuizBySubject({ userId, grade, subjectId });
+      const { quiz, previous } = await createQuizBySubject({
+        userId,
+        grade,
+        subjectId,
+      });
 
-      if (data && data.length > 0) {
-        router.push(`/quiz/${quizPath}/${data[0].id}`);
+      if (quiz && quiz.length > 0) {
+        if (previous)
+          router.push(`/quiz/${quizPath}/${quiz[0].id}?previous=true`);
+        else router.push(`/quiz/${quizPath}/${quiz[0].id}`);
       }
     } catch (error) {
       console.log(error);
