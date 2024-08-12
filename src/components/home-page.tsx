@@ -16,7 +16,9 @@ import saveGTMEvents from "@/lib/gtm";
 
 type Props = {
   userId: string;
-  totalChats: number;
+  mathQuiz: any;
+  gkQuiz: any;
+  doubtChats: any;
 };
 
 type QuizData = {
@@ -27,18 +29,23 @@ type QuizData = {
 
 const HomePage: React.FC<Props> = ({
   userId,
-  totalChats: initialTotalChats,
+  mathQuiz,
+  gkQuiz,
+  doubtChats,
 }: Props) => {
   const router = useRouter();
 
   const [quizData, setQuizData] = useState<QuizData | null>({
-    numberOfCompletedQuiz: 0,
-    level: 1,
-    totalQuiz: 10,
+    numberOfCompletedQuiz: gkQuiz?.value?.numberOfCompletedQuiz || 0,
+    level: gkQuiz?.value?.level || 1,
+    totalQuiz: gkQuiz?.value?.totalQuiz || 0,
   });
-  const [totalDoubtChats, setTotalDoubtChats] =
-    useState<number>(initialTotalChats);
-  const [numberOfCompletedQuiz, setNumberOfCompletedQuiz] = useState<number>(0);
+  const [totalDoubtChats, setTotalDoubtChats] = useState<number>(
+    doubtChats?.value || 0
+  );
+  const [numberOfCompletedQuiz, setNumberOfCompletedQuiz] = useState<number>(
+    mathQuiz?.value || 0
+  );
 
   const cards = [
     {
@@ -96,37 +103,37 @@ const HomePage: React.FC<Props> = ({
     }
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const x = await getNumberOfSubmittedAnswers(userId);
-      setNumberOfCompletedQuiz(x);
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const x = await getNumberOfSubmittedAnswers(userId);
+  //     setNumberOfCompletedQuiz(x);
+  //   };
+  //   fetchData();
+  // }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getNumberOfCompletedGKQuiz(userId!);
-        setQuizData(data);
-      } catch (error) {
-        console.error("Error fetching completed quiz data:", error);
-      }
-    };
-    fetchData();
-  }, [userId]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const data = await getNumberOfCompletedGKQuiz(userId!);
+  //       setQuizData(data);
+  //     } catch (error) {
+  //       console.error("Error fetching completed quiz data:", error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [userId]);
 
-  useEffect(() => {
-    const fetchCount = async () => {
-      try {
-        const totalchats = await doubtSolveDashboard(userId!);
-        setTotalDoubtChats(totalchats);
-      } catch (error) {
-        console.error("Error fetching completed total chats:", error);
-      }
-    };
-    fetchCount();
-  }, [userId]);
+  // useEffect(() => {
+  //   const fetchCount = async () => {
+  //     try {
+  //       const totalchats = await doubtSolveDashboard(userId!);
+  //       setTotalDoubtChats(totalchats);
+  //     } catch (error) {
+  //       console.error("Error fetching completed total chats:", error);
+  //     }
+  //   };
+  //   fetchCount();
+  // }, [userId]);
 
   const generateGKQuiz = async () => {
     try {
