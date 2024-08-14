@@ -30,17 +30,13 @@ const HomePage: React.FC<Props> = ({
 }: Props) => {
   const router = useRouter();
 
-  const [quizData, setQuizData] = useState<QuizData | null>({
+  const [quizData] = useState<QuizData | null>({
     numberOfCompletedQuiz: gkQuiz?.value?.numberOfCompletedQuiz || 0,
     level: gkQuiz?.value?.level || 1,
     totalQuiz: gkQuiz?.value?.totalQuiz || 0,
   });
-  const [totalDoubtChats, setTotalDoubtChats] = useState<number>(
-    doubtChats?.value || 0
-  );
-  const [numberOfCompletedQuiz, setNumberOfCompletedQuiz] = useState<number>(
-    mathQuiz?.value || 0
-  );
+  const [totalDoubtChats] = useState<number>(doubtChats?.value || 0);
+  const [numberOfCompletedQuiz] = useState<number>(mathQuiz?.value || 0);
 
   const cards = [
     {
@@ -97,38 +93,6 @@ const HomePage: React.FC<Props> = ({
       window.open(process.env.NEXT_PUBLIC_SANDBOX_URL, "_self");
     }
   }, []);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const x = await getNumberOfSubmittedAnswers(userId);
-  //     setNumberOfCompletedQuiz(x);
-  //   };
-  //   fetchData();
-  // }, []);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const data = await getNumberOfCompletedGKQuiz(userId!);
-  //       setQuizData(data);
-  //     } catch (error) {
-  //       console.error("Error fetching completed quiz data:", error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, [userId]);
-
-  // useEffect(() => {
-  //   const fetchCount = async () => {
-  //     try {
-  //       const totalchats = await doubtSolveDashboard(userId!);
-  //       setTotalDoubtChats(totalchats);
-  //     } catch (error) {
-  //       console.error("Error fetching completed total chats:", error);
-  //     }
-  //   };
-  //   fetchCount();
-  // }, [userId]);
 
   const generateGKQuiz = async () => {
     try {
