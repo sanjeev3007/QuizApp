@@ -14,7 +14,6 @@ const Home = async () => {
     getNumberOfCompletedGKQuiz(user_Id!),
     doubtSolveDashboard(user_Id!),
   ]);
-
   return (
     <div className="p-5 lg:px-12 w-full md:max-w-7xl mx-auto bg-[#FFF] !important">
       <HomePage

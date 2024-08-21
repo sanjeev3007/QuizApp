@@ -80,7 +80,7 @@ export const getNumberOfCompletedQuiz = async (
   };
 };
 
-const quizWiseScore = ({
+export const quizWiseScore = ({
   quizes,
   quizNumber,
 }: {
@@ -100,7 +100,10 @@ const quizWiseScore = ({
   return score;
 };
 
-const getTopicWiseLevelScore = async (allQuizes: any[], grade: number) => {
+export const getTopicWiseLevelScore = async (
+  allQuizes: any[],
+  grade: number
+) => {
   const supabase = createServerSupabaseClient();
   const subtopics: any = {
     totalQuestion: 0,
@@ -239,7 +242,7 @@ export const getInsight = async (
   };
 };
 
-const getLast10Quizes = async ({
+export const getLast10Quizes = async ({
   limit,
   userid,
   subjectId,
@@ -355,10 +358,12 @@ export async function gkQuiz(userId: string) {
 
 export async function doubtSolveDashboard(userId: string) {
   const supabase = createServerSupabaseClient();
+  if (!userId) return 0;
   const { data: chats, error } = await supabase
     .from("chats_doubt_solve")
     .select("*")
     .eq("user_id", userId);
+  console.log(chats);
   return chats?.length || 0;
 }
 

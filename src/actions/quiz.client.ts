@@ -270,6 +270,7 @@ const fetchQuestionsByLevel = async (
 ) => {
   const supabase = createClientComponentClient();
 
+  console.log({ topicId, level, limit, questionIds, grade, subjectId });
   let rpc_function;
   if (subjectId === 1) {
     rpc_function = "db_math_rpc_topicid";
@@ -280,6 +281,7 @@ const fetchQuestionsByLevel = async (
   } else if (subjectId === 4) {
     rpc_function = "db_coding_rpc_topicid";
   }
+  console.log(rpc_function);
 
   if (!rpc_function) return console.log("Invalid subjectId");
 
@@ -291,6 +293,7 @@ const fetchQuestionsByLevel = async (
     selected_grade: grade,
   });
 
+  console.log({ data, error });
   if (error) {
     console.log(error);
   }
