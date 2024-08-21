@@ -1,5 +1,5 @@
 export async function getDashboardData(userId: string, subjectId: number) {
-  const res = await fetch(`https://noahai-dev.codeyoung.com/api/dashboard`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_URL}api/dashboard`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -15,7 +15,7 @@ export async function getInsightsData(
   subjectId: number,
   grade: number
 ) {
-  const res = await fetch(`https://noahai-dev.codeyoung.com/api/insights`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_URL}api/insights`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
