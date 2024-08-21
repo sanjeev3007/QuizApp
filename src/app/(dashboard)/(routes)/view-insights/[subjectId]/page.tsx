@@ -9,6 +9,8 @@ type Props = {
   subjectId: number;
 };
 
+export const revalidate = 0;
+
 const PageContent = async (props: Props) => {
   const user_Id = getCookie("userId", { cookies });
   const grade = getCookie("grade", { cookies });
@@ -28,7 +30,15 @@ const PageContent = async (props: Props) => {
 const Page = ({ params: { subjectId } }: { params: { subjectId: number } }) => {
   return (
     <div className="p-5 md:px-12 w-full md:max-w-7xl mx-auto bg-[#FFF] !important">
-      <PageContent subjectId={subjectId} />
+      <Suspense
+        fallback={
+          <div className="flex justify-center items-center h-[90vh]">
+            <CircularProgress size={40} />
+          </div>
+        }
+      >
+        <PageContent subjectId={subjectId} />
+      </Suspense>
     </div>
   );
 };
