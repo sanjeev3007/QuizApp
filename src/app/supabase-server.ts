@@ -14,8 +14,6 @@ type Subtopics = {
   hardTotal: number;
 };
 
-export const maxDuration = 100;
-
 export const createServerSupabaseClient = cache(() =>
   createServerComponentClient({ cookies })
 );
