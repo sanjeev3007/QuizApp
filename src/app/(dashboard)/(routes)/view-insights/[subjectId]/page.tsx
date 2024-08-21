@@ -9,6 +9,8 @@ type Props = {
   subjectId: number;
 };
 
+export const maxDuration = 100;
+
 const PageContent = async (props: Props) => {
   const user_Id = getCookie("userId", { cookies });
   const grade = getCookie("grade", { cookies });
