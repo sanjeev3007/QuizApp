@@ -28,15 +28,7 @@ const PageContent = async (props: Props) => {
 const Page = ({ params: { subjectId } }: { params: { subjectId: number } }) => {
   return (
     <div className="p-5 md:px-12 w-full md:max-w-7xl mx-auto bg-[#FFF] !important">
-      <Suspense
-      // fallback={
-      //   <div className="flex justify-center items-center h-[90vh]">
-      //     <CircularProgress size={40} />
-      //   </div>
-      // }
-      >
-        <PageContent subjectId={subjectId} />
-      </Suspense>
+      <PageContent subjectId={subjectId} />
     </div>
   );
 };
