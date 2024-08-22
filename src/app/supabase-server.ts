@@ -363,7 +363,6 @@ export async function doubtSolveDashboard(userId: string) {
     .from("chats_doubt_solve")
     .select("*")
     .eq("user_id", userId);
-  console.log(chats);
   return chats?.length || 0;
 }
 
