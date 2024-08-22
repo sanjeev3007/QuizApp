@@ -16,7 +16,6 @@ const PageContent = async (props: Props) => {
     getDashboardData(user_Id!, props.subjectId),
     getInsightsData(user_Id!, props.subjectId, parseInt(grade!)),
   ]);
-
   return (
     <div className="p-5 md:p-12 w-full md:max-w-5xl mx-auto bg-[#FFF] !important">
       <QuizScore dashboardData={dashboardData} insights={insightData} />
