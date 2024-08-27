@@ -169,7 +169,7 @@ export const getQuestionsByTopicId = async ({
 
   const level1 = await fetchQuestionsByLevel(
     "easy",
-    4,
+    2,
     topicId,
     questionIds,
     grade,
@@ -177,7 +177,7 @@ export const getQuestionsByTopicId = async ({
   );
   const level2 = await fetchQuestionsByLevel(
     "medium",
-    4,
+    2,
     topicId,
     questionIds,
     grade,
@@ -185,7 +185,7 @@ export const getQuestionsByTopicId = async ({
   );
   const level3 = await fetchQuestionsByLevel(
     "hard",
-    2,
+    1,
     topicId,
     questionIds,
     grade,
@@ -232,7 +232,7 @@ export const getQuestions = async ({
 
   const level1 = await fetchQuestionsByLevel(
     "easy",
-    4,
+    2,
     topicData?.id,
     questionIds,
     grade,
@@ -240,7 +240,7 @@ export const getQuestions = async ({
   );
   const level2 = await fetchQuestionsByLevel(
     "medium",
-    4,
+    2,
     topicData?.id,
     questionIds,
     grade,
@@ -248,7 +248,7 @@ export const getQuestions = async ({
   );
   const level3 = await fetchQuestionsByLevel(
     "hard",
-    2,
+    1,
     topicData?.id,
     questionIds,
     grade,
@@ -290,6 +290,19 @@ const fetchQuestionsByLevel = async (
     uuids: questionIds,
     selected_grade: grade,
   });
+
+  if (data.length === 0) {
+    const { data, error } = await supabase.rpc(
+      rpc_function.replace("topicid", "any"),
+      {
+        rows_limit: limit,
+        selected_topic_id: topicId,
+        uuids: questionIds,
+        selected_grade: grade,
+      }
+    );
+    return data;
+  }
 
   if (error) {
     console.log(error);
