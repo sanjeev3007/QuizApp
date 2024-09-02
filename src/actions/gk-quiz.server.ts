@@ -4,11 +4,19 @@ import { createServerSupabaseClient } from "@/app/supabase-server";
 
 export const getNumberOfCompletedGKQuiz = async (userid: string) => {
   const supabase = createServerSupabaseClient();
+
+  if (!userid) {
+    return {
+      numberOfCompletedQuiz: 0,
+      level: 1,
+      totalQuiz: 0,
+    };
+  }
   const { data: allQuizes, error } = await supabase
     .from("quiz_gk")
-    .select("questions, submissions")
+    .select("questions, submissions, userid, complete")
     .eq("userid", userid)
-    .eq("complete", "True");
+    .eq("complete", true);
 
   if (error) {
     console.error(error);
