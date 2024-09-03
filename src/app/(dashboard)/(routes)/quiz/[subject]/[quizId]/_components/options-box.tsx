@@ -67,7 +67,7 @@ export default function OptionsBox({
             >
               <div
                 className={cn(
-                  "rounded-full bg-[#E6EFEF] w-6 h-6 flex items-center justify-center text-sm font-semibold",
+                  "rounded-full shrink-0 bg-[#E6EFEF] w-6 h-6 flex items-center justify-center text-sm font-semibold",
                   showCorrect
                     ? "bg-[#9BD4B6] text-[#FFF]"
                     : showIncorrect

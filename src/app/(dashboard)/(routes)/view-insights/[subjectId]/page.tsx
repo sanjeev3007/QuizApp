@@ -1,6 +1,5 @@
 import QuizScore from "@/components/quiz-score";
 import React, { Suspense } from "react";
-import { getDashboard, getInsight } from "@/app/supabase-server";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 import CircularProgress from "@mui/material/CircularProgress";
