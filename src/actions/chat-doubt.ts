@@ -13,6 +13,7 @@ export async function addFeedback(
   if (error) {
     console.log(error);
   }
+  console.log(data);
 }
 
 export async function doubtSolved(userid: string, chatid: string) {

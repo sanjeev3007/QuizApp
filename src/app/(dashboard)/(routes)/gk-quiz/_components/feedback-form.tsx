@@ -51,29 +51,30 @@ export default function FeedBackForm({
       id: 1,
       text:
         response === "good"
-          ? "Explanation is Clear and Concise"
-          : "Incorrect Answer",
+          ? "This question was challenging"
+          : "This question is difficult",
     },
     {
       id: 2,
       text:
         response === "good"
-          ? "Question is Clear and Challenging"
-          : "Multiple Correct Answers",
+          ? "This question was easy"
+          : "This question is too easy",
     },
     {
       id: 3,
       text:
         response === "good"
-          ? "Correct Difficulty Level"
-          : "Missing Correct Answer",
+          ? "The question was relevant"
+          : "The answers are incorrect",
     },
     {
       id: 4,
-      text:
-        response === "good"
-          ? "Question is Thought-Provoking"
-          : "Question Ambiguity / Incorrect",
+      text: response === "good" ? "" : "The answers does not make sense",
+    },
+    {
+      id: 5,
+      text: response === "good" ? "" : "This question is not relevant for me",
     },
   ];
   const handleReason = (reasonId: number) => {

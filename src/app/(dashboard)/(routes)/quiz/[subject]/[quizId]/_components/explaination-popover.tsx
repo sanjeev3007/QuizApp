@@ -51,9 +51,7 @@ export default function ExplainationPopover({
           <BadgeInfo className="stroke-white" size={18} />
         </div>
       </PopoverTrigger>
-      <PopoverContent className="text-sm max-w-lg whitespace-pre-wrap">
-        {completion ? completion : "Thinking..."}
-      </PopoverContent>
+      <PopoverContent className="text-sm max-w-lg">{completion}</PopoverContent>
     </Popover>
   );
 }

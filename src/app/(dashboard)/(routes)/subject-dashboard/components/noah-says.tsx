@@ -50,16 +50,10 @@ const NoahHeader = ({
 
     try {
       setLoading(true);
-      const { quiz, previous } = await createQuizBySubject({
-        userId,
-        grade,
-        subjectId,
-      });
+      const data = await createQuizBySubject({ userId, grade, subjectId });
 
-      if (quiz && quiz.length > 0) {
-        if (previous)
-          router.push(`/quiz/${quizPath}/${quiz[0].id}?previous=true`);
-        else router.push(`/quiz/${quizPath}/${quiz[0].id}`);
+      if (data && data.length > 0) {
+        router.push(`/quiz/${quizPath}/${data[0].id}`);
       }
     } catch (error) {
       console.log(error);
@@ -91,7 +85,7 @@ const NoahHeader = ({
               )}
             </div>
           </div>
-          {/* <button className="insights-btn" onClick={redirectToInsights}>
+          <button className="insights-btn" onClick={redirectToInsights}>
             <span className="flex flex-row justify-center items-center gap-[0.5px]">
               View detailed insights
               <Image
@@ -101,7 +95,7 @@ const NoahHeader = ({
                 height={20}
               />
             </span>
-          </button> */}
+          </button>
         </div>
       </div>
       <div className="noah-subject-wrap">

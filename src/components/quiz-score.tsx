@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import NoahQuiz from "./quiz-score-tracking/noah-quiz";
 import StrengthWeakness from "./quiz-score-tracking/strength-weakness";
 import YourScore from "./quiz-score-tracking/your-score";
@@ -35,17 +35,6 @@ type Props = {
 };
 
 const QuizScore = ({ dashboardData, insights }: Props) => {
-  const [isMounted, setIsMounted] = React.useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-    return () => {
-      setIsMounted(false);
-    };
-  }, []);
-  if (!isMounted) {
-    return null;
-  }
   return (
     <div>
       <YourScore dashboardData={dashboardData} />

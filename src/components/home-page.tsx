@@ -5,15 +5,18 @@ import Image from "next/image";
 import noahImage from "@/assets/Images/noahHomepageImage.png";
 import noahHeadingImage from "@/assets/Images/NoahHeading.png";
 import { useRouter } from "next/navigation";
+import { getNumberOfCompletedGKQuiz } from "@/actions/gk-quiz.server";
 import { createGKQuiz, getGKQuestions } from "@/actions/gk-quiz";
+import {
+  doubtSolveDashboard,
+  getNumberOfSubmittedAnswers,
+} from "@/app/supabase-server";
 import { getCookie } from "cookies-next";
 import saveGTMEvents from "@/lib/gtm";
 
 type Props = {
   userId: string;
-  mathQuiz: any;
-  gkQuiz: any;
-  doubtChats: any;
+  totalChats: number;
 };
 
 type QuizData = {
@@ -24,19 +27,18 @@ type QuizData = {
 
 const HomePage: React.FC<Props> = ({
   userId,
-  mathQuiz,
-  gkQuiz,
-  doubtChats,
+  totalChats: initialTotalChats,
 }: Props) => {
   const router = useRouter();
 
-  const [quizData] = useState<QuizData | null>({
-    numberOfCompletedQuiz: gkQuiz?.value?.numberOfCompletedQuiz || 0,
-    level: gkQuiz?.value?.level || 1,
-    totalQuiz: gkQuiz?.value?.totalQuiz || 0,
+  const [quizData, setQuizData] = useState<QuizData | null>({
+    numberOfCompletedQuiz: 0,
+    level: 1,
+    totalQuiz: 10,
   });
-  const [totalDoubtChats] = useState<number>(doubtChats?.value || 0);
-  const [numberOfCompletedQuiz] = useState<number>(mathQuiz?.value || 0);
+  const [totalDoubtChats, setTotalDoubtChats] =
+    useState<number>(initialTotalChats);
+  const [numberOfCompletedQuiz, setNumberOfCompletedQuiz] = useState<number>(0);
 
   const cards = [
     {
@@ -93,6 +95,38 @@ const HomePage: React.FC<Props> = ({
       window.open(process.env.NEXT_PUBLIC_SANDBOX_URL, "_self");
     }
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const x = await getNumberOfSubmittedAnswers(userId);
+      setNumberOfCompletedQuiz(x);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getNumberOfCompletedGKQuiz(userId!);
+        setQuizData(data);
+      } catch (error) {
+        console.error("Error fetching completed quiz data:", error);
+      }
+    };
+    fetchData();
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchCount = async () => {
+      try {
+        const totalchats = await doubtSolveDashboard(userId!);
+        setTotalDoubtChats(totalchats);
+      } catch (error) {
+        console.error("Error fetching completed total chats:", error);
+      }
+    };
+    fetchCount();
+  }, [userId]);
 
   const generateGKQuiz = async () => {
     try {

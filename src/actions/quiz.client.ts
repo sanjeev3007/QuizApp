@@ -16,18 +16,6 @@ export async function createQuizBySubject({
     grade: grade,
   };
 
-  const { data: previousQuiz, error: previousQuizError } = await supabase
-    .from("quiz")
-    .select("id, userid, subject_id, complete")
-    .eq("userid", userId)
-    .eq("subject_id", subjectId)
-    .eq("complete", false)
-    .order("created_at", { ascending: false });
-
-  if (previousQuiz && previousQuiz.length > 0) {
-    return { quiz: previousQuiz, previous: true };
-  }
-
   const { data, error } = await supabase
     .from("quiz")
     .insert({
@@ -39,10 +27,10 @@ export async function createQuizBySubject({
 
   if (error) {
     console.error(error);
-    return { quiz: null, previous: false };
+    return;
   }
 
-  return { quiz: data, previous: false };
+  return data;
 }
 
 // create quiz
@@ -142,6 +130,7 @@ export async function updateQuiz({
     .eq("userid", userId)
     .select();
 
+  console.log(data, error);
   if (error) {
     console.error(error);
     return;
@@ -169,7 +158,7 @@ export const getQuestionsByTopicId = async ({
 
   const level1 = await fetchQuestionsByLevel(
     "easy",
-    2,
+    4,
     topicId,
     questionIds,
     grade,
@@ -177,7 +166,7 @@ export const getQuestionsByTopicId = async ({
   );
   const level2 = await fetchQuestionsByLevel(
     "medium",
-    2,
+    4,
     topicId,
     questionIds,
     grade,
@@ -185,7 +174,7 @@ export const getQuestionsByTopicId = async ({
   );
   const level3 = await fetchQuestionsByLevel(
     "hard",
-    1,
+    2,
     topicId,
     questionIds,
     grade,
@@ -232,7 +221,7 @@ export const getQuestions = async ({
 
   const level1 = await fetchQuestionsByLevel(
     "easy",
-    2,
+    4,
     topicData?.id,
     questionIds,
     grade,
@@ -240,7 +229,7 @@ export const getQuestions = async ({
   );
   const level2 = await fetchQuestionsByLevel(
     "medium",
-    2,
+    4,
     topicData?.id,
     questionIds,
     grade,
@@ -248,7 +237,7 @@ export const getQuestions = async ({
   );
   const level3 = await fetchQuestionsByLevel(
     "hard",
-    1,
+    2,
     topicData?.id,
     questionIds,
     grade,
@@ -290,19 +279,6 @@ const fetchQuestionsByLevel = async (
     uuids: questionIds,
     selected_grade: grade,
   });
-
-  if (data.length === 0) {
-    const { data, error } = await supabase.rpc(
-      rpc_function.replace("topicid", "any"),
-      {
-        rows_limit: limit,
-        selected_topic_id: topicId,
-        uuids: questionIds,
-        selected_grade: grade,
-      }
-    );
-    return data;
-  }
 
   if (error) {
     console.log(error);
@@ -411,7 +387,7 @@ export const fetchCorrectSubmissions = async ({
   const { data, error } = await supabase
     .from("correct_submissions")
     .select("questionid")
-    .eq("userid", userId)
+    .eq("user_id", userId)
     .eq("topic_id", topicId)
     .eq("subject_id", subjectId);
 
@@ -449,6 +425,7 @@ export async function storeCorrectSubmission({
     userid: userId,
     questionid: questionId,
     quiz_id: quizId,
+    quizid: quizId,
     topic_id: topicId,
     grade,
     subject_id: subjectId,

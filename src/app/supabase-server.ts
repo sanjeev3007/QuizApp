@@ -355,7 +355,6 @@ export async function gkQuiz(userId: string) {
 
 export async function doubtSolveDashboard(userId: string) {
   const supabase = createServerSupabaseClient();
-  if (!userId) return 0;
   const { data: chats, error } = await supabase
     .from("chats_doubt_solve")
     .select("*")
