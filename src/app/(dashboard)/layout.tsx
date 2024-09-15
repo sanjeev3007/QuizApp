@@ -15,6 +15,16 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [showBackButton, setShowBackButton] = useState(false);
+  const [isWebView, setIsWebView] = useState(false);
+
+  useEffect(() => {
+    // Check if we're in a WebView environment
+    const checkWebView = () => {
+      return window.ReactNativeWebView !== undefined;
+    };
+
+    setIsWebView(checkWebView());
+  }, []);
 
   useEffect(() => {
     if (pathname !== "/") {
@@ -29,7 +39,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       className={`${inter.variable} font-sans h-full w-full bg-[#FFF] z-100`}
     >
       <div className="w-full border-b-2 flex items-center justify-between bg-[#FFF] py-4 sticky top-0">
-        {showBackButton && (
+        {showBackButton ? (
           <button
             onClick={() => {
               if (pathname.includes("student-dashboard")) {
@@ -65,6 +75,32 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             />
             <span className="xs:hidden md:block">Go Back</span>
           </button>
+        ) : isWebView ? (
+          <button
+            onClick={() => {
+              if (isWebView) {
+                const mobileData = {
+                  type: "route",
+                };
+                window.ReactNativeWebView.postMessage(
+                  JSON.stringify(mobileData)
+                );
+              }
+            }}
+            className="absolute left-0 md:ml-6 xs:ml-5 lg:text-sm md:text-xs font-bold leading-tight 
+        text-left text-[#569090] flex flex-row justify-center items-center lg:hover:bg-[#FFF] xs:hover:bg-[#f2f7f7] p-2 rounded-full"
+          >
+            <Image
+              src={"/images/icons/arrow-left.svg"}
+              alt="arrow-left"
+              width={24}
+              height={24}
+              className="md:mb-[0.5px] lg:mr-2 md:mr-1 lg:w-[16px] lg:h-[16px] md:w-[15px] md:h-[15px] xs:w-[16px] xs:h-[16px]"
+            />
+            {/* <span className="xs:hidden md:block">Go Back</span> */}
+          </button>
+        ) : (
+          <></>
         )}
         <Link href="/" className="mx-auto">
           <Image src={sandboxLogo} alt="sandbox-logo" />
