@@ -1,12 +1,13 @@
 "use client";
-import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { AnimatePresence, motion } from "framer-motion";
-import { Flashcard } from "./flashcard";
+import { Quizcard } from "./quiz-card";
 import { useEffect, useState } from "react";
-import { DB } from "../_types";
-import { SummarySlide } from "./summary-slide";
+import { DB } from "../../learn/_types";
+import { SummarySlide } from "../../learn/_components/summary-slide";
+import { SelectCard } from "./select-card";
 
 const isTouchDevice = () =>
   "ontouchstart" in window || navigator.maxTouchPoints > 0;
@@ -16,7 +17,8 @@ type FlashcardPageProps = {
   levelId: number;
   topicId: number;
 };
-export default function LearnBox({
+
+export default function QuizBox({
   content,
   levelId,
   topicId,
@@ -98,7 +100,7 @@ export default function LearnBox({
                 transition={{ duration: 0.3 }}
                 className="w-full max-w-lg"
               >
-                <Flashcard
+                <SelectCard
                   data={{
                     question: content[currentCardIndex].question,
                     options: content[currentCardIndex].options.map(

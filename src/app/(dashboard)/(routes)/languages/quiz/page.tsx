@@ -1,9 +1,9 @@
-import LearnBox from "./_components/learn-box";
+import QuizBox from "./_components/quiz-box";
 
 export default async function LearnPage() {
   return (
     <div className="">
-      <LearnBox content={content} levelId={1} topicId={1} />
+      <QuizBox content={content} levelId={1} topicId={1} />
     </div>
   );
 }

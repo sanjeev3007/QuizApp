@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, TimerIcon, Volume2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, TimerIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { AnswerOption, FlashcardData } from "../../learn/_types";
 import { DropZone } from "./dropzone";
 import { DraggableAnswer } from "./draggable-answer";
-import { AnswerOption, FlashcardData } from "../_types";
-import { cn } from "@/lib/utils";
 
 type FlashcardProps = {
   data: FlashcardData;
@@ -16,32 +16,37 @@ type FlashcardProps = {
   onAnswer: (isCorrect: boolean) => void;
 };
 
-export const Flashcard: React.FC<FlashcardProps> = ({
+export const Quizcard: React.FC<FlashcardProps> = ({
   data,
   currentCard,
   totalCards,
   onNextCard,
-  onPrevCard,
   onAnswer,
+  onPrevCard,
 }) => {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [droppedAnswer, setDroppedAnswer] = useState<string | null>(null);
   const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
+  const [hasAnswered, setHasAnswered] = useState(false);
 
   useEffect(() => {
     setIsCorrect(null);
     setDroppedAnswer(null);
     setShowCorrectAnswer(false);
+    setHasAnswered(false);
   }, [data.question]);
 
   const handleDrop = (item: AnswerOption) => {
+    if (hasAnswered) return;
     const correct = item.text === data.correctAnswer;
     setDroppedAnswer(item.text);
     setIsCorrect(correct);
     setShowCorrectAnswer(true);
+    setHasAnswered(true);
     onAnswer(correct);
   };
 
+  const progressBar = Math.round((currentCard / totalCards) * 100).toFixed(0);
   return (
     <Card
       className="w-full max-w-lg bg-[#faf9f9]"
@@ -61,9 +66,11 @@ export const Flashcard: React.FC<FlashcardProps> = ({
         </div>
         <div
           className={cn(
-            "absolute -bottom-[2px] left-0 h-[4px] rounded-full bg-[#E98451]",
-            "w-[10%]"
+            "absolute -bottom-[2px] left-0 h-[4px] rounded-full bg-[#E98451] transition-all duration-300"
           )}
+          style={{
+            width: `${progressBar}%`,
+          }}
         ></div>
       </div>
       <CardContent className="p-6 w-full">
@@ -74,6 +81,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({
           onDrop={handleDrop}
           isCorrect={isCorrect}
           droppedAnswer={droppedAnswer}
+          hasAnswered={hasAnswered}
         />
         <div className="flex flex-wrap items-center justify-center gap-4 mt-6">
           {data.options && data.options.length > 0 ? (
@@ -85,6 +93,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({
                 isCorrect={
                   showCorrectAnswer && option.text === data.correctAnswer
                 }
+                disabled={hasAnswered}
               />
             ))
           ) : (
@@ -111,19 +120,13 @@ export const Flashcard: React.FC<FlashcardProps> = ({
           <Button
             variant="outline"
             onClick={onNextCard}
-            disabled={!droppedAnswer || !isCorrect}
+            disabled={!droppedAnswer}
             className="bg-[#E98451] disabled:bg-[#C3B8AC] text-white cursor-pointer"
           >
             Next
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>
-        {/* {mode === "learn" && droppedAnswer && (
-          <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-            <p className="font-bold">Explanation:</p>
-            <p>{data.explanation}</p>
-          </div>
-        )} */}
       </CardContent>
     </Card>
   );

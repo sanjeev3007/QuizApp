@@ -1,18 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { useDrop } from "react-dnd";
-import { AnswerOption } from "../_types";
 import { cn } from "@/lib/utils";
 import { AlertCircle, Check, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AnswerOption } from "../../learn/_types";
 
 export const DropZone = ({
   onDrop,
   isCorrect,
   droppedAnswer,
+  hasAnswered,
 }: {
   onDrop: (item: AnswerOption) => void;
   isCorrect: boolean | null;
   droppedAnswer: string | null;
+  hasAnswered: boolean;
 }) => {
   const [speechSynthesis, setSpeechSynthesis] =
     useState<SpeechSynthesis | null>(null);
@@ -99,8 +101,8 @@ export const DropZone = ({
         )}
         {isCorrect === false && (
           <p className="text-[#FF7D5D] flex items-center text-center w-fit mx-auto mt-2">
-            <AlertCircle className="size-4 mr-2" /> Oops that’s not right! Try a
-            different option.
+            <AlertCircle className="size-4 mr-2" /> Hmm that’s not right, the
+            correct option is shown below
           </p>
         )}
       </div>

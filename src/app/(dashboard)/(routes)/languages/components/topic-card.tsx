@@ -38,7 +38,10 @@ export default function TopicCard({ title, icon, cards }: TopicCardProps) {
           >
             Learn
           </Button>
-          <Button className="bg-[#E98451] hover:bg-orange-500 text-white w-full">
+          <Button
+            onClick={() => router.push("/languages/quiz?lang=" + lang)}
+            className="bg-[#E98451] hover:bg-orange-500 text-white w-full"
+          >
             Practice
           </Button>
         </CardFooter>

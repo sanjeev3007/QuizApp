@@ -1,11 +1,3 @@
-export type FlashcardPageProps = {
-  content: DB[];
-  levelId: number;
-  topicId: number;
-  cardIndex: number;
-  mode: "learn" | "quiz";
-};
-
 export type DB = {
   id: number;
   uuid: string;

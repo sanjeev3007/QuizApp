@@ -6,16 +6,10 @@ export const SummarySlide = ({
   correctAnswers,
   totalQuestions,
   onRestart,
-  levelId,
-  topicId,
-  mode,
 }: {
   correctAnswers: number;
   totalQuestions: number;
   onRestart: () => void;
-  levelId: number;
-  topicId: number;
-  mode: "learn" | "quiz";
 }) => {
   const searchParams = useSearchParams();
   return (
@@ -39,7 +33,7 @@ export const SummarySlide = ({
             className="bg-orange-400 text-white px-4 py-2 rounded-full transition-transform hover:scale-105 flex items-center justify-center mx-auto"
           >
             <RefreshCcw size={20} className="mr-2" />
-            Restart {mode === "learn" ? "Learn" : "Quiz"}
+            Restart
           </button>
           <Link
             href={"/language/learn?" + searchParams.get("lang")}

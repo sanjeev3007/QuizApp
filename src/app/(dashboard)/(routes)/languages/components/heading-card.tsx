@@ -45,12 +45,12 @@ export default function HeadingCard({ lang }: { lang: string }) {
       <Image src={NoahImage} alt="Noah Image" className="w-[100px] h-[100px]" />
       <div className="space-y-2">
         <h1 className="text-[#5B8989]">
-          {languageContent[lang].title}{" "}
+          {languageContent[lang]?.title}{" "}
           <span className="bg-gradient-to-br from-pink-500 to-yellow-500 text-transparent bg-clip-text">
-            {languageContent[lang].lang}
+            {languageContent[lang]?.lang}
           </span>
         </h1>
-        <h2 className="text-[#5B8989]">{languageContent[lang].subtitle}</h2>
+        <h2 className="text-[#5B8989]">{languageContent[lang]?.subtitle}</h2>
       </div>
     </div>
   );
