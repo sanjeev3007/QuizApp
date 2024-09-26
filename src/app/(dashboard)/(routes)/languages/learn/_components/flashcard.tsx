@@ -29,10 +29,11 @@ export const Flashcard: React.FC<FlashcardProps> = ({
   const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
 
   useEffect(() => {
+    // Reset state when the question changes
     setIsCorrect(null);
     setDroppedAnswer(null);
     setShowCorrectAnswer(false);
-  }, [data.question]);
+  }, [data.question, currentCard]);
 
   const handleDrop = (item: AnswerOption) => {
     const correct = item.text === data.correctAnswer;
@@ -112,18 +113,18 @@ export const Flashcard: React.FC<FlashcardProps> = ({
             variant="outline"
             onClick={onNextCard}
             disabled={!droppedAnswer || !isCorrect}
-            className="bg-[#E98451] disabled:bg-[#C3B8AC] text-white cursor-pointer"
+            className="bg-[#E98451] disabled:bg-[#C3B8AC] disabled:opacity-100 text-white cursor-pointer"
           >
             Next
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>
-        {/* {mode === "learn" && droppedAnswer && (
+        {droppedAnswer && (
           <div className="mt-4 p-4 bg-gray-100 rounded-lg">
             <p className="font-bold">Explanation:</p>
             <p>{data.explanation}</p>
           </div>
-        )} */}
+        )}
       </CardContent>
     </Card>
   );

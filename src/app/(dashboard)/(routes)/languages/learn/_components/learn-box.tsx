@@ -7,9 +7,23 @@ import { Flashcard } from "./flashcard";
 import { useEffect, useState } from "react";
 import { DB } from "../_types";
 import { SummarySlide } from "./summary-slide";
+import { useRouter } from "next/navigation";
 
-const isTouchDevice = () =>
-  "ontouchstart" in window || navigator.maxTouchPoints > 0;
+const DndProviderWithBackend = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [Backend, setBackend] = useState(() => HTML5Backend);
+
+  useEffect(() => {
+    const isTouchDevice =
+      "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    setBackend(() => (isTouchDevice ? TouchBackend : HTML5Backend));
+  }, []);
+
+  return <DndProvider backend={Backend}>{children}</DndProvider>;
+};
 
 type FlashcardPageProps = {
   content: DB[];
@@ -23,8 +37,8 @@ export default function LearnBox({
 }: FlashcardPageProps) {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [isCompleted, setIsCompleted] = useState(false);
   const [flashcards, setFlashcards] = useState<DB[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     setFlashcards(content);
@@ -64,32 +78,15 @@ export default function LearnBox({
       progressIncrease = 5;
     }
 
-    setIsCompleted(true);
+    router.push("/languages/result");
   };
 
-  const handleRestart = () => {
-    setCurrentCardIndex(0);
-    setCorrectAnswers(0);
-    setIsCompleted(false);
-  };
-
-  const Backend = isTouchDevice() ? TouchBackend : HTML5Backend;
-
-  if (isCompleted) {
-    return (
-      <SummarySlide
-        correctAnswers={correctAnswers}
-        totalQuestions={flashcards.length}
-        onRestart={handleRestart}
-      />
-    );
-  }
   return (
     <div className="">
-      <DndProvider backend={Backend}>
+      <DndProviderWithBackend>
         <div className="py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center">
           <AnimatePresence mode="wait">
-            {true ? (
+            {content && content[currentCardIndex] ? (
               <motion.div
                 key={"currentCardIndex"}
                 initial={{ opacity: 0, y: 20 }}
@@ -99,6 +96,7 @@ export default function LearnBox({
                 className="w-full max-w-lg"
               >
                 <Flashcard
+                  key={`flashcard-${currentCardIndex}`}
                   data={{
                     question: content[currentCardIndex].question,
                     options: content[currentCardIndex].options.map(
@@ -125,7 +123,7 @@ export default function LearnBox({
             )}
           </AnimatePresence>
         </div>
-      </DndProvider>
+      </DndProviderWithBackend>
     </div>
   );
 }

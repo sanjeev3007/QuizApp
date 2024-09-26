@@ -3,11 +3,10 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { AnimatePresence, motion } from "framer-motion";
-import { Quizcard } from "./quiz-card";
 import { useEffect, useState } from "react";
 import { DB } from "../../learn/_types";
-import { SummarySlide } from "../../learn/_components/summary-slide";
 import { SelectCard } from "./select-card";
+import { useRouter } from "next/navigation";
 
 const isTouchDevice = () =>
   "ontouchstart" in window || navigator.maxTouchPoints > 0;
@@ -25,8 +24,8 @@ export default function QuizBox({
 }: FlashcardPageProps) {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [isCompleted, setIsCompleted] = useState(false);
   const [flashcards, setFlashcards] = useState<DB[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     setFlashcards(content);
@@ -66,32 +65,17 @@ export default function QuizBox({
       progressIncrease = 5;
     }
 
-    setIsCompleted(true);
-  };
-
-  const handleRestart = () => {
-    setCurrentCardIndex(0);
-    setCorrectAnswers(0);
-    setIsCompleted(false);
+    router.push("/languages/result");
   };
 
   const Backend = isTouchDevice() ? TouchBackend : HTML5Backend;
 
-  if (isCompleted) {
-    return (
-      <SummarySlide
-        correctAnswers={correctAnswers}
-        totalQuestions={flashcards.length}
-        onRestart={handleRestart}
-      />
-    );
-  }
   return (
     <div className="">
       <DndProvider backend={Backend}>
         <div className="py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center">
           <AnimatePresence mode="wait">
-            {true ? (
+            {content ? (
               <motion.div
                 key={"currentCardIndex"}
                 initial={{ opacity: 0, y: 20 }}

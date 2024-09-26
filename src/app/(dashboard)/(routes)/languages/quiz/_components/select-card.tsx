@@ -74,8 +74,8 @@ export const SelectCard: React.FC<QuizCardProps> = ({
               key={option.id}
               variant={"outline"}
               className={cn(
-                "p-2 px-4 w-full bg-white border border-[#FDE3D9] text-[#5B8989] justify-start rounded-xl shadow-sm font-medium transition-all",
-                selectedAnswer === option.text && "bg-[#C9D2DA] text-white",
+                "p-2 px-4 w-full disabled:opacity-100 bg-white border border-[#FDE3D9] text-[#5B8989] justify-start rounded-xl shadow-sm font-medium transition-all",
+                selectedAnswer === option.text && "bg-[#C9D2DA]",
                 (showCorrectAnswer &&
                   selectedAnswer === option.text &&
                   selectedAnswer !== data.correctAnswer &&
