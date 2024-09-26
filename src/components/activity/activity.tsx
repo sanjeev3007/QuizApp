@@ -31,6 +31,8 @@ const activity = ({
   loading: boolean;
 }) => {
   const [openDialog, setOpenDialog] = React.useState(false);
+  const grade = getCookie("grade");
+  console.log(grade, "subject dashboard");
   const handleOpenDialog = () => {
     const userId = getCookie("userId");
     saveGTMEvents({
@@ -74,7 +76,7 @@ const activity = ({
                 {studentData?.studentName || "N/A"}
               </span>
               <div className="gradeTag">
-                Grade {studentData?.grade || "N/A"}
+                Grade {studentData?.grade || grade || "N/A"}
               </div>
               <button
                 className="editBtn"

@@ -180,7 +180,9 @@ const HomePage: React.FC<Props> = ({
                 <div className="lg:m-6 md:m-2 lg:p-0 xs:p-4 h-5/6 relative">
                   <div className="cardTitle">{card.title}</div>
                   <div className="cardSubTitle">{card.subtitle}</div>
-                  <div className="cardDescription">{card.description}</div>
+                  {getCookie("userRole") !== "guest" && (
+                    <div className="cardDescription">{card.description}</div>
+                  )}
                   <div className="btnContainer">
                     <button
                       className="getStartedBtn"

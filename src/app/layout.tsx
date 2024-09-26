@@ -30,6 +30,10 @@ export default function RootLayout({
               href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap"
               rel="stylesheet"
             />
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+            />
           </head>
           <body className={poppins.className}>
             <main className="flex flex-col h-screen w-full">{children}</main>

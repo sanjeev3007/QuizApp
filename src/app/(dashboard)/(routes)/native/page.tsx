@@ -5,25 +5,23 @@ import { setCookie } from "cookies-next";
 import CircularProgress from "@mui/material/CircularProgress";
 
 const NativeComponent = () => {
-  console.log("caleed native");
   const router = useRouter();
   useEffect(() => {
     const handleMessage = async (event) => {
       const data = event.data;
-      console.log(event.data, "event data");
 
-      // Handle the received data in your web app
-      if (data?.authToken && data?.refreshToken) {
-        console.log("any datat here");
-        setCookie("Authorization", data?.authToken);
-        setCookie("refresh-token", data?.refreshToken);
-        setCookie("userName", data?.userName);
-        setCookie("userId", data?.userId);
-        setCookie("grade", data?.grade);
+      setCookie("Authorization", data?.authToken);
+      setCookie("refresh-token", data?.refreshToken);
+      setCookie("userName", data?.userName);
+      setCookie("userId", data?.userId);
+      setCookie("grade", data?.grade);
+      setCookie("userRole", data?.userRole);
 
-        // Route to the main page
+      setTimeout(() => {
+        console.log(event.data);
         router.push("/");
-      }
+      }, 2000);
+      // Route to the main page
     };
 
     window.addEventListener("message", handleMessage);
@@ -31,7 +29,7 @@ const NativeComponent = () => {
     return () => {
       window.removeEventListener("message", handleMessage);
     };
-  });
+  }, []);
   return (
     <div className="flex justify-center align-middle">
       {" "}
