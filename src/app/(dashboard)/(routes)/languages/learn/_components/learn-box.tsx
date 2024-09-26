@@ -1,12 +1,11 @@
 "use client";
-import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { AnimatePresence, motion } from "framer-motion";
 import { Flashcard } from "./flashcard";
 import { useEffect, useState } from "react";
 import { DB } from "../_types";
-import { SummarySlide } from "./summary-slide";
 import { useRouter } from "next/navigation";
 
 const DndProviderWithBackend = ({

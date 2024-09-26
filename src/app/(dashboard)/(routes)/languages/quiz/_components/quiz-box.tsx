@@ -8,8 +8,21 @@ import { DB } from "../../learn/_types";
 import { SelectCard } from "./select-card";
 import { useRouter } from "next/navigation";
 
-const isTouchDevice = () =>
-  "ontouchstart" in window || navigator.maxTouchPoints > 0;
+const DndProviderWithBackend = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [Backend, setBackend] = useState(() => HTML5Backend);
+
+  useEffect(() => {
+    const isTouchDevice =
+      "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    setBackend(() => (isTouchDevice ? TouchBackend : HTML5Backend));
+  }, []);
+
+  return <DndProvider backend={Backend}>{children}</DndProvider>;
+};
 
 type FlashcardPageProps = {
   content: DB[];
@@ -68,11 +81,9 @@ export default function QuizBox({
     router.push("/languages/result");
   };
 
-  const Backend = isTouchDevice() ? TouchBackend : HTML5Backend;
-
   return (
     <div className="">
-      <DndProvider backend={Backend}>
+      <DndProviderWithBackend>
         <div className="py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center">
           <AnimatePresence mode="wait">
             {content ? (
@@ -111,7 +122,7 @@ export default function QuizBox({
             )}
           </AnimatePresence>
         </div>
-      </DndProvider>
+      </DndProviderWithBackend>
     </div>
   );
 }
