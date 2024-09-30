@@ -1,10 +1,19 @@
+import { getTopicContent } from "@/actions/language.actions";
 import LearnBox from "./_components/learn-box";
 import MultiSelectBox from "./_components/multi-select/box";
 
-export default async function LearnPage() {
+export default async function LearnPage({
+  searchParams,
+}: {
+  searchParams: { lang: string; topic: number };
+}) {
+  const content = await getTopicContent({
+    topic: searchParams.topic,
+    language: searchParams.lang,
+  });
   return (
     <div className="">
-      <LearnBox content={content} levelId={1} topicId={1} />
+      <LearnBox content={content!} levelId={1} topicId={1} />
       {/* Sentence Creation Card */}
       {/* <MultiSelectBox content={content} levelId={1} topicId={1} /> */}
     </div>

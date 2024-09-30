@@ -1,9 +1,18 @@
+import { getTopicContent } from "@/actions/language.actions";
 import QuizBox from "./_components/quiz-box";
 
-export default async function LearnPage() {
+export default async function LearnPage({
+  searchParams,
+}: {
+  searchParams: { lang: string; topic: number };
+}) {
+  const content = await getTopicContent({
+    topic: searchParams.topic,
+    language: searchParams.lang,
+  });
   return (
     <div className="">
-      <QuizBox content={content} levelId={1} topicId={1} />
+      <QuizBox content={content!} levelId={1} topicId={1} />
     </div>
   );
 }

@@ -5,60 +5,74 @@ import TopicCard from "./topic-card";
 import { LockKeyhole } from "lucide-react";
 import Lock from "@/public/images/icons/lock.svg";
 import Image from "next/image";
+import { useQuery } from "@tanstack/react-query";
+import { getLanguageTopics } from "@/actions/language.actions";
 
-export default function TopicSlider() {
-  const settings = {
-    dots: true,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 2,
-    initialSlide: 0,
-    rows: 1,
-    nextArrow: (
-      <div className="carousel-buttons">
-        <div className="next-slick-arrow rounded-[8px] xs:w-[15px] xs:h-[15px] md:w-[24px] md:h-[24px]">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            stroke="black"
-            height="24"
-            viewBox="0 -960 960 960"
-            width="24"
-            className="xs:w-[15px] xs:h-[15px] md:w-[24px] md:h-[24px]"
-          >
-            <path d="m242-200 200-280-200-280h98l200 280-200 280h-98Zm238 0 200-280-200-280h98l200 280-200 280h-98Z" />
-          </svg>
-        </div>
+const settings = {
+  dots: true,
+  infinite: false,
+  speed: 500,
+  slidesToShow: 3,
+  slidesToScroll: 2,
+  initialSlide: 0,
+  rows: 1,
+  nextArrow: (
+    <div className="carousel-buttons">
+      <div className="next-slick-arrow rounded-[8px] xs:w-[15px] xs:h-[15px] md:w-[24px] md:h-[24px]">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          stroke="black"
+          height="24"
+          viewBox="0 -960 960 960"
+          width="24"
+          className="xs:w-[15px] xs:h-[15px] md:w-[24px] md:h-[24px]"
+        >
+          <path d="m242-200 200-280-200-280h98l200 280-200 280h-98Zm238 0 200-280-200-280h98l200 280-200 280h-98Z" />
+        </svg>
       </div>
-    ),
-    prevArrow: (
-      <div className="carousel-buttons">
-        <div className="next-slick-arrow rotate-180 xs:w-[15px] xs:h-[15px] md:w-[24px] md:h-[24px]">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            stroke="black"
-            height="24"
-            viewBox="0 -960 960 960"
-            width="24"
-            className="xs:w-[15px] xs:h-[15px] md:w-[24px] md:h-[24px]"
-          >
-            <path d="m242-200 200-280-200-280h98l200 280-200 280h-98Zm238 0 200-280-200-280h98l200 280-200 280h-98Z" />
-          </svg>
-        </div>
+    </div>
+  ),
+  prevArrow: (
+    <div className="carousel-buttons">
+      <div className="next-slick-arrow rotate-180 xs:w-[15px] xs:h-[15px] md:w-[24px] md:h-[24px]">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          stroke="black"
+          height="24"
+          viewBox="0 -960 960 960"
+          width="24"
+          className="xs:w-[15px] xs:h-[15px] md:w-[24px] md:h-[24px]"
+        >
+          <path d="m242-200 200-280-200-280h98l200 280-200 280h-98Zm238 0 200-280-200-280h98l200 280-200 280h-98Z" />
+        </svg>
       </div>
-    ),
-    responsive: [
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          rows: 1,
-          dots: false,
-        },
+    </div>
+  ),
+  responsive: [
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        rows: 1,
+        dots: false,
       },
-    ],
-  };
+    },
+  ],
+};
+
+export default function TopicSlider({
+  levels,
+}: {
+  levels: { id: number; level: number; name: string; points: number }[];
+}) {
+  const { data, isFetching, error } = useQuery({
+    queryKey: ["language_topics"],
+    queryFn: async () => {
+      return await getLanguageTopics();
+    },
+  });
+  console.log(data);
   return (
     <div className="space-y-16 py-6 pb-16">
       <div className="text-lg md:text-2xl lg:text-3xl font-semibold text-center space-y-1">
@@ -83,11 +97,11 @@ export default function TopicSlider() {
                 <Image src={Lock} alt="lock" width={12} height={12} />
               </div>
               <h1 className="text-[#5B8989] font-semibold text-2xl">
-                {"Level " + level.level + " - "} {level.title}
+                {"Level " + level.level + " - "} {level.name}
               </h1>
             </div>
             <div className="">
-              {!level.lock ? (
+              {level.level !== 1 ? (
                 <p className="text-[#5B8989] font-medium">🪙80/110 done</p>
               ) : (
                 <p className="bg-[#E6EFEF] text-[#5B8989] px-2 py-1 text-sm rounded-md">
@@ -96,43 +110,48 @@ export default function TopicSlider() {
               )}
             </div>
           </div>
-          <Slider {...settings}>
-            {content.map((item, index) => (
-              <TopicCard
-                key={index}
-                title={item.title}
-                icon={item.icon}
-                cards={item.flashcards}
-                lock={level.lock}
-              />
-            ))}
-          </Slider>
+          {data && (
+            <Slider {...settings}>
+              {data
+                .filter((d) => d.level_id === level.level)
+                .map((item, index) => (
+                  <TopicCard
+                    key={index}
+                    title={item.title}
+                    icon={item.icon}
+                    cards={item.flashcards}
+                    lock={level.level === 1 ? false : true}
+                    topic={item}
+                  />
+                ))}
+            </Slider>
+          )}
         </div>
       ))}
     </div>
   );
 }
 
-const levels = [
-  {
-    id: 1,
-    title: "Learning words",
-    level: 1,
-    lock: false,
-  },
-  {
-    id: 2,
-    title: "Making Sentences",
-    level: 2,
-    lock: true,
-  },
-  {
-    id: 3,
-    title: "Making Conversation",
-    level: 3,
-    lock: true,
-  },
-];
+// const levels = [
+//   {
+//     id: 1,
+//     title: "Learning words",
+//     level: 1,
+//     lock: false,
+//   },
+//   {
+//     id: 2,
+//     title: "Making Sentences",
+//     level: 2,
+//     lock: true,
+//   },
+//   {
+//     id: 3,
+//     title: "Making Conversation",
+//     level: 3,
+//     lock: true,
+//   },
+// ];
 
 const content = [
   {

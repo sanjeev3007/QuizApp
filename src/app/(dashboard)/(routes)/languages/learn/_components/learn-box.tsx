@@ -36,7 +36,7 @@ export default function LearnBox({
 }: FlashcardPageProps) {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [flashcards, setFlashcards] = useState<DB[]>([]);
+  const [flashcards, setFlashcards] = useState<DB[]>(content);
   const router = useRouter();
 
   useEffect(() => {
@@ -85,7 +85,7 @@ export default function LearnBox({
       <DndProviderWithBackend>
         <div className="py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center">
           <AnimatePresence mode="wait">
-            {content && content[currentCardIndex] ? (
+            {flashcards && flashcards[currentCardIndex] ? (
               <motion.div
                 key={"currentCardIndex"}
                 initial={{ opacity: 0, y: 20 }}
@@ -97,21 +97,21 @@ export default function LearnBox({
                 <Flashcard
                   key={`flashcard-${currentCardIndex}`}
                   data={{
-                    question: content[currentCardIndex].question,
-                    options: content[currentCardIndex].options.map(
+                    question: flashcards[currentCardIndex].question,
+                    options: flashcards[currentCardIndex].options.map(
                       (option, index) => ({
                         id: index.toString(),
                         text: option.text,
                       })
                     ),
                     correctAnswer:
-                      content[currentCardIndex].options.find(
+                      flashcards[currentCardIndex].options.find(
                         (option) => option.correct === "true"
                       )?.text || "",
-                    explanation: content[currentCardIndex].explanation,
+                    explanation: flashcards[currentCardIndex].explanation,
                   }}
                   currentCard={currentCardIndex + 1}
-                  totalCards={content.length}
+                  totalCards={flashcards.length}
                   onNextCard={handleNextCard}
                   onPrevCard={handlePrevCard}
                   onAnswer={handleAnswer}
