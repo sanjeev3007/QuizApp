@@ -24,11 +24,20 @@ export const SelectCard: React.FC<QuizCardProps> = ({
 }) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(45);
 
   useEffect(() => {
     setSelectedAnswer(null);
     setShowCorrectAnswer(false);
+    setTimeLeft(45);
   }, [data.question]);
+
+  useEffect(() => {
+    if (timeLeft > 0 && !showCorrectAnswer) {
+      const timerId = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      return () => clearTimeout(timerId);
+    }
+  }, [timeLeft, showCorrectAnswer]);
 
   const handleAnswerSelect = (answer: string) => {
     setSelectedAnswer(answer);
@@ -37,6 +46,14 @@ export const SelectCard: React.FC<QuizCardProps> = ({
   };
 
   const progressBar = Math.round((currentCard / totalCards) * 100).toFixed(0);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
+  };
 
   return (
     <Card
@@ -53,7 +70,9 @@ export const SelectCard: React.FC<QuizCardProps> = ({
           <span>
             <TimerIcon className="size-4 text-[#5B8989]" />
           </span>
-          <span className="text-sm font-semibold text-[#2F4F4F]">00:45</span>
+          <span className="text-sm font-semibold text-[#2F4F4F]">
+            {formatTime(timeLeft)}
+          </span>
         </div>
         <div
           className={cn(

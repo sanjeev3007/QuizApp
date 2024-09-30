@@ -4,17 +4,11 @@ import "../subject-dashboard/components/subject-dashboard.css";
 import Activity from "@/components/activity/activity";
 import GlobalLeaderboard from "@/components/leaderboard";
 import { getCookie } from "cookies-next";
-import {
-  getStudentDashboard,
-  getStudentTopics,
-} from "@/lib/student-dashboard/apiClient";
+import { getStudentDashboard } from "@/lib/student-dashboard/apiClient";
 import { Suspense, useEffect, useState } from "react";
-import constants from "@/constants/constants";
 import saveGTMEvents from "@/lib/gtm";
-import ClipLoader from "react-spinners/ClipLoader";
 import LanguageCard from "./components/language-card";
 import HeadingCard from "./components/heading-card";
-import TopicCard from "./components/topic-card";
 import TopicSlider from "./components/topic-slider";
 
 type TopicCardLayout = {

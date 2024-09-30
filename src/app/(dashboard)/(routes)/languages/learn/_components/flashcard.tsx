@@ -54,12 +54,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({
         <span className="text-sm text-[#5B8989] text-left w-full">
           {currentCard} of {totalCards}
         </span>
-        <div className="w-fit mx-auto flex items-center gap-1 bg-[#E7EEEE] px-2 py-1 rounded-lg border border-[#C0D8D8]">
-          <span>
-            <TimerIcon className="size-4 text-[#5B8989]" />
-          </span>
-          <span className="text-sm font-semibold text-[#2F4F4F]">00:45</span>
-        </div>
         <div
           className={cn(
             "absolute -bottom-[2px] left-0 h-[4px] rounded-full bg-[#E98451]",

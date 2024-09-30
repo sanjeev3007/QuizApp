@@ -2,22 +2,34 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
+import Lock from "@/public/images/icons/lock-white.png";
 
 type TopicCardProps = {
   title: string;
   icon: React.ReactNode;
+  lock: boolean;
   cards: number;
 };
 
-export default function TopicCard({ title, icon, cards }: TopicCardProps) {
+export default function TopicCard({
+  title,
+  icon,
+  cards,
+  lock,
+}: TopicCardProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const lang = searchParams.get("lang");
   return (
     <div className="px-2">
       <Card
-        className="w-full bg-[#F5F9FF] shadow-none rounded-2xl"
+        className={cn(
+          "w-full shadow-none rounded-2xl",
+          lock ? "bg-[#FAFAFA]" : "bg-[#F5F9FF]"
+        )}
         style={{
           boxShadow: "0px 0px 8px 0px #0053F429",
         }}
@@ -31,20 +43,39 @@ export default function TopicCard({ title, icon, cards }: TopicCardProps) {
             {cards} flash cards available
           </p>
         </CardContent>
-        <CardFooter className="flex justify-between p-6 pt-6 gap-6">
-          <Button
-            onClick={() => router.push("/languages/learn?lang=" + lang)}
-            className="bg-[#F0A919] hover:bg-yellow-500 text-white w-full"
-          >
-            Learn
-          </Button>
-          <Button
-            onClick={() => router.push("/languages/quiz?lang=" + lang)}
-            className="bg-[#E98451] hover:bg-orange-500 text-white w-full"
-          >
-            Practice
-          </Button>
-        </CardFooter>
+        {lock ? (
+          <CardFooter className="flex justify-between p-6 pt-6 gap-6">
+            <Button
+              disabled={lock}
+              onClick={() => router.push("/languages/learn?lang=" + lang)}
+              className="bg-[#C3B8AC] hover:bg-[#C3B8AC]/80 disabled:opacity-1000 rounded-lg text-white w-fit items-center flex"
+            >
+              Start Learning{" "}
+              <Image
+                src={Lock}
+                alt="lock"
+                width={12}
+                height={12}
+                className="ml-2"
+              />
+            </Button>
+          </CardFooter>
+        ) : (
+          <CardFooter className="flex justify-between p-6 pt-6 gap-6">
+            <Button
+              onClick={() => router.push("/languages/learn?lang=" + lang)}
+              className="bg-[#F0A919] hover:bg-yellow-500 text-white w-full"
+            >
+              Learn
+            </Button>
+            <Button
+              onClick={() => router.push("/languages/quiz?lang=" + lang)}
+              className="bg-[#E98451] hover:bg-orange-500 text-white w-full"
+            >
+              Practice
+            </Button>
+          </CardFooter>
+        )}
       </Card>
     </div>
   );

@@ -2,6 +2,9 @@
 
 import Slider from "react-slick";
 import TopicCard from "./topic-card";
+import { LockKeyhole } from "lucide-react";
+import Lock from "@/public/images/icons/lock.svg";
+import Image from "next/image";
 
 export default function TopicSlider() {
   const settings = {
@@ -72,8 +75,27 @@ export default function TopicSlider() {
           </span>
         </h1>
       </div>
-      {levels.map((item) => (
-        <div className="" key={item.id}>
+      {levels.map((level) => (
+        <div className="space-y-4" key={level.id}>
+          <div className="flex justify-between items-center px-4">
+            <div className="flex items-center gap-2">
+              <div className="bg-[#E5F0F0] w-6 h-6 rounded-full grid place-items-center">
+                <Image src={Lock} alt="lock" width={12} height={12} />
+              </div>
+              <h1 className="text-[#5B8989] font-semibold text-2xl">
+                {"Level " + level.level + " - "} {level.title}
+              </h1>
+            </div>
+            <div className="">
+              {!level.lock ? (
+                <p className="text-[#5B8989] font-medium">🪙80/110 done</p>
+              ) : (
+                <p className="bg-[#E6EFEF] text-[#5B8989] px-2 py-1 text-sm rounded-md">
+                  Complete Level {level.level - 1} to unlock level {level.level}
+                </p>
+              )}
+            </div>
+          </div>
           <Slider {...settings}>
             {content.map((item, index) => (
               <TopicCard
@@ -81,6 +103,7 @@ export default function TopicSlider() {
                 title={item.title}
                 icon={item.icon}
                 cards={item.flashcards}
+                lock={level.lock}
               />
             ))}
           </Slider>
@@ -95,16 +118,19 @@ const levels = [
     id: 1,
     title: "Learning words",
     level: 1,
+    lock: false,
   },
   {
     id: 2,
     title: "Making Sentences",
     level: 2,
+    lock: true,
   },
   {
     id: 3,
     title: "Making Conversation",
     level: 3,
+    lock: true,
   },
 ];
 

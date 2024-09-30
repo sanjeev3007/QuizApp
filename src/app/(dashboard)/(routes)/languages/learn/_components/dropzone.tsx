@@ -46,7 +46,7 @@ export const DropZone = ({
   };
 
   return (
-    <>
+    <div>
       <div
         ref={ref}
         className={cn(
@@ -62,29 +62,27 @@ export const DropZone = ({
         aria-label="Drop answer here"
       >
         {droppedAnswer ? (
-          <>
-            <div className="flex items-center gap-2">
-              <div className={cn("text-xl font-bold text-[#5B8989]")}>
-                {droppedAnswer}
-              </div>
-              <div
-                className={cn(
-                  "flex items-center justify-between w-full",
-                  !isCorrect && "hidden"
-                )}
-              >
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => speakWord(droppedAnswer)}
-                  className="rounded-full w-7 h-7"
-                >
-                  <Volume2 className="h-3 w-3 text-[#5B8989]" />
-                  <span className="sr-only">Pronounce question</span>
-                </Button>
-              </div>
+          <div className="flex items-center gap-2">
+            <div className={cn("text-xl font-bold text-[#5B8989]")}>
+              {droppedAnswer}
             </div>
-          </>
+            <div
+              className={cn(
+                "flex items-center justify-between w-full",
+                !isCorrect && "hidden"
+              )}
+            >
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => speakWord(droppedAnswer)}
+                className="rounded-full w-7 h-7"
+              >
+                <Volume2 className="h-3 w-3 text-[#5B8989]" />
+                <span className="sr-only">Pronounce question</span>
+              </Button>
+            </div>
+          </div>
         ) : (
           <p className="text-sm font-medium text-[#5B8989]">
             Drag the correct option here
@@ -104,6 +102,6 @@ export const DropZone = ({
           </p>
         )}
       </div>
-    </>
+    </div>
   );
 };
