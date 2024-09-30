@@ -80,7 +80,7 @@ export const getNumberOfCompletedQuiz = async (
   };
 };
 
-export const quizWiseScore = ({
+const quizWiseScore = ({
   quizes,
   quizNumber,
 }: {
@@ -100,10 +100,7 @@ export const quizWiseScore = ({
   return score;
 };
 
-export const getTopicWiseLevelScore = async (
-  allQuizes: any[],
-  grade: number
-) => {
+const getTopicWiseLevelScore = async (allQuizes: any[], grade: number) => {
   const supabase = createServerSupabaseClient();
   const subtopics: any = {
     totalQuestion: 0,
@@ -242,7 +239,7 @@ export const getInsight = async (
   };
 };
 
-export const getLast10Quizes = async ({
+const getLast10Quizes = async ({
   limit,
   userid,
   subjectId,
