@@ -5,11 +5,8 @@ import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
 import NoahImage from "@/assets/Images/noah_doubt_solve_dp.svg";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 
-export default function ScoreCard() {
-  const searchParams = useSearchParams();
-  const lang = searchParams.get("lang");
+export default function ScoreCard({ lang }: { lang: string }) {
   return (
     <div className="container mx-auto p-4 max-w-4xl">
       <Card
