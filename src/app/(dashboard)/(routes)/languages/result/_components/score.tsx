@@ -1,10 +1,18 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
 import NoahImage from "@/assets/Images/noah_doubt_solve_dp.svg";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
-export default function ScoreCard() {
+export default function ScoreCard({ lang }: { lang: string }) {
+  const [result, setResult] = useState({ total: 0, correct: 0 });
+  useEffect(() => {
+    console.log(localStorage.getItem("result"));
+    setResult(JSON.parse(localStorage.getItem("result")!));
+  }, []);
   return (
     <div className="container mx-auto p-4 max-w-4xl">
       <Card
@@ -28,23 +36,25 @@ export default function ScoreCard() {
               <p className="text-[#6C9D9D] text-lg font-medium mb-2">
                 Keep learning and unlock levels
               </p>
-              <Button className="bg-[#EB9B3A] hover:bg-orange-500 text-white">
-                Continue Learning
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="ml-2 h-4 w-4"
-                >
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </Button>
+              <Link href={"/languages?lang=" + lang}>
+                <Button className="bg-[#EB9B3A] hover:bg-orange-500 text-white">
+                  Continue Learning
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="ml-2 h-4 w-4"
+                  >
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </Button>
+              </Link>
             </div>
           </div>
           <div
@@ -56,7 +66,8 @@ export default function ScoreCard() {
           >
             <p className="mb-1">Your Score</p>
             <p className="text-4xl font-bold">
-              8<span className="text-xl">/10</span>
+              {result.correct}
+              <span className="text-xl">/{result.total}</span>
             </p>
           </div>
         </CardContent>
