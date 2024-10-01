@@ -125,7 +125,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             onClick={handleHome}
             className=" right-0"
           >
-            <HomeIcon color="#569090" />
+            <HomeIcon style={{ color: "#569090" }} />
           </IconButton>
         )}
       </div>

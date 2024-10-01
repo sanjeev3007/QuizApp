@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { getCookie, setCookie } from "cookies-next";
 import { useSearchParams } from "next/navigation";
@@ -21,11 +21,20 @@ const GuestForm = () => {
     grade: "",
     email: "",
     countryId: "",
+    guestId: "",
+    parentContact: "",
+    parentName: "",
   });
   const [parentName, setParentName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [errors, setErrors] = useState({});
-  const [countries, setCountries] = useState([]);
+  const [errors, setErrors] = useState({
+    studentName: "",
+    grade: "",
+    email: "",
+    phoneNumber: "",
+    country: "",
+  });
+  const [countries, setCountries] = useState<Record<string, string>[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -66,7 +75,9 @@ const GuestForm = () => {
     console.log(errors);
   }, [errors]);
 
-  const handleChange = (e) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     console.log(name, value);
     setFormData((prevData) => ({
@@ -79,40 +90,64 @@ const GuestForm = () => {
     let newErrors = {};
 
     if (!formData.studentName.trim()) {
-      setErrors({ studentName: "Student name is required" });
+      setErrors((prevData) => ({
+        ...prevData,
+        studentName: "Student name is required",
+      }));
       return false;
     }
 
     if (!formData.grade) {
-      setErrors({ grade: "Grade is required" });
+      setErrors((prevData) => ({
+        ...prevData,
+        grade: "Grade is required",
+      }));
       return false;
     }
 
     if (!formData.email.trim()) {
-      setErrors({ email: "Email is required" });
+      setErrors((prevData) => ({
+        ...prevData,
+        email: "Email is required",
+      }));
       return false;
     } else if (
       !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)
     ) {
-      setErrors({ email: "Invalid email address" });
+      setErrors((prevData) => ({
+        ...prevData,
+        email: "Invalid email address",
+      }));
       return false;
     }
 
     if (!phoneNumber) {
-      setErrors({ phoneNumber: "Phone number is required" });
+      setErrors((prevData) => ({
+        ...prevData,
+        phoneNumber: "Phone number is required",
+      }));
       return false;
     }
 
     if (!formData.countryId) {
-      setErrors({ country: "Country is required" });
+      setErrors((prevData) => ({
+        ...prevData,
+        country: "Country is required",
+      }));
       return false;
     }
 
-    setErrors("");
+    setErrors({
+      studentName: "",
+      grade: "",
+      email: "",
+      phoneNumber: "",
+      country: "",
+    });
     return true;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     const data = formData;
     const userId = getCookie("userId");
     console.log("called", formData);
@@ -239,7 +274,6 @@ const GuestForm = () => {
             <div>
               <PhoneInput
                 country="in"
-                name="phoneNumber"
                 value={phoneNumber}
                 onChange={setPhoneNumber}
                 // disabled={!!studentId}
@@ -302,4 +336,12 @@ const GuestForm = () => {
   );
 };
 
-export default GuestForm;
+const GuestFormPage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <GuestForm />
+    </Suspense>
+  );
+};
+
+export default GuestFormPage;

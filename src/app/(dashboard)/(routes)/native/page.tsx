@@ -7,7 +7,16 @@ import CircularProgress from "@mui/material/CircularProgress";
 const NativeComponent = () => {
   const router = useRouter();
   useEffect(() => {
-    const handleMessage = async (event) => {
+    const handleMessage = async (event: {
+      data: {
+        authToken?: string;
+        refreshToken?: string;
+        userName?: string;
+        userId?: string;
+        grade?: number;
+        userRole?: string;
+      };
+    }) => {
       const data = event.data;
 
       setCookie("Authorization", data?.authToken);

@@ -84,7 +84,15 @@ export const getGuestDetails = async ({
   }
 };
 
-export const saveStudentDetails = async (studentDetails) => {
+export const saveStudentDetails = async (studentDetails: {
+  studentName: string;
+  grade: string;
+  email: string;
+  countryId: string;
+  guestId: string;
+  parentContact: string;
+  parentName: string;
+}) => {
   console.log(studentDetails, "details");
   try {
     const response = await apiService.post(`guest/student`, studentDetails);
