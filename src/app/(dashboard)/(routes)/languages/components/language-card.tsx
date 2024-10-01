@@ -4,13 +4,10 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import LanguageImage from "@/public/images/icons/language-card.svg";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-export default function LanguageCard() {
-  const searchParams = useSearchParams();
-
+export default function LanguageCard({ lang }: { lang: string }) {
   const router = useRouter();
-  const lang = searchParams.get("lang");
   return (
     <div className="bg-[#F5F9FF] shadow-[0px_0px_8px_0px_#0053F429] p-8 rounded-xl max-w-xl w-full mx-auto my-10 flex items-center gap-8">
       <div className="">

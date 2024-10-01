@@ -1,5 +1,4 @@
 "use client";
-import { useSearchParams } from "next/navigation";
 import "../../subject-dashboard/components/subject-dashboard.css";
 import Activity from "@/components/activity/activity";
 import GlobalLeaderboard from "@/components/leaderboard";
@@ -29,9 +28,10 @@ type Props = {
     name: string;
     points: number;
   }[];
+  lang: string;
 };
 
-const LanguageDashboard = ({ levels }: Props) => {
+const LanguageDashboard = ({ levels, lang }: Props) => {
   const [leaderboardData, setLeaderboardData] = useState({
     studentMeta: {},
     topTenStudentList: [],
@@ -44,15 +44,12 @@ const LanguageDashboard = ({ levels }: Props) => {
   const [topicLoader, setTopicLoader] = useState<boolean>(false);
   const [dashboardLoader, setDashboardLoader] = useState<boolean>(false);
 
-  const params = useSearchParams();
-  const lang = params.get("lang");
-
   return (
     <div className="w-full md:max-w-7xl mx-auto bg-[#FFF] pb-10 overflow-hidden !important">
       <div className="font-sans w-full flex justify-center">
         <div className="w-full flex justify-center flex-col">
           <HeadingCard lang={lang as string} />
-          <LanguageCard />
+          <LanguageCard lang={lang as string} />
           <div className="flex lg:flex-row xs:flex-col justify-center gap-8 lg:mt-14 md:mt-6 xs:mt-12 mb-10">
             <Activity
               subject={lang}

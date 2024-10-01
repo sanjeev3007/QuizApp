@@ -1,14 +1,11 @@
 import { getLanguageLevels } from "@/actions/language.actions";
 import LanguageDashboard from "./components/language-dashboard";
-import { Suspense } from "react";
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: { lang: string };
+}) {
   const levels = await getLanguageLevels();
-  return (
-    <div>
-      <Suspense>
-        <LanguageDashboard levels={levels!} />
-      </Suspense>
-    </div>
-  );
+  return <LanguageDashboard levels={levels!} lang={searchParams.lang} />;
 }
