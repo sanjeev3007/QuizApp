@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Flashcard } from "./flashcard";
 import { useEffect, useState } from "react";
 import { DB } from "../_types";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const DndProviderWithBackend = ({
   children,
@@ -28,18 +28,18 @@ type FlashcardPageProps = {
   content: DB[];
   levelId: number;
   topicId: number;
+  lang: string;
 };
 export default function LearnBox({
   content,
   levelId,
   topicId,
+  lang,
 }: FlashcardPageProps) {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [flashcards, setFlashcards] = useState<DB[]>(content);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const lang = searchParams.get("lang");
 
   useEffect(() => {
     setFlashcards(content);
@@ -66,18 +66,22 @@ export default function LearnBox({
   };
 
   const completeSet = () => {
-    const percentageCorrect = (correctAnswers / flashcards.length) * 100;
-    let progressIncrease = 0;
+    // const percentageCorrect = (correctAnswers / flashcards.length) * 100;
+    // let progressIncrease = 0;
 
-    if (percentageCorrect >= 90) {
-      progressIncrease = 20;
-    } else if (percentageCorrect >= 70) {
-      progressIncrease = 15;
-    } else if (percentageCorrect >= 50) {
-      progressIncrease = 10;
-    } else {
-      progressIncrease = 5;
-    }
+    // if (percentageCorrect >= 90) {
+    //   progressIncrease = 20;
+    // } else if (percentageCorrect >= 70) {
+    //   progressIncrease = 15;
+    // } else if (percentageCorrect >= 50) {
+    //   progressIncrease = 10;
+    // } else {
+    //   progressIncrease = 5;
+    // }
+    localStorage.setItem(
+      "result",
+      JSON.stringify({ total: flashcards.length, correct: correctAnswers })
+    );
 
     router.push("/languages/result?lang=" + lang);
   };

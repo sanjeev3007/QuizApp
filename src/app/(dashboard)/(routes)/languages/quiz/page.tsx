@@ -12,7 +12,12 @@ export default async function LearnPage({
   });
   return (
     <div className="">
-      <QuizBox content={content!} levelId={1} topicId={1} />
+      <QuizBox
+        content={content!}
+        levelId={1}
+        topicId={searchParams.topic}
+        lang={searchParams.lang}
+      />
     </div>
   );
 }

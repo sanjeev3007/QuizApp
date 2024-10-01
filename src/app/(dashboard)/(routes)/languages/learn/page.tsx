@@ -13,7 +13,12 @@ export default async function LearnPage({
   });
   return (
     <div className="">
-      <LearnBox content={content!} levelId={1} topicId={1} />
+      <LearnBox
+        content={content!}
+        levelId={1}
+        topicId={1}
+        lang={searchParams.lang}
+      />
       {/* Sentence Creation Card */}
       {/* <MultiSelectBox content={content} levelId={1} topicId={1} /> */}
     </div>

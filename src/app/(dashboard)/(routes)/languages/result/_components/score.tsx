@@ -5,8 +5,14 @@ import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
 import NoahImage from "@/assets/Images/noah_doubt_solve_dp.svg";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function ScoreCard({ lang }: { lang: string }) {
+  const [result, setResult] = useState({ total: 0, correct: 0 });
+  useEffect(() => {
+    console.log(localStorage.getItem("result"));
+    setResult(JSON.parse(localStorage.getItem("result")!));
+  }, []);
   return (
     <div className="container mx-auto p-4 max-w-4xl">
       <Card
@@ -60,7 +66,8 @@ export default function ScoreCard({ lang }: { lang: string }) {
           >
             <p className="mb-1">Your Score</p>
             <p className="text-4xl font-bold">
-              8<span className="text-xl">/10</span>
+              {result.correct}
+              <span className="text-xl">/{result.total}</span>
             </p>
           </div>
         </CardContent>

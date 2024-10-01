@@ -28,12 +28,14 @@ type FlashcardPageProps = {
   content: DB[];
   levelId: number;
   topicId: number;
+  lang: string;
 };
 
 export default function QuizBox({
   content,
   levelId,
   topicId,
+  lang,
 }: FlashcardPageProps) {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
@@ -65,20 +67,25 @@ export default function QuizBox({
   };
 
   const completeSet = () => {
-    const percentageCorrect = (correctAnswers / flashcards.length) * 100;
-    let progressIncrease = 0;
+    // const percentageCorrect = (correctAnswers / flashcards.length) * 100;
+    // let progressIncrease = 0;
 
-    if (percentageCorrect >= 90) {
-      progressIncrease = 20;
-    } else if (percentageCorrect >= 70) {
-      progressIncrease = 15;
-    } else if (percentageCorrect >= 50) {
-      progressIncrease = 10;
-    } else {
-      progressIncrease = 5;
-    }
+    // if (percentageCorrect >= 90) {
+    //   progressIncrease = 20;
+    // } else if (percentageCorrect >= 70) {
+    //   progressIncrease = 15;
+    // } else if (percentageCorrect >= 50) {
+    //   progressIncrease = 10;
+    // } else {
+    //   progressIncrease = 5;
+    // }
 
-    router.push("/languages/result");
+    localStorage.setItem(
+      "result",
+      JSON.stringify({ total: flashcards.length, correct: correctAnswers })
+    );
+
+    router.push("/languages/result?lang=" + lang);
   };
 
   return (
