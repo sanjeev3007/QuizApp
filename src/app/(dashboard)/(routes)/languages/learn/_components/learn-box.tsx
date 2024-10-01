@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Flashcard } from "./flashcard";
 import { useEffect, useState } from "react";
 import { DB } from "../_types";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const DndProviderWithBackend = ({
   children,
@@ -38,6 +38,8 @@ export default function LearnBox({
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [flashcards, setFlashcards] = useState<DB[]>(content);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const lang = searchParams.get("lang");
 
   useEffect(() => {
     setFlashcards(content);
@@ -77,7 +79,7 @@ export default function LearnBox({
       progressIncrease = 5;
     }
 
-    router.push("/languages/result");
+    router.push("/languages/result?lang=" + lang);
   };
 
   return (

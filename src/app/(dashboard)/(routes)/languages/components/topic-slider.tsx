@@ -50,9 +50,18 @@ const settings = {
   ),
   responsive: [
     {
-      breakpoint: 600,
+      breakpoint: 500,
       settings: {
         slidesToShow: 1,
+        slidesToScroll: 1,
+        rows: 1,
+        dots: false,
+      },
+    },
+    {
+      breakpoint: 800,
+      settings: {
+        slidesToShow: 2,
         slidesToScroll: 1,
         rows: 1,
         dots: false,
@@ -72,10 +81,9 @@ export default function TopicSlider({
       return await getLanguageTopics();
     },
   });
-  console.log(data);
   return (
     <div className="space-y-16 py-6 pb-16">
-      <div className="text-lg md:text-2xl lg:text-3xl font-semibold text-center space-y-1">
+      <div className="text-xl md:text-2xl lg:text-3xl font-semibold text-center space-y-1">
         <h1 className="text-[#5B8989]">
           <span className="bg-gradient-to-br from-pink-500 to-yellow-500 text-transparent bg-clip-text">
             Master
@@ -91,18 +99,20 @@ export default function TopicSlider({
       </div>
       {levels.map((level) => (
         <div className="space-y-4" key={level.id}>
-          <div className="flex justify-between items-center px-4">
+          <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-center px-4">
             <div className="flex items-center gap-2">
               <div className="bg-[#E5F0F0] w-6 h-6 rounded-full grid place-items-center">
                 <Image src={Lock} alt="lock" width={12} height={12} />
               </div>
-              <h1 className="text-[#5B8989] font-semibold text-2xl">
+              <h1 className="text-[#5B8989] font-semibold text-lg md:text-xl lg:text-2xl">
                 {"Level " + level.level + " - "} {level.name}
               </h1>
             </div>
-            <div className="">
-              {level.level !== 1 ? (
-                <p className="text-[#5B8989] font-medium">🪙80/110 done</p>
+            <div className="w-fit">
+              {level.level === 1 ? (
+                <p className="text-[#5B8989] font-medium text-sm md:text-base">
+                  🪙80/110 done
+                </p>
               ) : (
                 <p className="bg-[#E6EFEF] text-[#5B8989] px-2 py-1 text-sm rounded-md">
                   Complete Level {level.level - 1} to unlock level {level.level}

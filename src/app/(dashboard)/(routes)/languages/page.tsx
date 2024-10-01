@@ -86,7 +86,7 @@ const PageContent = () => {
               <span className="gradient-title-3">practice</span>
             </div>
           )}
-          <div className="lg:mt-20 md:mt-12 md:inline xs:hidden">
+          <div id={"topics"} className="lg:mt-20 md:mt-12">
             {data && <TopicSlider levels={data!} />}
           </div>
         </div>

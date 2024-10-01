@@ -59,7 +59,7 @@ export default function TopicCard({
         <CardContent className="p-6">
           <div className="flex items-center space-x-4 mb-4">
             <span className="text-xl">{getIcon(topic.name)}</span>
-            <h3 className="text-xl font-semibold text-[#517B7B]">
+            <h3 className="text-lg md:text-xl font-semibold text-[#517B7B]">
               {topic.name}
             </h3>
           </div>

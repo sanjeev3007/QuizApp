@@ -25,7 +25,7 @@ export default function LanguageCard() {
           You have 250 sets of flashcards to practice
         </h1>
         <Button
-          onClick={() => router.push("/languages/quiz?lang=" + lang)}
+          onClick={() => router.push("/languages?lang=" + lang + "#topics")}
           className="text-white bg-[#E98451] p-4 rounded-lg hover:bg-[#e69167]"
         >
           Get Started <ArrowRight className="size-4 ml-2" />
