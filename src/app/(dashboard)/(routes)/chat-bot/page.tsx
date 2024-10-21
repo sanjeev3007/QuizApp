@@ -1,6 +1,6 @@
 import Home from "./_components/home";
 import React from "react";
-import { recentChat } from "@/app/supabase-server";
+import { recentChat } from "@/actions/main.actions";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 

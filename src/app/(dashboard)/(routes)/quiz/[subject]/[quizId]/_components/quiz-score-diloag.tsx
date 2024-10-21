@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { getQuizStats } from "@/app/supabase-client-provider";
+import { getQuizStats } from "@/actions/main.actions";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import levelCupStraight from "@/assets/Images/levelCupStraight.png";

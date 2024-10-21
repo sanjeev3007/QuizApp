@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import SupabaseProvider from "./supabase-provider";
 import "./globals.css";
 import Providers from "@/components/providers";
 import "slick-carousel/slick/slick.css";
@@ -22,20 +21,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <SupabaseProvider>
-      <Providers>
-        <html lang="en">
-          <head>
-            <link
-              href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap"
-              rel="stylesheet"
-            />
-          </head>
-          <body className={poppins.className}>
-            <main className="flex flex-col h-screen w-full">{children}</main>
-          </body>
-        </html>
-      </Providers>
-    </SupabaseProvider>
+    <Providers>
+      <html lang="en">
+        <head>
+          <link
+            href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap"
+            rel="stylesheet"
+          />
+        </head>
+        <body className={poppins.className}>
+          <main className="flex flex-col h-screen w-full">{children}</main>
+        </body>
+      </html>
+    </Providers>
   );
 }
