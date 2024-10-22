@@ -32,7 +32,6 @@ const activity = ({
 }) => {
   const [openDialog, setOpenDialog] = React.useState(false);
   const grade = getCookie("grade");
-  console.log(grade, "subject dashboard");
   const handleOpenDialog = () => {
     const userId = getCookie("userId");
     saveGTMEvents({

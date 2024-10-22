@@ -104,6 +104,7 @@ const PageContent = () => {
             rank: currentStudent?.rank,
           });
           setAvatar(data2.response.currentStudentMeta?.pic || "");
+          localStorage.setItem("studentProfilePic", data2.response.currentStudentMeta?.pic);
 
           if (data2.response.currentStudentMeta?.pic) {
             localStorage.setItem(
