@@ -42,6 +42,7 @@ const PageContent = () => {
   const [avatar, setAvatar] = useState<string>("");
   const [topicLoader, setTopicLoader] = useState<boolean>(false);
   const [dashboardLoader, setDashboardLoader] = useState<boolean>(false);
+  const [mounted, setMounted] = useState<boolean>(false);
 
   const params = useSearchParams();
   const subject = params.get("subject");
@@ -66,6 +67,10 @@ const PageContent = () => {
     subjectId = constants.SUBJECT_IDS.ENGLISH;
     quizPath = "english";
   }
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     saveGTMEvents({
@@ -138,6 +143,10 @@ const PageContent = () => {
     };
     fetchData();
   }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div className="w-full md:max-w-7xl mx-auto bg-[#FFF] pb-10 overflow-hidden !important">

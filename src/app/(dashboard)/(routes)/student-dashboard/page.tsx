@@ -48,6 +48,11 @@ const PageContent = () => {
   const [avatar, setAvatar] = useState<string>("");
   const [subjectWiseLoader, setSubjectWiseLoader] = useState<boolean>(false);
   const [dashboardLoader, setDashboardLoader] = useState<boolean>(false);
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const userId = getCookie("userId");
@@ -104,7 +109,10 @@ const PageContent = () => {
             rank: currentStudent?.rank,
           });
           setAvatar(data2.response.currentStudentMeta?.pic || "");
-          localStorage.setItem("studentProfilePic", data2.response.currentStudentMeta?.pic);
+          localStorage.setItem(
+            "studentProfilePic",
+            data2.response.currentStudentMeta?.pic
+          );
 
           if (data2.response.currentStudentMeta?.pic) {
             localStorage.setItem(
@@ -120,6 +128,10 @@ const PageContent = () => {
     };
     fetchData();
   }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div className={`font-sans`}>
