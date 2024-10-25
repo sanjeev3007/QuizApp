@@ -129,7 +129,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           </IconButton>
         )}
       </div>
-      <main className="mt-[1rem] h-[calc(100vh-90px)] bg-[#FFF] overflow-y-auto">
+      <main className="md:mt-[1rem] md:h-[calc(100vh-90px)] xs:h-[calc(100vh-56px)] bg-[#FFF] overflow-y-auto refresh-scroll-container">
         {children}
       </main>
     </div>

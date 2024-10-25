@@ -173,7 +173,7 @@ const TopicCard = ({
       <hr className="topic-card-hr" />
       <div className="flex flex-row justify-between md:mt-6 xs:mt-3">
         <div className="text-[#A3A3A3] text-sm mt-auto mb-auto">
-          {`${<span className="font-bold">${totalQnsAnswered}</span>} questions completed`}
+          {`${totalQnsAnswered} questions completed`}
         </div>
         <button
           className="font-sans w-[120px] h-[37px] rounded-lg padding-[10px 20px 10px 20px] bg-[#EB9B3A] text-[#FFF] gap-1 hover:bg-[#F0B46B]"
