@@ -216,7 +216,7 @@ const PageContent = () => {
               {topicData &&
                 topicData.map((item, index) => {
                   return (
-                    <div key={index}>
+                    <div key={index} className="topic-card-wrapper">
                       <TopicCard
                         topic={item.topicName}
                         badge={item.badge}

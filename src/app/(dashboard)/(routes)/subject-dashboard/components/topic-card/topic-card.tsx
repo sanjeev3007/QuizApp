@@ -108,7 +108,7 @@ const TopicCard = ({
                 {level?.toUpperCase()}
               </span>
             </div>
-            <div className="flex flex-row mt-2 gap-5">
+            <div className="flex flex-row mt-2 gap-5 mb-2">
               <span className="flex flex-row gap-[8px] mt-auto mb-auto">
                 {filledStarsArr.map((index) => {
                   return (
@@ -165,7 +165,7 @@ const TopicCard = ({
               width={48}
               height={48}
               src={`/images/icons/level-${level}.png`}
-              className="xs:w-[34px] xs:h-[34px] lg:w-[48px] lg:h-[48px]"
+              className="xs:w-[48px] xs:h-[48px] lg:w-[48px] lg:h-[48px]"
             />
           </div>
         </div>
@@ -173,7 +173,8 @@ const TopicCard = ({
       <hr className="topic-card-hr" />
       <div className="flex flex-row justify-between md:mt-6 xs:mt-3">
         <div className="text-[#A3A3A3] text-sm mt-auto mb-auto">
-          {`${totalQnsAnswered} questions completed`}
+          <span className="font-bold">{`${totalQnsAnswered} `}</span>
+          <span>questions completed</span>
         </div>
         <button
           className="font-sans w-[120px] h-[37px] rounded-lg padding-[10px 20px 10px 20px] bg-[#EB9B3A] text-[#FFF] gap-1 hover:bg-[#F0B46B]"

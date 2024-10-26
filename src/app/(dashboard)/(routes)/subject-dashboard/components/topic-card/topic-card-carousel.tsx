@@ -88,7 +88,7 @@ const TopicCardCarousel = ({
         <Slider {...settings}>
           {items.map((item: any, index: number) => {
             return (
-              <div key={index}>
+              <div key={index} className="topic-card-wrapper">
                 <TopicCard
                   topic={item.topicName}
                   badge={item.badge}

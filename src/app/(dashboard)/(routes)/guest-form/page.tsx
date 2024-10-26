@@ -286,8 +286,9 @@ const GuestForm = () => {
                 inputStyle={{
                   width: "100%",
                   height: "44px",
-                  border: "1px solid #AFCFCF",
+                  border: "1px solid #5B8989",
                   fontSize: "16px",
+                  color: "#6C9D9D",
                 }}
               />
               {errors.phoneNumber && (

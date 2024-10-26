@@ -342,7 +342,7 @@ export default function Chat({
 
   return (
     <ScrollArea className="h-full w-full flex flex-col">
-      <div className="flex-1 px-2 md:px-8">
+      <div className="flex-1 px-4 py-8 md:px-8">
         <div className="pb-4 max-w-4xl mx-auto h-full w-full">
           <Toaster />
           <InitialChatMessage

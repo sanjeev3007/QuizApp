@@ -220,7 +220,7 @@
   font-weight: 500;
   line-height: 16.94px;
   text-align: left;
-  color: #5B8989;
+  color: #5b8989;
   margin-top: 8px;
 }
 
@@ -270,7 +270,7 @@
   }
 
   .topic-card-rating-text {
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .topic-card-rating-level {
@@ -296,16 +296,21 @@
 }
 
 @media only screen and (max-width: 767px) {
+  .topic-card-wrapper {
+    padding: 16px;
+  }
   .topic-card-container {
-    width: 330px;
-    height: 275px;
-    margin: 30px auto 0 auto;
-    padding: 15px 10px;
+    width: 100%;
+    /* height: 275px; */
+    margin-top: 30px;
+    padding: 16px;
     box-shadow: none;
   }
 
   .topic-card-rating-container {
-    width: 310px;
+    width: 100%;
+    height: auto;
+    padding: 12px;
   }
 
   .topic-card-heading {
@@ -313,7 +318,7 @@
   }
 
   .topic-card-rating-text {
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .topic-card-rating-level {
