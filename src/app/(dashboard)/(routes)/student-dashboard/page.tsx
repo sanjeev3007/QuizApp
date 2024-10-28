@@ -48,16 +48,9 @@ const PageContent = () => {
   const [avatar, setAvatar] = useState<string>("");
   const [subjectWiseLoader, setSubjectWiseLoader] = useState<boolean>(false);
   const [dashboardLoader, setDashboardLoader] = useState<boolean>(false);
+  const userId = getCookie("userId");
 
   useEffect(() => {
-    const userId = getCookie("userId");
-    if (!userId) {
-      window.open(process.env.NEXT_PUBLIC_SANDBOX_URL, "_self");
-    }
-  }, []);
-
-  useEffect(() => {
-    const userId = getCookie("userId");
     const fetchData = async () => {
       if (userId) {
         setSubjectWiseLoader(true);
@@ -82,7 +75,6 @@ const PageContent = () => {
   }, []);
 
   useEffect(() => {
-    const userId = getCookie("userId");
     const fetchData = async () => {
       if (userId) {
         setDashboardLoader(true);

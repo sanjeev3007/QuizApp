@@ -51,16 +51,3 @@ export const getQuizDetails = async (
     throw error;
   }
 };
-
-
-export const getStudentActivity = async (studentId: any) => {
-  try {
-    const response = await apiService.get(`dashboard/student`, {
-      params: { studentId },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching student activity:", error);
-    throw error;
-  }
-};
