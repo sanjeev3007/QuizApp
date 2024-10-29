@@ -9,7 +9,7 @@ export default function Loader() {
     "Analyzing data...",
     "Generating insights...",
     "Preparing your personalized report...",
-    "Supercharging your Math learning...",
+    "Almost there...",
   ];
 
   useEffect(() => {
