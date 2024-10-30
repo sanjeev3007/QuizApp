@@ -121,7 +121,7 @@ const NoahHeader = ({
   ) => {
     const completedQuizzes = quizHistory.filter((quiz) => quiz.complete).length;
     const totalQuestions = quizHistory.reduce(
-      (sum, quiz) => sum + quiz.questions.length,
+      (sum, quiz) => sum + quiz.questions?.length,
       0
     );
     const correctAnswers = quizHistory.reduce(

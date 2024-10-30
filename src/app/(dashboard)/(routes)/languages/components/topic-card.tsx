@@ -40,6 +40,8 @@ export default function TopicCard({
         return "🍔";
       case "Shapes":
         return "🔶";
+      case "Animals":
+        return "🐶";
     }
   };
 

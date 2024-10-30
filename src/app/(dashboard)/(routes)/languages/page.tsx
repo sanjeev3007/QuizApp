@@ -1,4 +1,7 @@
-import { getLanguageLevels } from "@/actions/language.actions";
+import {
+  getLanguageIdByName,
+  getLanguageLevels,
+} from "@/actions/language.actions";
 import LanguageDashboard from "./components/language-dashboard";
 
 export default async function DashboardPage({
@@ -7,5 +10,12 @@ export default async function DashboardPage({
   searchParams: { lang: string };
 }) {
   const levels = await getLanguageLevels();
-  return <LanguageDashboard levels={levels!} lang={searchParams.lang} />;
+  const langInfo = await getLanguageIdByName(searchParams.lang);
+  return (
+    <LanguageDashboard
+      levels={levels!}
+      lang={searchParams.lang}
+      langId={langInfo?.id!}
+    />
+  );
 }

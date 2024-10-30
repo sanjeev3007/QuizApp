@@ -29,9 +29,10 @@ type Props = {
     points: number;
   }[];
   lang: string;
+  langId: number;
 };
 
-const LanguageDashboard = ({ levels, lang }: Props) => {
+const LanguageDashboard = ({ levels, lang, langId }: Props) => {
   const [leaderboardData, setLeaderboardData] = useState({
     studentMeta: {},
     topTenStudentList: [],
@@ -81,7 +82,7 @@ const LanguageDashboard = ({ levels, lang }: Props) => {
             </div>
           )}
           <div id={"topics"} className="lg:mt-20 md:mt-12">
-            {levels && <TopicSlider levels={levels} />}
+            {levels && <TopicSlider levels={levels} langId={langId} />}
           </div>
         </div>
       </div>

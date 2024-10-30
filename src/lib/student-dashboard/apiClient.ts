@@ -59,6 +59,7 @@ export const getStudentTopics = async ({
     };
 
     const response = await apiService.get(`/dashboard/topic`, { params });
+    console.log({ response });
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);

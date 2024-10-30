@@ -17,7 +17,9 @@ export const getLanguageLevels = async () => {
 export const getLanguageTopics = async () => {
   const supabase = createServerSupabaseClient();
 
-  const { data, error } = await supabase.from("languages_topics").select("*");
+  const { data, error } = await supabase
+    .from("languages_topics")
+    .select("*, languages_db(*)");
 
   if (error) {
     console.log(error);

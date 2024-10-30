@@ -76,7 +76,6 @@ export default function LearnBox({
     if (isCorrect) {
       setCorrectAnswers(correctAnswers + 1);
     }
-    // Add submission to learningSubmissions
     setLearningSubmissions([
       ...learningSubmissions,
       {
@@ -88,6 +87,12 @@ export default function LearnBox({
         isCorrect,
       },
     ]);
+  };
+
+  const resetQuiz = () => {
+    setCurrentCardIndex(0);
+    setCorrectAnswers(0);
+    setLearningSubmissions([]);
   };
 
   const completeSet = async () => {
@@ -144,6 +149,7 @@ export default function LearnBox({
                   onNextCard={handleNextCard}
                   onPrevCard={handlePrevCard}
                   onAnswer={handleAnswer}
+                  resetQuiz={resetQuiz}
                 />
               </motion.div>
             ) : (

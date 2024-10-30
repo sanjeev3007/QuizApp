@@ -37,7 +37,7 @@ export default function ScoreCard({
               <p className="text-[#6C9D9D] text-lg font-medium mb-2">
                 Keep learning and unlock levels
               </p>
-              <Link href={"/languages?lang=" + lang}>
+              <Link href={"/student-dashboard"}>
                 <Button className="bg-[#EB9B3A] hover:bg-orange-500 text-white">
                   Continue Learning
                   <svg

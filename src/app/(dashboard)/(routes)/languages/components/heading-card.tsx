@@ -36,7 +36,7 @@ export default function HeadingCard({ lang }: { lang: string }) {
     },
     telugu: {
       title: "Hello let's learn",
-      subtitle: "Halo! Telugu nerchukondi",
+      subtitle: "Namaskāram! Telugu nerchukondi",
       lang: "Telugu",
     },
   });

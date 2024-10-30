@@ -87,3 +87,50 @@ html,
 body {
   height: 100%;
 }
+
+/* Add these styles to your global CSS */
+.carousel-container {
+  position: relative;
+  padding: 0 32px;
+}
+
+.carousel-container .slick-list {
+  margin: 0 -10px;
+  overflow: visible;
+}
+
+.carousel-container .slick-slide > div {
+  padding: 0 10px;
+}
+
+.carousel-buttons {
+  z-index: 10;
+  cursor: pointer;
+  height: 100%;
+}
+
+.next-slick-arrow,
+.prev-slick-arrow {
+  border-radius: 4px;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slick-prev,
+.slick-next {
+  z-index: 10;
+  height: 100%;
+}
+
+/* Hide arrows on mobile */
+@media (max-width: 500px) {
+  .carousel-buttons {
+    display: none;
+  }
+  .carousel-container {
+    padding: 0 16px;
+  }
+}

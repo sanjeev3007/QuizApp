@@ -62,7 +62,7 @@ const PageContent = () => {
     },
     germen: {
       subjectId: constants.SUBJECT_IDS.GERMAN,
-      subjectName: "Germen",
+      subjectName: "German",
       rank: null,
       answeredCount: null,
     },

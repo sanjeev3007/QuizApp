@@ -50,7 +50,7 @@ export default function QuizBox({
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [quizSubmissions, setQuizSubmissions] = useState<QuizSubmission[]>([]);
-  const [isLoading, setIsLoading] = useState(false); // Add loading state
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleNextCard = () => {
@@ -69,7 +69,7 @@ export default function QuizBox({
 
   const handleAnswer = (answer: string, isCorrect: boolean) => {
     const submission: QuizSubmission = {
-      questionId: content[currentCardIndex].id, // Assuming each question has an id
+      questionId: content[currentCardIndex].id,
       answer,
       isCorrect,
     };
@@ -79,8 +79,14 @@ export default function QuizBox({
     }
   };
 
+  const resetQuiz = () => {
+    setCurrentCardIndex(0);
+    setCorrectAnswers(0);
+    setQuizSubmissions([]);
+  };
+
   const completeSet = async () => {
-    setIsLoading(true); // Set loading to true when saving starts
+    setIsLoading(true);
     try {
       const data = await saveQuizData({
         userId,
@@ -96,9 +102,8 @@ export default function QuizBox({
       }
     } catch (error) {
       console.error("Error saving quiz data:", error);
-      // Optionally, show an error message to the user
     } finally {
-      setIsLoading(false); // Set loading to false when saving is complete (success or failure)
+      setIsLoading(false);
     }
   };
 
@@ -130,7 +135,7 @@ export default function QuizBox({
               >
                 <SelectCard
                   data={{
-                    id: content[currentCardIndex].id, // Add this line
+                    id: content[currentCardIndex].id,
                     question: content[currentCardIndex].question,
                     options: content[currentCardIndex].options.map(
                       (option, index) => ({
@@ -149,6 +154,7 @@ export default function QuizBox({
                   onNextCard={handleNextCard}
                   onPrevCard={handlePrevCard}
                   onAnswer={handleAnswer}
+                  resetQuiz={resetQuiz}
                 />
               </motion.div>
             ) : (

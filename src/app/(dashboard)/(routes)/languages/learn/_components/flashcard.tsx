@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, TimerIcon, Volume2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, TimerIcon } from "lucide-react";
 import { DropZone } from "./dropzone";
 import { DraggableAnswer } from "./draggable-answer";
 import { AnswerOption, FlashcardData } from "../_types";
@@ -14,6 +14,7 @@ type FlashcardProps = {
   onNextCard: () => void;
   onPrevCard: () => void;
   onAnswer: (isCorrect: boolean) => void;
+  resetQuiz: () => void;
 };
 
 export const Flashcard: React.FC<FlashcardProps> = ({
@@ -23,17 +24,30 @@ export const Flashcard: React.FC<FlashcardProps> = ({
   onNextCard,
   onPrevCard,
   onAnswer,
+  resetQuiz,
 }) => {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [droppedAnswer, setDroppedAnswer] = useState<string | null>(null);
   const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(45);
+  const [timerEnded, setTimerEnded] = useState(false);
 
   useEffect(() => {
-    // Reset state when the question changes
     setIsCorrect(null);
     setDroppedAnswer(null);
     setShowCorrectAnswer(false);
+    setTimeLeft(45);
+    setTimerEnded(false);
   }, [data.question, currentCard]);
+
+  useEffect(() => {
+    if (timeLeft > 0 && !showCorrectAnswer) {
+      const timerId = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      return () => clearTimeout(timerId);
+    } else if (timeLeft === 0) {
+      setTimerEnded(true);
+    }
+  }, [timeLeft, showCorrectAnswer]);
 
   const handleDrop = (item: AnswerOption) => {
     const correct = item.text === data.correctAnswer;
@@ -44,6 +58,23 @@ export const Flashcard: React.FC<FlashcardProps> = ({
   };
 
   const progressBar = Math.round((currentCard / totalCards) * 100).toFixed(0);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  const handleRetry = () => {
+    setTimeLeft(45);
+    setIsCorrect(null);
+    setDroppedAnswer(null);
+    setShowCorrectAnswer(false);
+    setTimerEnded(false);
+    resetQuiz();
+  };
 
   return (
     <Card
@@ -56,6 +87,14 @@ export const Flashcard: React.FC<FlashcardProps> = ({
         <span className="text-sm text-[#5B8989] text-left w-full">
           {currentCard} of {totalCards}
         </span>
+        <div className="w-fit mx-auto flex items-center gap-1 bg-[#E7EEEE] px-2 py-1 rounded-lg border border-[#C0D8D8]">
+          <span>
+            <TimerIcon className="size-4 text-[#5B8989]" />
+          </span>
+          <span className="text-sm font-semibold text-[#2F4F4F]">
+            {formatTime(timeLeft)}
+          </span>
+        </div>
         <div
           className={cn(
             "absolute -bottom-[2px] left-0 h-[4px] rounded-full bg-[#E98451] transition-all duration-300"
@@ -107,22 +146,26 @@ export const Flashcard: React.FC<FlashcardProps> = ({
             <ArrowLeft className="mr-2 h-4 w-4" />
             Previous
           </Button>
-          <Button
-            variant="outline"
-            onClick={onNextCard}
-            disabled={!droppedAnswer || !isCorrect}
-            className="bg-[#E98451] disabled:bg-[#C3B8AC] disabled:opacity-100 text-white cursor-pointer"
-          >
-            Next
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
+          {timerEnded ? (
+            <Button
+              variant="outline"
+              onClick={handleRetry}
+              className="bg-[#E98451] text-white cursor-pointer"
+            >
+              Retry
+            </Button>
+          ) : (
+            <Button
+              variant="outline"
+              onClick={onNextCard}
+              disabled={!droppedAnswer || !isCorrect}
+              className="bg-[#E98451] disabled:bg-[#C3B8AC] disabled:opacity-100 text-white cursor-pointer"
+            >
+              Next
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          )}
         </div>
-        {/* {droppedAnswer && (
-          <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-            <p className="font-bold">Explanation:</p>
-            <p>{data.explanation}</p>
-          </div>
-        )} */}
       </CardContent>
     </Card>
   );
