@@ -32,6 +32,7 @@ const activity = ({
 }) => {
   const [openDialog, setOpenDialog] = React.useState(false);
   const grade = getCookie("grade");
+  const userRole = getCookie("userRole");
   const handleOpenDialog = () => {
     const userId = getCookie("userId");
     saveGTMEvents({
@@ -77,16 +78,18 @@ const activity = ({
               <div className="gradeTag">
                 Grade {studentData?.grade || grade || "N/A"}
               </div>
-              <button
-                className="editBtn"
-                onClick={handleOpenDialog}
-                disabled={loading}
-              >
-                <span className="flex flex-row justify-center items-center gap-1">
-                  Edit
-                  <EditOutlinedIcon fontSize="small" />
-                </span>
-              </button>
+              {userRole !== "guest" && (
+                <button
+                  className="editBtn"
+                  onClick={handleOpenDialog}
+                  disabled={loading}
+                >
+                  <span className="flex flex-row justify-center items-center gap-1">
+                    Edit
+                    <EditOutlinedIcon fontSize="small" />
+                  </span>
+                </button>
+              )}
             </div>
           </div>
           {loading ? (
