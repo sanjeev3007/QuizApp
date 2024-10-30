@@ -165,7 +165,7 @@ const TopicCard = ({
               width={48}
               height={48}
               src={`/images/icons/level-${level}.png`}
-              className="xs:w-[48px] xs:h-[48px] lg:w-[48px] lg:h-[48px]"
+              className="xs:w-[48px] xs:h-auto lg:w-[48px] lg:h-[48px]"
             />
           </div>
         </div>
