@@ -8,6 +8,7 @@ import { getCookie } from "cookies-next";
 import { createQuizBySubject } from "@/actions/quiz.client";
 import { grey } from "@mui/material/colors";
 import saveGTMEvents from "@/lib/gtm";
+import apiService from "@/lib/apiService";
 
 const NoahHeader = ({
   subjectId,
@@ -91,7 +92,7 @@ const NoahHeader = ({
               )}
             </div>
           </div>
-          {/* <button className="insights-btn" onClick={redirectToInsights}>
+          <button className="insights-btn" onClick={redirectToInsights}>
             <span className="flex flex-row justify-center items-center gap-[0.5px]">
               View detailed insights
               <Image
@@ -101,7 +102,7 @@ const NoahHeader = ({
                 height={20}
               />
             </span>
-          </button> */}
+          </button>
         </div>
       </div>
       <div className="noah-subject-wrap">
@@ -112,6 +113,14 @@ const NoahHeader = ({
           <button
             className="resume-quizz-btn"
             onClick={async () => {
+              try {
+                await apiService.post("/quiz/assign", {
+                  studentId: userId || null,
+                  type: "AI Explorer",
+                });
+              } catch (err) {
+                console.error("🚀 ~ quiz continue ~ err:", err);
+              }
               saveGTMEvents({
                 eventAction: "noah_quiz_initiated",
                 label: userId ? "student" : "guest",
