@@ -640,10 +640,10 @@
 
   .activityCardContainer {
     width: 343px;
-    height: 711px;
+    height: 100%;
     margin-left: auto;
     margin-right: auto;
-    padding: 20px 0 0 0;
+    padding: 20px 0 20px 0;
   }
 
   .profileWrapper {

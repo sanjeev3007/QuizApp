@@ -33,7 +33,7 @@ export default function MCQBox({
   );
   return (
     <div className="max-w-3xl my-2 flex items-start w-full gap-x-2">
-      <div className="bg-orange-300 w-10 h-10 rounded-full grid place-items-center">
+      <div className=" w-10 h-10 rounded-full grid place-items-center">
         <Image src={botIcon} alt="bot" className="stroke-white" />
       </div>
       <div className="flex-1 relative">

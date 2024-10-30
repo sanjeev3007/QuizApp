@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Inter } from "next/font/google";
 import { usePathname, useRouter } from "next/navigation";
+import IconButton from "@mui/material/IconButton";
+import HomeIcon from "@mui/icons-material/HomeOutlined";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -15,8 +17,19 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [showBackButton, setShowBackButton] = useState(false);
+  const [isWebView, setIsWebView] = useState(false);
 
   useEffect(() => {
+    // Check if we're in a WebView environment
+    const checkWebView = () => {
+      return window.ReactNativeWebView !== undefined;
+    };
+
+    setIsWebView(checkWebView());
+  }, []);
+
+  useEffect(() => {
+    console.log(pathname, "patname");
     if (pathname !== "/") {
       setShowBackButton(true);
     } else {
@@ -24,12 +37,25 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     }
   }, [pathname]);
 
+  const handleHome = () => {
+    if (isWebView) {
+      const mobileData = {
+        type: "route",
+      };
+      window.ReactNativeWebView.postMessage(JSON.stringify(mobileData));
+    }
+  };
+
   return (
     <div
       className={`${inter.variable} font-sans h-full w-full bg-[#FFF] z-100`}
     >
-      <div className="w-full border-b-2 flex items-center justify-between bg-[#FFF] py-4 sticky top-0">
-        {showBackButton && (
+      <div
+        className={`w-full border-b-2 flex items-center justify-between bg-[#FFF] py-4 sticky top-0 ${
+          isWebView && "h-14"
+        }`}
+      >
+        {showBackButton ? (
           <button
             onClick={() => {
               if (pathname.includes("student-dashboard")) {
@@ -53,24 +79,57 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 router.back();
               }
             }}
-            className="absolute left-0 md:ml-6 xs:ml-5 lg:text-sm md:text-xs font-bold leading-tight 
+            className="md:ml-6 xs:ml-5 lg:text-sm md:text-xs font-bold leading-tight
             text-left text-[#569090] flex flex-row justify-center items-center lg:hover:bg-[#FFF] xs:hover:bg-[#f2f7f7] p-2 rounded-full"
           >
             <Image
               src={"/images/icons/arrow-left.svg"}
               alt="arrow-left"
-              width={16}
-              height={16}
-              className="md:mb-[0.5px] lg:mr-2 md:mr-1 lg:w-[16px] lg:h-[16px] md:w-[15px] md:h-[15px] xs:w-[16px] xs:h-[16px]"
+              width={20}
+              height={20}
             />
-            <span className="xs:hidden md:block">Go Back</span>
+            <span className="ml-1 xs:hidden md:block">Go Back</span>
           </button>
+        ) : isWebView ? (
+          <button
+            onClick={() => {
+              if (isWebView) {
+                const mobileData = {
+                  type: "route",
+                };
+                window.ReactNativeWebView.postMessage(
+                  JSON.stringify(mobileData)
+                );
+              }
+            }}
+            className="xs:ml-5"
+          >
+            <Image
+              src={"/images/icons/arrow-left.svg"}
+              alt="arrow-left"
+              width={20}
+              height={20}
+            />
+          </button>
+        ) : (
+          <></>
         )}
-        <Link href="/" className="mx-auto">
-          <Image src={sandboxLogo} alt="sandbox-logo" />
-        </Link>
+        {!isWebView && (
+          <Link href="/" className="mx-auto">
+            <Image src={sandboxLogo} alt="sandbox-logo" />
+          </Link>
+        )}
+        {isWebView && showBackButton && (
+          <IconButton
+            aria-label="home"
+            onClick={handleHome}
+            className=" right-0"
+          >
+            <HomeIcon style={{ color: "#569090" }} />
+          </IconButton>
+        )}
       </div>
-      <main className="mt-[1rem] h-[calc(100vh-90px)] bg-[#FFF] overflow-y-auto">
+      <main className="md:mt-[1rem] md:h-[calc(100vh-90px)] xs:h-[calc(100vh-56px)] bg-[#FFF] overflow-y-auto refresh-scroll-container">
         {children}
       </main>
     </div>

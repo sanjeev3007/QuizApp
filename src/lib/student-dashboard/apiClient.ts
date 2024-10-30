@@ -65,3 +65,40 @@ export const getStudentTopics = async ({
     throw error;
   }
 };
+
+export const getGuestDetails = async ({
+  guestId,
+}: {
+  guestId: string | null;
+}) => {
+  try {
+    const params = {
+      guestId,
+    };
+
+    const response = await apiService.get(`/guest/student/init`, { params });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};
+
+export const saveStudentDetails = async (studentDetails: {
+  studentName: string;
+  grade: string;
+  email: string;
+  countryId: string;
+  guestId: string;
+  parentContact: string;
+  parentName: string;
+}) => {
+  console.log(studentDetails, "details");
+  try {
+    const response = await apiService.post(`guest/student`, studentDetails);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};

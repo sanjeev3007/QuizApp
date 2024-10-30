@@ -37,15 +37,21 @@ const SubjectCard = ({
 
   const handleGetStarted = (subjectName: string) => {
     const userId = getCookie("userId");
-    saveGTMEvents({
-      eventAction: "subject_clicked",
-      label: userId ? "student" : "guest",
-      label1: userId || null,
-      label2: subjectName == "mathematics" ? "math" : subjectName,
-      label3: null,
-      label4: null,
-    });
-    router.push(`/subject-dashboard?subject=${subjectName}`);
+    const userRole = getCookie("userRole");
+    console.log(getCookie("grade"));
+    if (userRole === "guest") {
+      router.push(`guest-form?subject=${subjectName}`);
+    } else {
+      saveGTMEvents({
+        eventAction: "subject_clicked",
+        label: userId ? "student" : "guest",
+        label1: userId || null,
+        label2: subjectName == "mathematics" ? "math" : subjectName,
+        label3: null,
+        label4: null,
+      });
+      router.push(`/subject-dashboard?subject=${subjectName}`);
+    }
   };
 
   return (
