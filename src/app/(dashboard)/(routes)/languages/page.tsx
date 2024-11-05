@@ -14,25 +14,20 @@ export default async function DashboardPage({
     redirect("/student-dashboard");
   }
 
-  try {
-    const [levels, langInfo] = await Promise.all([
-      getLanguageLevels(),
-      getLanguageIdByName(searchParams.lang),
-    ]);
+  const [levels, langInfo] = await Promise.all([
+    getLanguageLevels(),
+    getLanguageIdByName(searchParams.lang),
+  ]);
 
-    if (!levels || !langInfo) {
-      redirect("/student-dashboard");
-    }
-
-    return (
-      <LanguageDashboard
-        levels={levels}
-        lang={searchParams.lang}
-        langId={langInfo.id}
-      />
-    );
-  } catch (error) {
-    console.error("Error loading language dashboard:", error);
+  if (!levels || !langInfo) {
     redirect("/student-dashboard");
   }
+
+  return (
+    <LanguageDashboard
+      levels={levels}
+      lang={searchParams.lang}
+      langId={langInfo.id}
+    />
+  );
 }

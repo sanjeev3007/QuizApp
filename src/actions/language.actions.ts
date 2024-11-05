@@ -109,8 +109,11 @@ export const saveQuizData = async ({
   state: number;
 }) => {
   const supabase = createServerSupabaseClient();
-
   const languageData = await fetchLanguageIdfromSlug(language);
+
+  // Calculate points based on level
+  const pointsPerQuestion = levelId;
+  const points = correct * pointsPerQuestion;
 
   const { data, error } = await supabase
     .from("languages_quiz")
@@ -118,6 +121,7 @@ export const saveQuizData = async ({
       user_id: userId,
       total,
       correct,
+      points,
       submission,
       language_id: languageData?.id,
       topic_id: topicId,
@@ -155,8 +159,12 @@ export const updateQuizData = async ({
   state: number;
 }) => {
   const supabase = createServerSupabaseClient();
-
   const languageData = await fetchLanguageIdfromSlug(language);
+
+  // Calculate points based on level
+  const pointsPerQuestion = levelId;
+  const points = correct * pointsPerQuestion;
+
   const { data, error } = await supabase
     .from("languages_quiz")
     .upsert({
@@ -164,6 +172,7 @@ export const updateQuizData = async ({
       user_id: userId,
       total,
       correct,
+      points,
       submission,
       language_id: languageData?.id,
       topic_id: topicId,

@@ -49,6 +49,8 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 router.push("/chat-bot");
               } else if (pathname.includes("chat-bot")) {
                 router.push("/");
+              } else if (pathname.includes("languages/result")) {
+                router.push("/student-dashboard");
               } else {
                 router.back();
               }
