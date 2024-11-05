@@ -7,8 +7,13 @@ import { useState, useEffect } from "react";
 import { DB } from "../../learn/_types";
 import { SelectCard } from "./select-card";
 import { useRouter } from "next/navigation";
-import { saveQuizData } from "@/actions/language.actions";
+import {
+  getUserCardState,
+  saveQuizData,
+  updateQuizData,
+} from "@/actions/language.actions";
 import { Loader2 } from "lucide-react"; // Import the loader icon
+import { useQuery } from "@tanstack/react-query";
 
 const DndProviderWithBackend = ({
   children,
@@ -38,6 +43,7 @@ type FlashcardPageProps = {
   topicId: number;
   lang: string;
   userId: string;
+  cardState: string;
 };
 
 export default function QuizBox({
@@ -46,11 +52,35 @@ export default function QuizBox({
   topicId,
   lang,
   userId,
+  cardState,
 }: FlashcardPageProps) {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [quizSubmissions, setQuizSubmissions] = useState<QuizSubmission[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const state =
+    cardState === "1-5"
+      ? 1
+      : cardState === "6-10"
+      ? 2
+      : cardState === "11-15"
+      ? 3
+      : cardState === "16-20"
+      ? 4
+      : 0;
+  const { data: prevQuiz, isLoading: userPrevQuizLoading } = useQuery({
+    queryKey: ["user_card_state"],
+    queryFn: async () => {
+      return await getUserCardState({
+        userId: userId as string,
+        topicId,
+        levelId,
+        state,
+      });
+    },
+  });
+
   const router = useRouter();
 
   const handleNextCard = () => {
@@ -87,23 +117,42 @@ export default function QuizBox({
 
   const completeSet = async () => {
     setIsLoading(true);
+    setIsCompleted(true);
     try {
-      const data = await saveQuizData({
-        userId,
-        total: content.length,
-        correct: correctAnswers,
-        submission: quizSubmissions,
-        language: lang,
-        topicId,
-        levelId,
-      });
-      if (data) {
-        router.push("/languages/result?lang=" + lang + "&quiz=" + data.id);
+      if (prevQuiz) {
+        const data = await updateQuizData({
+          userId,
+          total: content.length,
+          correct: correctAnswers,
+          submission: quizSubmissions,
+          language: lang,
+          topicId,
+          levelId,
+          quizId: prevQuiz[0]?.id,
+          state: state,
+        });
+        if (data) {
+          router.push("/languages/result?lang=" + lang + "&quiz=" + data.id);
+        }
+      } else {
+        const data = await saveQuizData({
+          userId,
+          total: content.length,
+          correct: correctAnswers,
+          submission: quizSubmissions,
+          language: lang,
+          topicId,
+          levelId,
+          state,
+        });
+        if (data) {
+          router.push("/languages/result?lang=" + lang + "&quiz=" + data.id);
+        }
       }
     } catch (error) {
       console.error("Error saving quiz data:", error);
-    } finally {
       setIsLoading(false);
+      setIsCompleted(false);
     }
   };
 
@@ -112,7 +161,7 @@ export default function QuizBox({
       <DndProviderWithBackend>
         <div className="py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center">
           <AnimatePresence mode="wait">
-            {isLoading ? (
+            {isLoading && isCompleted ? (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -124,7 +173,7 @@ export default function QuizBox({
                   Saving your quiz results...
                 </p>
               </motion.div>
-            ) : content ? (
+            ) : !isCompleted && content ? (
               <motion.div
                 key={currentCardIndex}
                 initial={{ opacity: 0, y: 20 }}
@@ -157,9 +206,7 @@ export default function QuizBox({
                   resetQuiz={resetQuiz}
                 />
               </motion.div>
-            ) : (
-              <p>No flashcards available</p>
-            )}
+            ) : null}
           </AnimatePresence>
         </div>
       </DndProviderWithBackend>

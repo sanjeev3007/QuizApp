@@ -7,20 +7,6 @@ import LanguageCard from "../components/language-card";
 import HeadingCard from "../components/heading-card";
 import TopicSlider from "../components/topic-slider";
 
-type TopicCardLayout = {
-  badge: string | null;
-  topicName: string;
-  totalScore: number;
-  totalQuestion: number;
-  subjectId: number;
-  subjectName: string | null;
-  topicId: number;
-  userId: string;
-  userGrade: string;
-};
-
-type TopicCardLayoutArr = TopicCardLayout[];
-
 type Props = {
   levels: {
     level: number;
@@ -33,17 +19,15 @@ type Props = {
 };
 
 const LanguageDashboard = ({ levels, lang, langId }: Props) => {
-  const [leaderboardData, setLeaderboardData] = useState({
+  const [leaderboardData] = useState({
     studentMeta: {},
     topTenStudentList: [],
   });
-  const [studentActivity, setStudentActivity] = useState([]);
-  const [streakData, setStreakData] = useState({});
-  const [studentData, setStudentData] = useState(null);
-  const [topicData, setTopicData] = useState<TopicCardLayoutArr>([]);
+  const [studentActivity] = useState([]);
+  const [streakData] = useState({});
+  const [studentData] = useState(null);
   const [avatar, setAvatar] = useState<string>("");
-  const [topicLoader, setTopicLoader] = useState<boolean>(false);
-  const [dashboardLoader, setDashboardLoader] = useState<boolean>(false);
+  const [dashboardLoader] = useState<boolean>(false);
 
   return (
     <div className="w-full md:max-w-7xl mx-auto bg-[#FFF] pb-10 overflow-hidden !important">
@@ -51,7 +35,7 @@ const LanguageDashboard = ({ levels, lang, langId }: Props) => {
         <div className="w-full flex justify-center flex-col">
           <HeadingCard lang={lang as string} />
           <LanguageCard lang={lang as string} />
-          <div className="flex lg:flex-row xs:flex-col justify-center gap-8 lg:mt-14 md:mt-6 xs:mt-12 mb-10">
+          <div className="flex lg:flex-row xs:flex-col justify-center gap-8 lg:mt-14 md:mt-6 xs:mt-12 mb-10 px-4">
             <Activity
               subject={lang}
               studentActivity={studentActivity}
@@ -69,18 +53,6 @@ const LanguageDashboard = ({ levels, lang, langId }: Props) => {
             />
           </div>
 
-          {(topicLoader || (topicData && topicData.length > 0)) && (
-            <div className="lg:text-4xl md:text-2xl xs:text-xl font-semibold leading-[38.73px] text-center lg:mt-10 md:mt-8 xs:mt-6">
-              <span className="gradient-title-2">Master</span>
-              <span className="text-[#5B8989]"> every topic</span>
-            </div>
-          )}
-          {(topicLoader || (topicData && topicData.length > 0)) && (
-            <div className="lg:text-4xl md:text-2xl xs:text-xl font-semibold leading-[38.73px] text-center lg:mt-4 md:mt-3 xs:mt-2">
-              <span className="text-[#5B8989]">Improve ratings with more </span>
-              <span className="gradient-title-3">practice</span>
-            </div>
-          )}
           <div id={"topics"} className="lg:mt-20 md:mt-12">
             {levels && <TopicSlider levels={levels} langId={langId} />}
           </div>

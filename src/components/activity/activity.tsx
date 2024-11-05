@@ -60,7 +60,7 @@ const activity = ({
 
   return (
     <>
-      <div className="activityCardContainer">
+      <div className="activityCardContainer mx-auto lg:mx-0">
         <div className="cardHeadingTxt">My Activity</div>
         <div className="profileWrapper">
           <div className="profileSection">

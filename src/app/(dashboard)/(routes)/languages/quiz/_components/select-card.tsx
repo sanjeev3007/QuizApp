@@ -6,7 +6,7 @@ import { FlashcardData } from "../../learn/_types";
 import { cn } from "@/lib/utils";
 
 type QuizCardProps = {
-  data: FlashcardData & { id: number }; // Add id to FlashcardData
+  data: FlashcardData & { id: number };
   currentCard: number;
   totalCards: number;
   onNextCard: () => void;
@@ -118,7 +118,7 @@ export const SelectCard: React.FC<QuizCardProps> = ({
                     "bg-[#D4EDE1] border-[#4EB487]")
               )}
               onClick={() => handleAnswerSelect(option.text)}
-              disabled={selectedAnswer !== null}
+              disabled={showCorrectAnswer}
             >
               {option.text}
             </Button>

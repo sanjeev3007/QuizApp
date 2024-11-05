@@ -10,7 +10,11 @@ import Lock from "@/public/images/icons/lock-white.png";
 type TopicCardProps = {
   lock: boolean;
   cards: number;
-  topic: { id: number; name: string };
+  topic: {
+    id: number;
+    name: string;
+    languages_quiz: { card_state: number; id: number }[];
+  };
   levelId: number;
 };
 
@@ -30,20 +34,57 @@ export default function TopicCard({
         return "🐶";
       case "Body Parts":
         return "👃";
-      case "Colors":
-        return "🌈";
       case "Everyday Objects":
-        return "📱";
+        return "🛍️";
       case "Family Members":
         return "👪";
       case "Food and Drinks":
         return "🍔";
+      case "Colors and Shapes":
+        return "🌈";
+      case "Greetings and Introductions":
+        return "👋";
+      case "School and Classroom":
+        return "🏫";
+      case "Numbers and Time":
+        return "🔢";
+      case "Shopping and Money":
+        return "💰";
+      case "Weather and Seasons":
+        return "🌤️";
+      case "Hobbies and Activities":
+        return "🎮";
+      case "Holidays and Celebrations":
+        return "🎉";
+      case "Making Friends":
+        return "👫";
+      case "Music and Arts":
+        return "🎸";
+      case "Travel and Transportation":
+        return "🚗";
+      case "At the Restaurant":
+        return "🍴";
+      case "Sports and Games":
+        return "🏊";
+      case "Colors":
+        return "🌈";
       case "Shapes":
         return "🔶";
-      case "Animals":
-        return "🐶";
     }
   };
+
+  const quizSubmission = topic?.languages_quiz.sort(
+    (a, b) => a.card_state - b.card_state
+  )[topic?.languages_quiz.length - 1];
+
+  const nextState =
+    quizSubmission?.card_state == 1
+      ? "6-10"
+      : quizSubmission?.card_state == 2
+      ? "11-15"
+      : quizSubmission?.card_state == 3
+      ? "16-20"
+      : "1-5";
 
   return (
     <div className="px-2">
@@ -66,9 +107,20 @@ export default function TopicCard({
           <p className="text-sm text-[#A3A3A3] font-medium">
             {cards} flash cards available
           </p>
+          <div className="flex items-center gap-2 pt-4">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={index}
+                className="w-12 h-2 bg-[#f2c445] rounded-full"
+                style={{
+                  opacity: index < topic?.languages_quiz.length ? 1 : 0.3,
+                }}
+              ></div>
+            ))}
+          </div>
         </CardContent>
         {lock ? (
-          <CardFooter className="flex justify-between p-6 pt-6 gap-6">
+          <CardFooter className="flex justify-between p-6 pt-4 gap-6">
             <Button
               disabled={lock}
               onClick={() => {}}
@@ -85,11 +137,11 @@ export default function TopicCard({
             </Button>
           </CardFooter>
         ) : (
-          <CardFooter className="flex justify-between p-6 pt-6 gap-6">
+          <CardFooter className="flex justify-between p-6 pt-4 gap-6">
             <Button
               onClick={() =>
                 router.push(
-                  `/languages/learn?lang=${lang}&topic=${topic.id}&level=${levelId}`
+                  `/languages/learn?lang=${lang}&topic=${topic.id}&level=${levelId}&cards=${nextState}`
                 )
               }
               className="bg-[#F0A919] hover:bg-yellow-500 text-white w-full"
@@ -99,7 +151,7 @@ export default function TopicCard({
             <Button
               onClick={() =>
                 router.push(
-                  `/languages/quiz?lang=${lang}&topic=${topic.id}&level=${levelId}`
+                  `/languages/quiz?lang=${lang}&topic=${topic.id}&level=${levelId}&cards=${nextState}`
                 )
               }
               className="bg-[#E98451] hover:bg-orange-500 text-white w-full"

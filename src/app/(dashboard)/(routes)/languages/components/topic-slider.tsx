@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
 import { getLanguageTopics } from "@/actions/language.actions";
 import ClipLoader from "react-spinners/ClipLoader";
+import { getCookie } from "cookies-next";
 
 const settings = {
   dots: true,
@@ -17,8 +18,8 @@ const settings = {
   initialSlide: 0,
   rows: 1,
   nextArrow: (
-    <div className="carousel-buttons absolute -right-4 top-0 bottom-0 h-full flex items-center">
-      <div className="next-slick-arrow h-full flex items-center px-2 bg-white shadow-md hover:bg-gray-50">
+    <div className="carousel-buttons h-full flex items-center">
+      <div className="next-slick-arrow h-full flex shrink-0 items-center bg-white shadow-md hover:bg-gray-50">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           stroke="black"
@@ -34,7 +35,7 @@ const settings = {
   ),
   prevArrow: (
     <div className="carousel-buttons absolute -left-4 top-0 bottom-0 h-full flex items-center">
-      <div className="prev-slick-arrow h-full flex items-center px-2 bg-white shadow-md hover:bg-gray-50">
+      <div className="prev-slick-arrow h-full flex items-center bg-white shadow-md hover:bg-gray-50">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           stroke="black"
@@ -77,12 +78,21 @@ export default function TopicSlider({
   levels: { id: number; level: number; name: string; points: number }[];
   langId: number;
 }) {
-  const { data, isLoading } = useQuery({
-    queryKey: ["language_topics"],
+  const userId = getCookie("userId");
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["language_topics", langId, userId],
     queryFn: async () => {
-      return await getLanguageTopics();
+      if (!userId) return null;
+      return await getLanguageTopics({ langId, userId });
     },
+    retry: false,
   });
+
+  if (error) {
+    console.error("Error loading topics:", error);
+    return <div>Failed to load topics. Please try again.</div>;
+  }
+
   return (
     <div className="space-y-16 py-6 pb-16">
       <div className="text-xl md:text-2xl lg:text-3xl font-semibold text-center space-y-1">
@@ -146,9 +156,7 @@ export default function TopicSlider({
                           key={index}
                           cards={
                             item?.languages_db?.filter(
-                              (i: any) =>
-                                i.level_id === level.level &&
-                                i.language_id === langId
+                              (i: any) => i.level_id === level.level
                             ).length
                           }
                           lock={level.level === 1 ? false : true}

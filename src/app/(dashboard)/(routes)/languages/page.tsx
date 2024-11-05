@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import {
   getLanguageIdByName,
   getLanguageLevels,
@@ -9,13 +10,29 @@ export default async function DashboardPage({
 }: {
   searchParams: { lang: string };
 }) {
-  const levels = await getLanguageLevels();
-  const langInfo = await getLanguageIdByName(searchParams.lang);
-  return (
-    <LanguageDashboard
-      levels={levels!}
-      lang={searchParams.lang}
-      langId={langInfo?.id!}
-    />
-  );
+  if (!searchParams.lang) {
+    redirect("/student-dashboard");
+  }
+
+  try {
+    const [levels, langInfo] = await Promise.all([
+      getLanguageLevels(),
+      getLanguageIdByName(searchParams.lang),
+    ]);
+
+    if (!levels || !langInfo) {
+      redirect("/student-dashboard");
+    }
+
+    return (
+      <LanguageDashboard
+        levels={levels}
+        lang={searchParams.lang}
+        langId={langInfo.id}
+      />
+    );
+  } catch (error) {
+    console.error("Error loading language dashboard:", error);
+    redirect("/student-dashboard");
+  }
 }
