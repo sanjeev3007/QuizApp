@@ -36,6 +36,8 @@ const GuestForm = () => {
   });
   const [countries, setCountries] = useState<Record<string, string>[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDisabledEmail, setIsDisabledEmail] = useState(false);
+  const [isDisabledPhone, setIsDisabledPhone] = useState(false);
 
   useEffect(() => {
     const userId = getCookie("userId");
@@ -53,10 +55,12 @@ const GuestForm = () => {
                 ...prevData,
                 email: response.guestInfo?.guestEmail,
               }));
+              setIsDisabledEmail(true);
             }
 
             if (response.guestInfo?.contactNo) {
               setPhoneNumber(response.guestInfo?.contactNo);
+              setIsDisabledPhone(true);
             }
           }
           if (response.countryDetails && response.countryDetails.length > 0) {
@@ -207,7 +211,7 @@ const GuestForm = () => {
               value={formData.studentName}
               onChange={handleChange}
               className="px-4 py-2 border focus:border-[#AFCFCF] focus:ring-[#AFCFCF]  w-full sm:text-sm border-[#5B8989] rounded-md focus:outline-none text-[#5B8989] placeholder-[#5B8989]"
-              placeholder="Enter Child name"
+              placeholder="Enter Child Name"
             />
             {errors.studentName && (
               <div className="mt-2 font-normal text-sm leading-5 text-right text-[#ff3333] ">
@@ -258,6 +262,7 @@ const GuestForm = () => {
               onChange={handleChange}
               className="px-4 py-2 border focus:border-[#AFCFCF] focus:ring-[#AFCFCF]  w-full sm:text-sm border-[#5B8989] rounded-md focus:outline-none text-[#5B8989] placeholder-[#5B8989]"
               placeholder="Enter Email Address"
+              disabled={isDisabledEmail}
             />
             {errors.email && (
               <div className="mt-2 font-normal text-sm leading-5 text-right text-[#ff3333] ">
@@ -290,6 +295,7 @@ const GuestForm = () => {
                   fontSize: "16px",
                   color: "#6C9D9D",
                 }}
+                disabled={isDisabledPhone}
               />
               {errors.phoneNumber && (
                 <div className="mt-2 font-normal text-sm leading-5 text-right text-[#ff3333] ">
