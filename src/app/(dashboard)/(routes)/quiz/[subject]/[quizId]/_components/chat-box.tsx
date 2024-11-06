@@ -111,7 +111,11 @@ export default function Chat({
         label3: topic ? "Topic" : "Noah",
         label4: null,
       });
-      router.replace(`/quiz/${subjectName}/${quiz[0].id}`);
+      if (previous) {
+        router.replace(`/quiz/${subjectName}/${quiz[0].id}?previous=true`);
+      } else {
+        router.replace(`/quiz/${subjectName}/${quiz[0].id}`);
+      }
     } catch (error) {
       console.log(error);
     } finally {
