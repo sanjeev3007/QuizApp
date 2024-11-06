@@ -4,7 +4,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { DB } from "../../learn/_types";
+import { LanguageDB } from "../../learn/_types";
 import { SelectCard } from "./select-card";
 import { useRouter } from "next/navigation";
 import {
@@ -38,7 +38,7 @@ type QuizSubmission = {
 };
 
 type FlashcardPageProps = {
-  content: DB[];
+  content: LanguageDB[];
   levelId: number;
   topicId: number;
   lang: string;

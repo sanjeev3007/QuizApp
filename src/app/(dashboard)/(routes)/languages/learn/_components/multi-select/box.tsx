@@ -5,7 +5,7 @@ import { TouchBackend } from "react-dnd-touch-backend";
 import { AnimatePresence, motion } from "framer-motion";
 import { Flashcard } from "./sentence-quiz";
 import { useEffect, useState } from "react";
-import { DB } from "../../_types";
+import { LanguageDB } from "../../_types";
 import { useRouter } from "next/navigation";
 
 const DndProviderWithBackend = ({
@@ -25,7 +25,7 @@ const DndProviderWithBackend = ({
 };
 
 type FlashcardPageProps = {
-  content: DB[];
+  content: LanguageDB[];
   levelId: number;
   topicId: number;
 };
@@ -36,7 +36,7 @@ export default function MultiSelectBox({
 }: FlashcardPageProps) {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [flashcards, setFlashcards] = useState<DB[]>([]);
+  const [flashcards, setFlashcards] = useState<LanguageDB[]>([]);
   const router = useRouter();
 
   useEffect(() => {

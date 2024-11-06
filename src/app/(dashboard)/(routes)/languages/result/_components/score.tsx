@@ -5,15 +5,21 @@ import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
 import NoahImage from "@/assets/Images/noah_doubt_solve_dp.svg";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { LanguageQuizResult } from "../../learn/_types";
+import { getCardIcon } from "../../_utils";
 
 export default function ScoreCard({
-  lang,
   quizResult,
 }: {
   lang: string;
-  quizResult: any;
+  quizResult: LanguageQuizResult & {
+    totalQuestions: number;
+    completedQuestions: number;
+    levelTotalQuestions: number;
+    levelCompletedQuestions: number;
+  };
 }) {
+  console.log(quizResult);
   return (
     <div className="container mx-auto p-4 max-w-4xl">
       <Card
@@ -80,13 +86,18 @@ export default function ScoreCard({
               CURRENT TOPIC
             </h4>
             <CardTitle className="text-xl font-semibold text-[#517B7B]">
-              <span className="mr-2">🎃</span>
-              Simple adjective
+              <span className="mr-2">
+                {getCardIcon(quizResult?.languages_topics?.name as string)}
+              </span>
+              {quizResult?.languages_topics?.name}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <Progress
-              value={60}
+              value={
+                (quizResult?.completedQuestions / quizResult?.totalQuestions) *
+                100
+              }
               className="mb-4 rounded-full h-3"
               style={{
                 background:
@@ -98,7 +109,8 @@ export default function ScoreCard({
               round="100px"
             />
             <p className="text-sm text-[#A3A3A3]">
-              Completed 12 of 20 flash cards
+              Completed {quizResult?.completedQuestions} of{" "}
+              {quizResult?.totalQuestions} flash cards
             </p>
           </CardContent>
         </Card>
@@ -115,12 +127,16 @@ export default function ScoreCard({
             </h4>
             <CardTitle className="text-xl font-semibold text-[#517B7B]">
               <span className="mr-2">🏆</span>
-              Level 1
+              Level {quizResult?.level_id}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <Progress
-              value={60}
+              value={
+                (quizResult?.levelCompletedQuestions /
+                  quizResult?.levelTotalQuestions) *
+                100
+              }
               className="mb-4 rounded-full h-3"
               style={{
                 background:
@@ -132,7 +148,8 @@ export default function ScoreCard({
               round="100px"
             />
             <p className="text-sm text-[#A3A3A3]">
-              Completed 64 of 80 flash cards
+              Completed {quizResult?.levelCompletedQuestions} of{" "}
+              {quizResult?.levelTotalQuestions} flash cards
             </p>
           </CardContent>
         </Card>

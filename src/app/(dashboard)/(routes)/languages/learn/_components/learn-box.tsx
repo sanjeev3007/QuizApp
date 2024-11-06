@@ -5,8 +5,7 @@ import { TouchBackend } from "react-dnd-touch-backend";
 import { AnimatePresence, motion } from "framer-motion";
 import { Flashcard } from "./flashcard";
 import { useEffect, useState } from "react";
-import { DB } from "../_types";
-import { useRouter } from "next/navigation";
+import { LanguageDB } from "../_types";
 import { saveLearningData } from "@/actions/language.actions";
 import { CompletionCard } from "./completion-card";
 
@@ -33,7 +32,7 @@ const DndProviderWithBackend = ({
 };
 
 type FlashcardPageProps = {
-  content: DB[];
+  content: LanguageDB[];
   levelId: number;
   topicId: number;
   lang: string;

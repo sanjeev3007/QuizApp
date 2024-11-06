@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import Lock from "@/public/images/icons/lock-white.png";
+import { getCardIcon } from "../_utils";
 
 type TopicCardProps = {
   lock: boolean;
@@ -27,51 +28,6 @@ export default function TopicCard({
   const searchParams = useSearchParams();
   const router = useRouter();
   const lang = searchParams.get("lang");
-
-  const getIcon = (topic: string) => {
-    switch (topic) {
-      case "Animals and Nature":
-        return "🐶";
-      case "Body Parts":
-        return "👃";
-      case "Everyday Objects":
-        return "🛍️";
-      case "Family Members":
-        return "👪";
-      case "Food and Drinks":
-        return "🍔";
-      case "Colors and Shapes":
-        return "🌈";
-      case "Greetings and Introductions":
-        return "👋";
-      case "School and Classroom":
-        return "🏫";
-      case "Numbers and Time":
-        return "🔢";
-      case "Shopping and Money":
-        return "💰";
-      case "Weather and Seasons":
-        return "🌤️";
-      case "Hobbies and Activities":
-        return "🎮";
-      case "Holidays and Celebrations":
-        return "🎉";
-      case "Making Friends":
-        return "👫";
-      case "Music and Arts":
-        return "🎸";
-      case "Travel and Transportation":
-        return "🚗";
-      case "At the Restaurant":
-        return "🍴";
-      case "Sports and Games":
-        return "🏊";
-      case "Colors":
-        return "🌈";
-      case "Shapes":
-        return "🔶";
-    }
-  };
 
   const quizSubmission = topic?.languages_quiz.sort(
     (a, b) => a.card_state - b.card_state
@@ -99,7 +55,7 @@ export default function TopicCard({
       >
         <CardContent className="p-6">
           <div className="flex items-center space-x-4 mb-4">
-            <span className="text-xl">{getIcon(topic.name)}</span>
+            <span className="text-xl">{getCardIcon(topic.name)}</span>
             <h3 className="text-lg md:text-xl font-semibold text-[#517B7B]">
               {topic.name}
             </h3>
@@ -149,7 +105,9 @@ export default function TopicCard({
               Learn
             </Button>
             <Button
+              disabled={quizSubmission?.card_state == 4}
               onClick={() =>
+                quizSubmission?.card_state != 4 &&
                 router.push(
                   `/languages/quiz?lang=${lang}&topic=${topic.id}&level=${levelId}&cards=${nextState}`
                 )
