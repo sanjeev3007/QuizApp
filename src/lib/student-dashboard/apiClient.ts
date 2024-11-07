@@ -65,3 +65,24 @@ export const getStudentTopics = async ({
     throw error;
   }
 };
+
+export const getStudentActivity = async ({
+  studentId,
+  subjectId,
+}: {
+  studentId: string | null;
+  subjectId: number | null;
+}) => {
+  try {
+    const params = {
+      studentId,
+      subjectId,
+    };
+
+    const response = await apiService.get(`/dashboard/activity`, { params });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};

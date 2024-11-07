@@ -29,10 +29,10 @@ export default function HeadingCard({ lang }: { lang: string }) {
       subtitle: "Namaste! Hindi seekhte hai!",
       lang: "Hindi",
     },
-    germen: {
+    german: {
       title: "Hello let's learn",
       subtitle: "Hallo! Lass uns Deutsch lernen",
-      lang: "Germen",
+      lang: "German",
     },
     telugu: {
       title: "Hello let's learn",
