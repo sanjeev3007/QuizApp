@@ -51,6 +51,12 @@ const PageContent = () => {
   const userId = getCookie("userId");
 
   useEffect(() => {
+    if (!userId) {
+      window.open(process.env.NEXT_PUBLIC_SANDBOX_URL, "_self");
+    }
+  }, []);
+
+  useEffect(() => {
     const fetchData = async () => {
       if (userId) {
         setSubjectWiseLoader(true);

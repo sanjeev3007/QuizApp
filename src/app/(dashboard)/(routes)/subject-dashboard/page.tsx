@@ -94,11 +94,14 @@ const PageContent = () => {
             studentId: userId,
             subjectId,
           });
-          console.log({ activityData });
-          console.log({ dashboardData: dashboardData.response.leaderboard });
-          setLeaderboardData(dashboardData.response.leaderboard);
-          setStudentActivity(activityData.response.activity);
-          setStreakData(activityData.response.streak);
+
+          if (dashboardData.response.leaderboard) {
+            setLeaderboardData(dashboardData.response.leaderboard);
+          }
+          if (activityData.response.activity) {
+            setStudentActivity(activityData.response.activity);
+            setStreakData(activityData.response.streak);
+          }
 
           const currentStudent =
             dashboardData.response.leaderboard.topTenStudentList.find(
