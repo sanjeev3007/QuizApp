@@ -1,9 +1,9 @@
 "use server";
 
-import { createServerSupabaseClient } from "@/app/supabase-server";
+import { createClient } from "@/lib/supabase/server";
 
 export const getLanguageLevels = async () => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
 
   const { data, error } = await supabase.from("languages_levels").select("*");
 
@@ -15,7 +15,7 @@ export const getLanguageLevels = async () => {
 };
 
 export const getLanguageTopics = async () => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
 
   const { data, error } = await supabase.from("languages_topics").select("*");
 
@@ -27,7 +27,7 @@ export const getLanguageTopics = async () => {
 };
 
 export const getLanguageIdByName = async (name: string) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
 
   const { data, error } = await supabase
     .from("subject")
@@ -49,7 +49,7 @@ export const getTopicContent = async ({
   topic: number;
   language: string;
 }) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
   const languageId = await getLanguageIdByName(language);
 
   const { data, error } = await supabase
