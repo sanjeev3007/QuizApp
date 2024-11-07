@@ -90,12 +90,10 @@ const PageContent = () => {
             studentId: userId,
             subjectId,
           });
-          console.log({ dashboardData });
           const activityData = await getStudentActivity({
             studentId: userId,
             subjectId,
           });
-          console.log({ activityData });
 
           if (dashboardData.response.leaderboard) {
             setLeaderboardData(dashboardData.response.leaderboard);
