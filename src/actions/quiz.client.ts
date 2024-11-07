@@ -361,7 +361,7 @@ const generateRandomTopic = async ({
 
   const allTopics = Array.from(
     new Set(
-      data?.map((topic) => {
+      data?.map((topic: any) => {
         return { id: topic.id, topic: topic.topic_name };
       })
     )
@@ -369,7 +369,7 @@ const generateRandomTopic = async ({
 
   const randomTopic = allTopics[Math.floor(Math.random() * allTopics.length)];
 
-  return randomTopic;
+  return randomTopic as { id: number; topic: string };
 };
 
 // update quiz stats to complete
@@ -421,7 +421,7 @@ export const fetchCorrectSubmissions = async ({
     return [];
   }
 
-  const formattedData = data.map((quiz) => {
+  const formattedData = data.map((quiz: any) => {
     return quiz.questionid;
   });
 
