@@ -8,6 +8,7 @@ import { getCookie } from "cookies-next";
 import {
   getStudentDashboard,
   getSubjectWise,
+  getStudentActivity,
 } from "@/lib/student-dashboard/apiClient";
 import constants from "../../../../constants/constants";
 
@@ -127,28 +128,37 @@ const PageContent = () => {
       if (userId) {
         setDashboardLoader(true);
         try {
-          const data2 = await getStudentDashboard({
+          const dashboardData = await getStudentDashboard({
             studentId: userId,
             subjectId: null,
           });
-          setLeaderboardData(data2.response.leaderboard);
-          setStudentActivity(data2.response.activity);
-          setStreakData(data2.response.streak);
+          const activityData = await getStudentActivity({
+            studentId: userId,
+            subjectId: null,
+          });
+
+          if (dashboardData.response.leaderboard) {
+            setLeaderboardData(dashboardData.response.leaderboard);
+          }
+          if (activityData.response.activity) {
+            setStudentActivity(activityData.response.activity);
+            setStreakData(activityData.response.streak);
+          }
 
           const currentStudent =
-            data2.response.leaderboard.topTenStudentList.find(
+            dashboardData.response.leaderboard.topTenStudentList.find(
               (row: any) => row.userid == userId
             );
           setStudentData({
-            ...data2.response.currentStudentMeta,
+            ...activityData.response.currentStudentMeta,
             rank: currentStudent?.rank,
           });
-          setAvatar(data2.response.currentStudentMeta?.pic || "");
+          setAvatar(activityData.response.currentStudentMeta?.pic || "");
 
-          if (data2.response.currentStudentMeta?.pic) {
+          if (activityData.response.currentStudentMeta?.pic) {
             localStorage.setItem(
               "user-avatar",
-              data2.response.currentStudentMeta?.pic
+              activityData.response.currentStudentMeta?.pic
             );
           }
         } catch (err) {
