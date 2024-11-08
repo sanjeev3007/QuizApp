@@ -25,7 +25,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { QuizDataType, SubmissionType } from "@/types/quiz.types";
-import { getQuizStats } from "@/app/supabase-client-provider";
+import { getQuizStats } from "@/actions/main.actions";
 import {
   createQuizBySubject,
   getTopicNameFromDB,
