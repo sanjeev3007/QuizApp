@@ -166,7 +166,17 @@ export const updateQuizData = async ({
   state: number;
 }) => {
   const supabase = createServerSupabaseClient();
-  const languageData = await fetchLanguageIdfromSlug(language);
+
+  console.log({
+    quizId,
+    userId,
+    total,
+    correct,
+    submission,
+    topicId,
+    levelId,
+    state,
+  });
 
   // Calculate points based on level
   const pointsPerQuestion = levelId;
@@ -174,18 +184,17 @@ export const updateQuizData = async ({
 
   const { data, error } = await supabase
     .from("languages_quiz")
-    .upsert({
-      id: quizId,
+    .update({
       user_id: userId,
       total,
       correct,
       points,
       submission,
-      language_id: languageData?.id,
       topic_id: topicId,
       level_id: levelId,
       card_state: state,
     })
+    .eq("id", quizId)
     .select("*")
     .single();
 

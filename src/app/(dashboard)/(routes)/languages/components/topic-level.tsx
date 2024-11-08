@@ -23,7 +23,7 @@ type Props = {
 
 export default function TopicLevel({ level, data }: Props) {
   const totalQuestionsInLevel = data
-    .filter((d) => d.level_id === level.level)
+    ?.filter((d) => d.level_id === level.level)
     .reduce((acc, topic) => acc + topic.languages_db.length, 0);
 
   const totalLevelPoints = totalQuestionsInLevel * level.level;

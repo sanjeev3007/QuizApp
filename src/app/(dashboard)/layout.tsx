@@ -4,7 +4,7 @@ import sandboxLogo from "@/assets/Images/sandboxLogo.svg";
 import Image from "next/image";
 import Link from "next/link";
 import { Inter } from "next/font/google";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -14,6 +14,7 @@ const inter = Inter({
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [showBackButton, setShowBackButton] = useState(false);
 
   useEffect(() => {
@@ -50,7 +51,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               } else if (pathname.includes("chat-bot")) {
                 router.push("/");
               } else if (pathname.includes("languages/result")) {
-                router.push("/student-dashboard");
+                router.push(`/languages?lang=${searchParams.get("lang")}`);
               } else {
                 router.back();
               }

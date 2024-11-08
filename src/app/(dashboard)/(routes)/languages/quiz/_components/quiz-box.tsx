@@ -119,7 +119,8 @@ export default function QuizBox({
     setIsLoading(true);
     setIsCompleted(true);
     try {
-      if (prevQuiz) {
+      if (prevQuiz?.id) {
+        console.log(prevQuiz);
         const data = await updateQuizData({
           userId,
           total: content.length,
@@ -128,13 +129,15 @@ export default function QuizBox({
           language: lang,
           topicId,
           levelId,
-          quizId: prevQuiz[0]?.id,
+          quizId: prevQuiz?.id,
           state: state,
         });
+        console.log(data);
         if (data) {
           router.push("/languages/result?lang=" + lang + "&quiz=" + data.id);
         }
       } else {
+        console.log({ prevQuiz });
         const data = await saveQuizData({
           userId,
           total: content.length,
