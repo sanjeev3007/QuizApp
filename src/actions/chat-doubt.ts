@@ -1,5 +1,4 @@
-"use server";
-import { createClient } from "@/lib/supabase/server";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export async function addFeedback(
   user_id: string,
@@ -7,7 +6,7 @@ export async function addFeedback(
   response: string,
   message: any
 ) {
-  const supabase = createClient();
+  const supabase = createClientComponentClient();
   const { data, error } = await supabase
     .from("feedback_doubt_solve")
     .upsert({ user_id, chat_id, response, message });
@@ -17,7 +16,7 @@ export async function addFeedback(
 }
 
 export async function doubtSolved(userid: string, chatid: string) {
-  const supabase = createClient();
+  const supabase = createClientComponentClient();
   const { error } = await supabase
     .from("chats_doubt_solve")
     .update({ solved: true })

@@ -13,7 +13,7 @@ export type TagColors = {
   french: string;
   spanish: string;
   hindi: string;
-  german: string;
+  germen: string;
   telugu: string;
 };
 
@@ -43,7 +43,7 @@ const SubjectCard = ({
     french: "#eaeffe",
     spanish: "#4096b5",
     hindi: "#b58440",
-    german: "#40b59b",
+    germen: "#40b59b",
     telugu: "#4096b5",
   };
 

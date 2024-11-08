@@ -1,5 +1,4 @@
-"use server";
-import { createClient } from "@/lib/supabase/server";
+import { createServerSupabaseClient } from "@/app/supabase-server";
 
 export const getNumberOfCompletedQuiz = async ({
   userId,
@@ -8,7 +7,7 @@ export const getNumberOfCompletedQuiz = async ({
   userId: string;
   subjectId: number;
 }) => {
-  const supabase = createClient();
+  const supabase = createServerSupabaseClient();
   const { data: allQuizes, error } = await supabase
     .from("quiz")
     .select("questions, submissions")
@@ -34,7 +33,7 @@ export const getNumberOfCompletedQuiz = async ({
 };
 
 export const getQuizById = async (id: any) => {
-  const supabase = createClient();
+  const supabase = createServerSupabaseClient();
   try {
     let { data, error } = await supabase
       .from("quiz")

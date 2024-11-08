@@ -15,8 +15,6 @@ import TopicCardCarousel from "./components/topic-card/topic-card-carousel";
 import saveGTMEvents from "@/lib/gtm";
 import TopicCard from "./components/topic-card/topic-card";
 import ClipLoader from "react-spinners/ClipLoader";
-import { getStudentActivity } from "@/lib/student-dashboard/apiClient";
-import { useQuery } from "@tanstack/react-query";
 
 type TopicCardLayout = {
   badge: string | null;
@@ -44,10 +42,12 @@ const PageContent = () => {
   const [avatar, setAvatar] = useState<string>("");
   const [topicLoader, setTopicLoader] = useState<boolean>(false);
   const [dashboardLoader, setDashboardLoader] = useState<boolean>(false);
-  const userId = getCookie("userId");
-  const userGrade = getCookie("grade");
+
   const params = useSearchParams();
   const subject = params.get("subject");
+
+  const userId = getCookie("userId");
+  const userGrade = getCookie("grade");
 
   let sub = "";
   let subjectId: any = null;
@@ -86,37 +86,28 @@ const PageContent = () => {
       if (userId) {
         setDashboardLoader(true);
         try {
-          const dashboardData = await getStudentDashboard({
+          const data = await getStudentDashboard({
             studentId: userId,
             subjectId,
           });
-          const activityData = await getStudentActivity({
-            studentId: userId,
-            subjectId,
-          });
-
-          if (dashboardData.response.leaderboard) {
-            setLeaderboardData(dashboardData.response.leaderboard);
-          }
-          if (activityData.response.activity) {
-            setStudentActivity(activityData.response.activity);
-            setStreakData(activityData.response.streak);
-          }
+          setLeaderboardData(data.response.leaderboard);
+          setStudentActivity(data.response.activity);
+          setStreakData(data.response.streak);
 
           const currentStudent =
-            dashboardData.response.leaderboard.topTenStudentList.find(
+            data.response.leaderboard.topTenStudentList.find(
               (row: any) => row.userid == userId
             );
           setStudentData({
-            ...activityData.response.currentStudentMeta,
+            ...data.response.currentStudentMeta,
             rank: currentStudent?.rank,
           });
-          setAvatar(activityData.response.currentStudentMeta?.pic || "");
+          setAvatar(data.response.currentStudentMeta?.pic || "");
 
-          if (activityData.response.currentStudentMeta?.pic) {
+          if (data.response.currentStudentMeta?.pic) {
             localStorage.setItem(
               "user-avatar",
-              activityData.response.currentStudentMeta?.pic
+              data.response.currentStudentMeta?.pic
             );
           }
         } catch (err) {

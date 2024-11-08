@@ -25,7 +25,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { QuizDataType, SubmissionType } from "@/types/quiz.types";
-import { getQuizStats } from "@/actions/main.actions";
+import { getQuizStats } from "@/app/supabase-client-provider";
 import {
   createQuizBySubject,
   getTopicNameFromDB,
@@ -111,11 +111,7 @@ export default function Chat({
         label3: topic ? "Topic" : "Noah",
         label4: null,
       });
-      if (previous) {
-        router.replace(`/quiz/${subjectName}/${quiz[0].id}?previous=true`);
-      } else {
-        router.replace(`/quiz/${subjectName}/${quiz[0].id}`);
-      }
+      router.replace(`/quiz/${subjectName}/${quiz[0].id}`);
     } catch (error) {
       console.log(error);
     } finally {

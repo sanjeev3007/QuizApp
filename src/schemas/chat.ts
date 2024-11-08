@@ -6,7 +6,7 @@ export const answerSchema = z.object({
   relatedQuestions: z
     .array(z.string())
     .length(2)
-    .describe("two related questions that user can ask."),
+    .describe("two related questions."),
 });
 
 export type PartialAnswer = DeepPartial<typeof answerSchema>;

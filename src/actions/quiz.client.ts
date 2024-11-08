@@ -1,5 +1,4 @@
-"use server";
-import { createClient } from "@/lib/supabase/server";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 // create quiz
 export async function createQuizBySubject({
@@ -11,7 +10,7 @@ export async function createQuizBySubject({
   grade: number;
   subjectId: number;
 }) {
-  const supabase = createClient();
+  const supabase = createClientComponentClient();
 
   const metadata = {
     grade: grade,
@@ -60,7 +59,7 @@ export async function generateQuiz({
   topicId: number;
   start: boolean;
 }) {
-  const supabase = createClient();
+  const supabase = createClientComponentClient();
 
   const metadata = {
     grade: grade,
@@ -112,7 +111,7 @@ export async function updateQuiz({
   grade: number;
   assignedData?: any;
 }) {
-  const supabase = createClient();
+  const supabase = createClientComponentClient();
 
   let metadata;
   let isAssigned = !!assignedData?.topic;
@@ -269,7 +268,7 @@ const fetchQuestionsByLevel = async (
   grade: number,
   subjectId: number
 ) => {
-  const supabase = createClient();
+  const supabase = createClientComponentClient();
 
   let rpc_function;
   if (subjectId === 1) {
@@ -317,7 +316,7 @@ const getIdFromTopic = async (
   grade: number,
   subjectId: number
 ) => {
-  const supabase = createClient();
+  const supabase = createClientComponentClient();
 
   const { data, error } = await supabase
     .from("topic")
@@ -347,7 +346,7 @@ const generateRandomTopic = async ({
   grade: number;
   subjectId: number;
 }) => {
-  const supabase = createClient();
+  const supabase = createClientComponentClient();
 
   const { data, error } = await supabase
     .from(`topic`)
@@ -380,7 +379,7 @@ export const updateQuizToComplete = async ({
   quizId: string;
   userId: string;
 }) => {
-  const supabase = createClient();
+  const supabase = createClientComponentClient();
   const { error } = await supabase
     .from("quiz")
     .update({
@@ -407,7 +406,7 @@ export const fetchCorrectSubmissions = async ({
   topicId: number;
   subjectId: number;
 }) => {
-  const supabase = createClient();
+  const supabase = createClientComponentClient();
 
   const { data, error } = await supabase
     .from("correct_submissions")
@@ -444,7 +443,7 @@ export async function storeCorrectSubmission({
   grade: number;
   subjectId: number;
 }) {
-  const supabase = createClient();
+  const supabase = createClientComponentClient();
 
   const { error } = await supabase.from("correct_submissions").insert({
     userid: userId,
@@ -473,7 +472,7 @@ export async function storeUserSubmission({
   userId: string;
   submissions: any;
 }) {
-  const supabase = createClient();
+  const supabase = createClientComponentClient();
 
   const { data } = await supabase
     .from("quiz")
@@ -501,7 +500,7 @@ export async function storeUserSubmissionToSubmissions({
   optionSelected: string;
   correctOption: string;
 }) {
-  const supabase = createClient();
+  const supabase = createClientComponentClient();
 
   const { error } = await supabase
     .from("submissions")
@@ -534,7 +533,7 @@ export const feedbackQuiz = async ({
   response: string;
   reason: string | null;
 }) => {
-  const supabase = createClient();
+  const supabase = createClientComponentClient();
   const { error } = await supabase
     .from("quiz_feedback")
     .insert({
@@ -556,7 +555,7 @@ export const getNumberOfCompletedQuiz = async ({
   userId: string;
   subjectId: number;
 }) => {
-  const supabase = createClient();
+  const supabase = createClientComponentClient();
   const { data: allQuizes, error } = await supabase
     .from("quiz")
     .select("questions, submissions")
@@ -588,7 +587,7 @@ export async function getInCompletedQuiz({
   userId: string;
   subjectId: number;
 }) {
-  const supabase = createClient();
+  const supabase = createClientComponentClient();
   const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000); // Calculate the timestamp for 2 hours ago
   const { data, error } = await supabase
     .from("quiz")
@@ -612,7 +611,7 @@ export async function getTopicNameFromDB({
   topicId: number;
   subjectId: number;
 }) {
-  const supabase = createClient();
+  const supabase = createClientComponentClient();
   const { data, error } = await supabase
     .from("topic")
     .select("topic_name")

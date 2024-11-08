@@ -2,7 +2,7 @@ import { getNumberOfCompletedGKQuiz } from "@/actions/gk-quiz.server";
 import {
   doubtSolveDashboard,
   getNumberOfSubmittedAnswers,
-} from "@/actions/main.actions";
+} from "@/app/supabase-server";
 import HomePage from "@/components/home-page";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
