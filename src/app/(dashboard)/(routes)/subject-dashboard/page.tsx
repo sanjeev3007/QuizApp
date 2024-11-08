@@ -6,6 +6,7 @@ import GlobalLeaderboard from "@/components/leaderboard";
 import NoahHeader from "./components/noah-says";
 import { getCookie } from "cookies-next";
 import {
+  getStudentActivity,
   getStudentDashboard,
   getStudentTopics,
 } from "@/lib/student-dashboard/apiClient";
@@ -91,28 +92,37 @@ const PageContent = () => {
       if (userId) {
         setDashboardLoader(true);
         try {
-          const data = await getStudentDashboard({
+          const dashboardData = await getStudentDashboard({
             studentId: userId,
             subjectId,
           });
-          setLeaderboardData(data.response.leaderboard);
-          setStudentActivity(data.response.activity);
-          setStreakData(data.response.streak);
+          const activityData = await getStudentActivity({
+            studentId: userId,
+            subjectId,
+          });
+
+          if (dashboardData.response.leaderboard) {
+            setLeaderboardData(dashboardData.response.leaderboard);
+          }
+          if (activityData.response.activity) {
+            setStudentActivity(activityData.response.activity);
+            setStreakData(activityData.response.streak);
+          }
 
           const currentStudent =
-            data.response.leaderboard.topTenStudentList.find(
+            dashboardData.response.leaderboard.topTenStudentList.find(
               (row: any) => row.userid == userId
             );
           setStudentData({
-            ...data.response.currentStudentMeta,
+            ...activityData.response.currentStudentMeta,
             rank: currentStudent?.rank,
           });
-          setAvatar(data.response.currentStudentMeta?.pic || "");
+          setAvatar(activityData.response.currentStudentMeta?.pic || "");
 
-          if (data.response.currentStudentMeta?.pic) {
+          if (activityData.response.currentStudentMeta?.pic) {
             localStorage.setItem(
               "user-avatar",
-              data.response.currentStudentMeta?.pic
+              activityData.response.currentStudentMeta?.pic
             );
           }
         } catch (err) {

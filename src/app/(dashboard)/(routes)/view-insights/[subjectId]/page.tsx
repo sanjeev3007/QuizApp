@@ -3,7 +3,7 @@ import React, { Suspense } from "react";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 import CircularProgress from "@mui/material/CircularProgress";
-import { getDashboard } from "@/app/supabase-server";
+import { getDashboard } from "@/actions/main.actions";
 import apiService from "@/lib/apiService";
 import Loader from "./_components/loader";
 

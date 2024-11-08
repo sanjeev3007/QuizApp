@@ -1,45 +1,8 @@
 "use server";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-import { cache } from "react";
-
-type Subtopics = {
-  totalQuestion: number;
-  totalCorrectQuestion: number;
-  easy: number;
-  medium: number;
-  hard: number;
-  easyTotal: number;
-  mediumTotal: number;
-  hardTotal: number;
-};
-
-export const createServerSupabaseClient = cache(() =>
-  createServerComponentClient({ cookies })
-);
-
-export const getQuizById = async (id: any) => {
-  const supabase = createServerSupabaseClient();
-  try {
-    let { data, error } = await supabase
-      .from("quiz")
-      .select("*")
-      .eq("id", id)
-      .limit(1);
-
-    if ((data?.length ?? 0) > 0) {
-      return data;
-    } else {
-      return null;
-    }
-  } catch (error) {
-    console.error("Error:", error);
-    return null;
-  }
-};
+import { createClient } from "@/lib/supabase/server";
 
 export const getQuizStats = async (quizId: string) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
   const { data, error } = await supabase
     .from("quiz")
     .select("*")
@@ -55,7 +18,7 @@ export const getNumberOfCompletedQuiz = async (
   userid: string,
   subjectId: number
 ) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
   const { data: allQuizes, error } = await supabase
     .from("quiz")
     .select("questions, submissions")
@@ -101,7 +64,7 @@ const quizWiseScore = ({
 };
 
 const getTopicWiseLevelScore = async (allQuizes: any[], grade: number) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
   const subtopics: any = {
     totalQuestion: 0,
     totalCorrectQuestion: 0,
@@ -192,7 +155,7 @@ export const getInsight = async (
   grade: number,
   subjectId: number
 ) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
   const { data: allQuizes, error } = await supabase
     .from("quiz")
     .select()
@@ -248,7 +211,7 @@ const getLast10Quizes = async ({
   userid: string;
   subjectId: number;
 }) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
   const { data, error } = await supabase
     .from("quiz")
     .select("*")
@@ -290,7 +253,7 @@ const getAccuracy = (completedQuizes: any[]) => {
 };
 
 export const getDashboard = async (userid: string, subjectId: number) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
   // const { data: allQuizes, error } = await supabase
   //   .from("quiz")
   //   .select("questions", "submissions")
@@ -321,7 +284,7 @@ export const getDashboard = async (userid: string, subjectId: number) => {
 };
 
 export async function getInCompletedQuiz(userId: string) {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
   const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000); // Calculate the timestamp for 2 hours ago
   const { data, error } = await supabase
     .from("quiz")
@@ -338,7 +301,7 @@ export async function getInCompletedQuiz(userId: string) {
 }
 
 export async function gkQuiz(userId: string) {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
   const { data: completedQuizes, error } = await supabase
     .from("quiz_gk")
     .select("*")
@@ -354,7 +317,7 @@ export async function gkQuiz(userId: string) {
 }
 
 export async function doubtSolveDashboard(userId: string) {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
   if (!userId) return 0;
   const { data: chats, error } = await supabase
     .from("chats_doubt_solve")
@@ -364,7 +327,7 @@ export async function doubtSolveDashboard(userId: string) {
 }
 
 export async function recentChat(userId: string) {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
   const { data: chats, error } = await supabase
     .from("chats_doubt_solve")
     .select("*")
@@ -376,7 +339,7 @@ export async function recentChat(userId: string) {
 }
 
 export const getNumberOfSubmittedAnswers = async (userid: string) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
   const { data: allQuizes, error } = await supabase
     .from("quiz")
     .select("questions, submissions")
