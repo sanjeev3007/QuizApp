@@ -52,6 +52,8 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 router.push("/");
               } else if (pathname.includes("languages/result")) {
                 router.push(`/languages?lang=${searchParams.get("lang")}`);
+              } else if (pathname.includes("languages")) {
+                router.push("/student-dashboard");
               } else {
                 router.back();
               }

@@ -28,8 +28,6 @@ export default function TopicSlider({
     return <div>Failed to load topics. Please try again.</div>;
   }
 
-  console.log(data);
-
   return (
     <div className="space-y-16 py-6 pb-16">
       <div className="text-xl md:text-2xl lg:text-3xl font-semibold text-center space-y-1">

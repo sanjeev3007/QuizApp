@@ -6,6 +6,10 @@ import { useState } from "react";
 import LanguageCard from "../components/language-card";
 import HeadingCard from "../components/heading-card";
 import TopicSlider from "../components/topic-slider";
+import { useQuery } from "@tanstack/react-query";
+import { getLanguageDashboard } from "@/lib/student-dashboard/apiClient";
+import type { LeaderboardResponse } from "@/lib/types/leaderboard";
+import { getCookie } from "cookies-next";
 
 type Props = {
   levels: {
@@ -19,15 +23,32 @@ type Props = {
 };
 
 const LanguageDashboard = ({ levels, lang, langId }: Props) => {
-  const [leaderboardData] = useState({
-    studentMeta: {},
-    topTenStudentList: [],
+  const userId = getCookie("userId");
+
+  const { data, isLoading: dashboardLoader } = useQuery<LeaderboardResponse>({
+    queryKey: ["languageLeaderboard", userId, langId],
+    queryFn: () =>
+      getLanguageDashboard({
+        studentId: userId || null,
+        lang: langId?.toString() || null,
+      }),
+    enabled: !!userId && !!langId,
   });
+
   const [studentActivity] = useState([]);
   const [streakData] = useState({});
   const [studentData] = useState(null);
   const [avatar, setAvatar] = useState<string>("");
-  const [dashboardLoader] = useState<boolean>(false);
+
+  const leaderboardData = {
+    studentMeta: {},
+    topTenStudentList:
+      data?.leaderboard.map((item) => ({
+        userid: item.user_id,
+        count: item.totalPoints,
+        rank: item.rank,
+      })) || [],
+  };
 
   return (
     <div className="w-full md:max-w-7xl mx-auto bg-[#FFF] pb-10 overflow-hidden !important">

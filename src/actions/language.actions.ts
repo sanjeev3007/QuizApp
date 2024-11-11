@@ -325,15 +325,17 @@ export const getUserCardState = async ({
   topicId,
   levelId,
   state,
+  lang,
 }: {
   userId: string;
   topicId: number;
   levelId: number;
   state: number;
+  lang: string;
 }) => {
   const supabase = createServerSupabaseClient();
 
-  console.log({ userId, topicId, levelId, state });
+  const languageData = await fetchLanguageIdfromSlug(lang);
   const { data, error } = await supabase
     .from("languages_quiz")
     .select("*")
@@ -341,9 +343,8 @@ export const getUserCardState = async ({
     .eq("topic_id", topicId)
     .eq("level_id", levelId)
     .eq("card_state", state)
+    .eq("language_id", languageData?.id)
     .single();
-
-  console.log(data);
 
   return data;
 };

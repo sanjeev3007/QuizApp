@@ -19,7 +19,6 @@ export default function ScoreCard({
     levelCompletedQuestions: number;
   };
 }) {
-  console.log(quizResult);
   return (
     <div className="container mx-auto p-4 max-w-4xl">
       <Card

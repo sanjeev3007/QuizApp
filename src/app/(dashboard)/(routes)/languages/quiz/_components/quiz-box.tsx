@@ -77,6 +77,7 @@ export default function QuizBox({
         topicId,
         levelId,
         state,
+        lang,
       });
     },
   });
@@ -120,7 +121,6 @@ export default function QuizBox({
     setIsCompleted(true);
     try {
       if (prevQuiz?.id) {
-        console.log(prevQuiz);
         const data = await updateQuizData({
           userId,
           total: content.length,

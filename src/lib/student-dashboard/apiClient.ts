@@ -66,3 +66,25 @@ export const getStudentTopics = async ({
     throw error;
   }
 };
+
+export const getLanguageDashboard = async ({
+  studentId,
+  lang,
+}: {
+  studentId: string | null;
+  lang: string | null;
+}) => {
+  try {
+    const params = {
+      studentId,
+      languageId: lang,
+    };
+    const response = await apiService.get(`/language-learning/leaderboard`, {
+      params,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};
