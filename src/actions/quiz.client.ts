@@ -629,7 +629,7 @@ export async function getTopicNameFromDB({
 // Add this function to the existing file
 
 export async function getUserQuizHistory(userId: string, subjectId: number) {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const { data, error } = await supabase
     .from("quiz")
