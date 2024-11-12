@@ -2,12 +2,15 @@
 import "../../subject-dashboard/components/subject-dashboard.css";
 import Activity from "@/components/activity/activity";
 import GlobalLeaderboard from "@/components/leaderboard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LanguageCard from "../components/language-card";
 import HeadingCard from "../components/heading-card";
 import TopicSlider from "../components/topic-slider";
 import { useQuery } from "@tanstack/react-query";
-import { getLanguageDashboard } from "@/lib/student-dashboard/apiClient";
+import {
+  getLanguageDashboard,
+  getStudentActivity,
+} from "@/lib/student-dashboard/apiClient";
 import type { LeaderboardResponse } from "@/lib/types/leaderboard";
 import { getCookie } from "cookies-next";
 
@@ -25,25 +28,56 @@ type Props = {
 const LanguageDashboard = ({ levels, lang, langId }: Props) => {
   const userId = getCookie("userId");
 
-  const { data, isLoading: dashboardLoader } = useQuery<LeaderboardResponse>({
-    queryKey: ["languageLeaderboard", userId, langId],
+  const { data: dashboardData, isLoading: dashboardLoader } =
+    useQuery<LeaderboardResponse>({
+      queryKey: ["languageLeaderboard", userId, langId],
+      queryFn: () =>
+        getLanguageDashboard({
+          userId: userId || null,
+          lang: langId || null,
+        }),
+      enabled: !!userId && !!langId,
+    });
+
+  const { data: activityData, isLoading: activityLoader } = useQuery({
+    queryKey: ["studentActivity", userId, langId],
     queryFn: () =>
-      getLanguageDashboard({
+      getStudentActivity({
         studentId: userId || null,
-        lang: langId?.toString() || null,
+        subjectId: langId || null,
       }),
     enabled: !!userId && !!langId,
   });
 
-  const [studentActivity] = useState([]);
-  const [streakData] = useState({});
-  const [studentData] = useState(null);
   const [avatar, setAvatar] = useState<string>("");
+
+  useEffect(() => {
+    if (activityData?.response) {
+      if (activityData.response.currentStudentMeta?.pic) {
+        setAvatar(activityData.response.currentStudentMeta.pic);
+        localStorage.setItem(
+          "user-avatar",
+          activityData.response.currentStudentMeta.pic
+        );
+      }
+    }
+  }, [activityData]);
+
+  const currentStudent = dashboardData?.leaderboard?.topTenStudentList?.find(
+    (row: any) => row.user_id === userId
+  );
+
+  const studentData = activityData?.response?.currentStudentMeta
+    ? {
+        ...activityData.response.currentStudentMeta,
+        rank: currentStudent?.rank,
+      }
+    : null;
 
   const leaderboardData = {
     studentMeta: {},
     topTenStudentList:
-      data?.leaderboard.map((item) => ({
+      dashboardData?.leaderboard?.topTenStudentList?.map((item) => ({
         userid: item.user_id,
         count: item.totalPoints,
         rank: item.rank,
@@ -59,12 +93,12 @@ const LanguageDashboard = ({ levels, lang, langId }: Props) => {
           <div className="flex lg:flex-row xs:flex-col justify-center gap-8 lg:mt-14 md:mt-6 xs:mt-12 mb-10 px-4">
             <Activity
               subject={lang}
-              studentActivity={studentActivity}
-              streakData={streakData}
+              studentActivity={activityData?.response?.activity || []}
+              streakData={activityData?.response?.streak || {}}
               studentData={studentData}
               avatar={avatar}
               setAvatar={setAvatar}
-              loading={dashboardLoader}
+              loading={dashboardLoader || activityLoader}
             />
             <GlobalLeaderboard
               leaderboardData={leaderboardData}

@@ -132,12 +132,10 @@ export default function QuizBox({
           quizId: prevQuiz?.id,
           state: state,
         });
-        console.log(data);
         if (data) {
           router.push("/languages/result?lang=" + lang + "&quiz=" + data.id);
         }
       } else {
-        console.log({ prevQuiz });
         const data = await saveQuizData({
           userId,
           total: content.length,

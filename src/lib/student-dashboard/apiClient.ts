@@ -68,15 +68,15 @@ export const getStudentTopics = async ({
 };
 
 export const getLanguageDashboard = async ({
-  studentId,
+  userId,
   lang,
 }: {
-  studentId: string | null;
-  lang: string | null;
+  userId: string | null;
+  lang: number | null;
 }) => {
   try {
     const params = {
-      studentId,
+      userId,
       languageId: lang,
     };
     const response = await apiService.get(`/language-learning/leaderboard`, {
