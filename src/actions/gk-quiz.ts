@@ -1,4 +1,5 @@
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+"use server";
+import { createClient } from "@/lib/supabase/server";
 
 // generating questions
 export const getGKQuestions = async (userId: string) => {
@@ -20,7 +21,7 @@ const fetchQuestionsForGK = async (
   questionIds: string[],
   db_url: string
 ) => {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const { data, error } = await supabase.rpc(db_url, {
     rows_limit: limit,
@@ -37,7 +38,7 @@ const fetchQuestionsForGK = async (
 
 //   generating random topics
 const generateRandomTopics = async () => {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const { data, error } = await supabase.from("db_gk_quiz2").select("topic");
 
@@ -45,16 +46,16 @@ const generateRandomTopics = async () => {
     console.log(error);
   }
 
-  const allTopics = Array.from(new Set(data?.map((topic) => topic.topic)));
+  const allTopics = Array.from(new Set(data?.map((topic: any) => topic.topic)));
 
   const randomTopics = [] as string[];
   for (let i = 0; i < 3; i++) {
     const randomTopic = allTopics[Math.floor(Math.random() * allTopics.length)];
-    if (randomTopics.includes(randomTopic)) {
+    if (randomTopics.includes(randomTopic as string)) {
       i--;
       continue;
     }
-    randomTopics.push(randomTopic);
+    randomTopics.push(randomTopic as string);
   }
 
   return randomTopics;
@@ -65,7 +66,7 @@ export const fetchCorrectSubmissions = async (
   userId: string,
   topics: string[]
 ) => {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const { data } = await supabase
     .from("correct_submissions_gk")
@@ -77,7 +78,7 @@ export const fetchCorrectSubmissions = async (
     return [];
   }
 
-  const formattedData = data.map((quiz) => {
+  const formattedData = data.map((quiz: any) => {
     return quiz.questionid;
   });
 
@@ -90,7 +91,7 @@ export async function createGKQuiz(
   questions: any,
   topics: string[]
 ) {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const { data, error } = await supabase
     .from("quiz_gk")
@@ -111,7 +112,7 @@ export async function createGKQuiz(
 
 // get quiz stats
 export const getGKQuizStats = async (quizId: string) => {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const { data, error } = await supabase
     .from("quiz_gk")
     .select("*")
@@ -126,7 +127,7 @@ export const getGKQuizStats = async (quizId: string) => {
 
 // update quiz
 export const updateGKQuizStats = async (quizId: string, userId: string) => {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const { error } = await supabase
     .from("quiz_gk")
     .update({
@@ -148,7 +149,7 @@ export async function storeUserSubmissionInGKQuiz(
   userId: string,
   submission: any
 ) {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const { data } = await supabase
     .from("quiz_gk")
@@ -169,7 +170,7 @@ export async function storeCorrectSubmissionForGK(
   quizId: number,
   multiple_topics: string[]
 ) {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const { error } = await supabase.from("correct_submissions_gk").insert({
     userid: userId,
@@ -198,7 +199,7 @@ export const feedbackGKQuiz = async ({
   response: string;
   reason: string | null;
 }) => {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const { error } = await supabase
     .from("quiz_gk_feedback")
     .insert({
@@ -215,7 +216,7 @@ export const feedbackGKQuiz = async ({
 
 // Get the incompleted quiz to continue it
 export async function getInCompletedGKQuiz(userId: string) {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000); // Calculate the timestamp for 2 hours ago
   const { data, error } = await supabase
     .from("quiz_gk")
@@ -233,7 +234,7 @@ export async function getInCompletedGKQuiz(userId: string) {
 }
 
 export const getNumberOfCompletedGKQuiz = async (userid: string) => {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const { data: allQuizes, error } = await supabase
     .from("quiz_gk")
     .select("questions, submissions")

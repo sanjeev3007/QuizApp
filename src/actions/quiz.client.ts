@@ -1,4 +1,5 @@
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+"use server";
+import { createClient } from "@/lib/supabase/server";
 
 // create quiz
 export async function createQuizBySubject({
@@ -10,7 +11,7 @@ export async function createQuizBySubject({
   grade: number;
   subjectId: number;
 }) {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const metadata = {
     grade: grade,
@@ -59,7 +60,7 @@ export async function generateQuiz({
   topicId: number;
   start: boolean;
 }) {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const metadata = {
     grade: grade,
@@ -111,7 +112,7 @@ export async function updateQuiz({
   grade: number;
   assignedData?: any;
 }) {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   let metadata;
   let isAssigned = !!assignedData?.topic;
@@ -268,7 +269,7 @@ const fetchQuestionsByLevel = async (
   grade: number,
   subjectId: number
 ) => {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   let rpc_function;
   if (subjectId === 1) {
@@ -316,7 +317,7 @@ const getIdFromTopic = async (
   grade: number,
   subjectId: number
 ) => {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const { data, error } = await supabase
     .from("topic")
@@ -346,7 +347,7 @@ const generateRandomTopic = async ({
   grade: number;
   subjectId: number;
 }) => {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const { data, error } = await supabase
     .from(`topic`)
@@ -360,7 +361,7 @@ const generateRandomTopic = async ({
 
   const allTopics = Array.from(
     new Set(
-      data?.map((topic) => {
+      data?.map((topic: any) => {
         return { id: topic.id, topic: topic.topic_name };
       })
     )
@@ -368,7 +369,7 @@ const generateRandomTopic = async ({
 
   const randomTopic = allTopics[Math.floor(Math.random() * allTopics.length)];
 
-  return randomTopic;
+  return randomTopic as { id: number; topic: string };
 };
 
 // update quiz stats to complete
@@ -379,7 +380,7 @@ export const updateQuizToComplete = async ({
   quizId: string;
   userId: string;
 }) => {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const { error } = await supabase
     .from("quiz")
     .update({
@@ -406,7 +407,7 @@ export const fetchCorrectSubmissions = async ({
   topicId: number;
   subjectId: number;
 }) => {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const { data, error } = await supabase
     .from("correct_submissions")
@@ -420,7 +421,7 @@ export const fetchCorrectSubmissions = async ({
     return [];
   }
 
-  const formattedData = data.map((quiz) => {
+  const formattedData = data.map((quiz: any) => {
     return quiz.questionid;
   });
 
@@ -443,7 +444,7 @@ export async function storeCorrectSubmission({
   grade: number;
   subjectId: number;
 }) {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const { error } = await supabase.from("correct_submissions").insert({
     userid: userId,
@@ -472,7 +473,7 @@ export async function storeUserSubmission({
   userId: string;
   submissions: any;
 }) {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const { data } = await supabase
     .from("quiz")
@@ -500,7 +501,7 @@ export async function storeUserSubmissionToSubmissions({
   optionSelected: string;
   correctOption: string;
 }) {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const { error } = await supabase
     .from("submissions")
@@ -533,7 +534,7 @@ export const feedbackQuiz = async ({
   response: string;
   reason: string | null;
 }) => {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const { error } = await supabase
     .from("quiz_feedback")
     .insert({
@@ -555,7 +556,7 @@ export const getNumberOfCompletedQuiz = async ({
   userId: string;
   subjectId: number;
 }) => {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const { data: allQuizes, error } = await supabase
     .from("quiz")
     .select("questions, submissions")
@@ -587,7 +588,7 @@ export async function getInCompletedQuiz({
   userId: string;
   subjectId: number;
 }) {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000); // Calculate the timestamp for 2 hours ago
   const { data, error } = await supabase
     .from("quiz")
@@ -611,7 +612,7 @@ export async function getTopicNameFromDB({
   topicId: number;
   subjectId: number;
 }) {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const { data, error } = await supabase
     .from("topic")
     .select("topic_name")

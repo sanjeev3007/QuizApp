@@ -3,12 +3,11 @@
 import {
   LanguageDB,
   LanguageQuiz,
-  LanguageTopic,
 } from "@/app/(dashboard)/(routes)/languages/learn/_types";
-import { createServerSupabaseClient } from "@/app/supabase-server";
+import { createClient } from "@/lib/supabase/server";
 
 export const getLanguageLevels = async () => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
 
   const { data, error } = await supabase.from("languages_levels").select("*");
 
@@ -26,7 +25,7 @@ export const getLanguageTopics = async ({
   langId: number;
   userId: string;
 }) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
 
   const { data, error } = await supabase
     .from("languages_topics")
@@ -46,7 +45,7 @@ export const getLanguageTopics = async ({
 };
 
 export const getLanguageIdByName = async (name: string) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
 
   const { data, error } = await supabase
     .from("subject")
@@ -72,7 +71,7 @@ export const getTopicContent = async ({
   from: number;
   to: number;
 }) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
   const languageId = await getLanguageIdByName(language);
 
   const { data, error } = await supabase
@@ -115,7 +114,7 @@ export const saveQuizData = async ({
   levelId: number;
   state: number;
 }) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
   const languageData = await fetchLanguageIdfromSlug(language);
 
   // Calculate points based on level
@@ -165,7 +164,7 @@ export const updateQuizData = async ({
   quizId: number;
   state: number;
 }) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
 
   console.log({
     quizId,
@@ -205,7 +204,7 @@ export const updateQuizData = async ({
 };
 
 export const fetchLanguageIdfromSlug = async (slug: string) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
 
   const { data, error } = await supabase
     .from("subject")
@@ -216,7 +215,7 @@ export const fetchLanguageIdfromSlug = async (slug: string) => {
 };
 
 export const fetchQuizResult = async (quizId: number) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
 
   const { data, error } = await supabase
     .from("languages_quiz")
@@ -297,7 +296,7 @@ export const saveLearningData = async ({
   topicId: number;
   levelId: number;
 }) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
 
   const languageData = await fetchLanguageIdfromSlug(language);
   const { data, error } = await supabase
@@ -333,7 +332,7 @@ export const getUserCardState = async ({
   state: number;
   lang: string;
 }) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
 
   const languageData = await fetchLanguageIdfromSlug(lang);
   const { data, error } = await supabase
@@ -353,7 +352,7 @@ export const fetchUpcomingTopics = async (
   languageId: number,
   currentTopicId: number
 ) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
 
   const { data, error } = await supabase
     .from("languages_topics")

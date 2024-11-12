@@ -1,9 +1,9 @@
 "use server";
 
-import { createServerSupabaseClient } from "@/app/supabase-server";
+import { createClient } from "@/lib/supabase/server";
 
 export const getNumberOfCompletedGKQuiz = async (userid: string) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
 
   if (!userid) {
     return {
@@ -22,7 +22,7 @@ export const getNumberOfCompletedGKQuiz = async (userid: string) => {
     console.error(error);
   }
   let numberOfCompletedQuiz = 0;
-  allQuizes?.forEach((quiz) => {
+  allQuizes?.forEach((quiz: any) => {
     numberOfCompletedQuiz += quiz.submissions?.length || 0;
   });
 
@@ -40,7 +40,7 @@ export const getNumberOfCompletedGKQuiz = async (userid: string) => {
 
 // Get the incompleted quiz to continue it
 export async function getInCompletedGKQuiz(userId: string) {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
   const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000); // Calculate the timestamp for 2 hours ago
   const { data, error } = await supabase
     .from("quiz_gk")
@@ -57,7 +57,7 @@ export async function getInCompletedGKQuiz(userId: string) {
 }
 
 export const getGKQuizById = async (id: any) => {
-  const supabase = createServerSupabaseClient();
+  const supabase = createClient();
   try {
     let { data, error } = await supabase
       .from("quiz_gk")

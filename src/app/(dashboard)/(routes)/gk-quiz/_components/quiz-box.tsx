@@ -29,6 +29,7 @@ import {
   updateGKQuizStats,
 } from "@/actions/gk-quiz";
 import saveGTMEvents from "@/lib/gtm";
+import apiService from "@/lib/apiService";
 
 type SubmissionType = {
   questionId: string;
@@ -72,6 +73,22 @@ export default function QuizBox({
   const router = useRouter();
 
   const { questions: questionList, complete: isComplete } = quizData;
+  const assignQuiz = async () => {
+    if (hasEnded) {
+      try {
+        await apiService.post("/quiz/assign", {
+          studentId: user.id || null,
+          type: "Quiz Champion",
+        });
+      } catch (err) {
+        console.error("🚀 ~ quiz continue ~ err:", err);
+      }
+    }
+  };
+
+  useEffect(() => {
+      assignQuiz();
+  }, [hasEnded, user.id]);
 
   const startNewQuiz = async () => {
     setLoader(true);
