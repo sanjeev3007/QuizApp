@@ -35,8 +35,6 @@ export const getLanguageTopics = async ({
     .eq("languages_quiz.language_id", langId)
     .filter("languages_db", "not.is", null);
 
-  console.log(data);
-
   if (error) {
     console.log(error);
   }
@@ -74,17 +72,13 @@ export const getTopicContent = async ({
   const supabase = createClient();
   const languageId = await getLanguageIdByName(language);
 
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from("languages_db")
     .select("*")
     .eq("topic_id", topic)
     .eq("language_id", languageId?.id)
     .order("id", { ascending: true })
     .range(from || 0, to || 20);
-
-  if (error) {
-    console.log(error);
-  }
 
   return data;
 };
@@ -165,17 +159,6 @@ export const updateQuizData = async ({
   state: number;
 }) => {
   const supabase = createClient();
-
-  console.log({
-    quizId,
-    userId,
-    total,
-    correct,
-    submission,
-    topicId,
-    levelId,
-    state,
-  });
 
   // Calculate points based on level
   const pointsPerQuestion = levelId;

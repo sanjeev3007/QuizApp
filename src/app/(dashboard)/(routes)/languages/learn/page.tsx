@@ -3,6 +3,7 @@ import { getTopicContent } from "@/actions/language.actions";
 import LearnBox from "./_components/learn-box";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
+import { Suspense } from "react";
 
 export default async function LearnPage({
   searchParams,
