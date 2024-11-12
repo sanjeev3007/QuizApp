@@ -1,4 +1,8 @@
-import { getLanguageLevels } from "@/actions/language.actions";
+import { redirect } from "next/navigation";
+import {
+  getLanguageIdByName,
+  getLanguageLevels,
+} from "@/actions/language.actions";
 import LanguageDashboard from "./components/language-dashboard";
 
 export default async function DashboardPage({
@@ -6,6 +10,24 @@ export default async function DashboardPage({
 }: {
   searchParams: { lang: string };
 }) {
-  const levels = await getLanguageLevels();
-  return <LanguageDashboard levels={levels!} lang={searchParams.lang} />;
+  if (!searchParams.lang) {
+    redirect("/student-dashboard");
+  }
+
+  const [levels, langInfo] = await Promise.all([
+    getLanguageLevels(),
+    getLanguageIdByName(searchParams.lang),
+  ]);
+
+  if (!levels || !langInfo) {
+    redirect("/student-dashboard");
+  }
+
+  return (
+    <LanguageDashboard
+      levels={levels}
+      lang={searchParams.lang}
+      langId={langInfo.id}
+    />
+  );
 }

@@ -5,14 +5,20 @@ import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
 import NoahImage from "@/assets/Images/noah_doubt_solve_dp.svg";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { LanguageQuizResult } from "../../learn/_types";
+import { getCardIcon } from "../../_utils";
 
-export default function ScoreCard({ lang }: { lang: string }) {
-  const [result, setResult] = useState({ total: 0, correct: 0 });
-  useEffect(() => {
-    console.log(localStorage.getItem("result"));
-    setResult(JSON.parse(localStorage.getItem("result")!));
-  }, []);
+export default function ScoreCard({
+  quizResult,
+}: {
+  lang: string;
+  quizResult: LanguageQuizResult & {
+    totalQuestions: number;
+    completedQuestions: number;
+    levelTotalQuestions: number;
+    levelCompletedQuestions: number;
+  };
+}) {
   return (
     <div className="container mx-auto p-4 max-w-4xl">
       <Card
@@ -36,7 +42,7 @@ export default function ScoreCard({ lang }: { lang: string }) {
               <p className="text-[#6C9D9D] text-lg font-medium mb-2">
                 Keep learning and unlock levels
               </p>
-              <Link href={"/languages?lang=" + lang}>
+              <Link href={"/student-dashboard"}>
                 <Button className="bg-[#EB9B3A] hover:bg-orange-500 text-white">
                   Continue Learning
                   <svg
@@ -57,17 +63,11 @@ export default function ScoreCard({ lang }: { lang: string }) {
               </Link>
             </div>
           </div>
-          <div
-            className="text-[#569090] bg-white/60 p-4 grid place-items-center rounded-lg"
-            // style={{
-            //   background:
-            //     "linear-gradient(133.16deg, #FCF7ED -0.38%, #FDF2F9 100%)",
-            // }}
-          >
+          <div className="text-[#569090] bg-white/60 p-4 grid place-items-center rounded-lg">
             <p className="mb-1">Your Score</p>
             <p className="text-4xl font-bold">
-              {result.correct}
-              <span className="text-xl">/{result.total}</span>
+              {quizResult?.correct}
+              <span className="text-xl">/{quizResult?.total}</span>
             </p>
           </div>
         </CardContent>
@@ -85,13 +85,18 @@ export default function ScoreCard({ lang }: { lang: string }) {
               CURRENT TOPIC
             </h4>
             <CardTitle className="text-xl font-semibold text-[#517B7B]">
-              <span className="mr-2">🎃</span>
-              Simple adjective
+              <span className="mr-2">
+                {getCardIcon(quizResult?.languages_topics?.name as string)}
+              </span>
+              {quizResult?.languages_topics?.name}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <Progress
-              value={60}
+              value={
+                (quizResult?.completedQuestions / quizResult?.totalQuestions) *
+                100
+              }
               className="mb-4 rounded-full h-3"
               style={{
                 background:
@@ -103,7 +108,8 @@ export default function ScoreCard({ lang }: { lang: string }) {
               round="100px"
             />
             <p className="text-sm text-[#A3A3A3]">
-              Completed 12 of 20 flash cards
+              Completed {quizResult?.completedQuestions} of{" "}
+              {quizResult?.totalQuestions} flash cards
             </p>
           </CardContent>
         </Card>
@@ -120,12 +126,16 @@ export default function ScoreCard({ lang }: { lang: string }) {
             </h4>
             <CardTitle className="text-xl font-semibold text-[#517B7B]">
               <span className="mr-2">🏆</span>
-              Level 1
+              Level {quizResult?.level_id}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <Progress
-              value={60}
+              value={
+                (quizResult?.levelCompletedQuestions /
+                  quizResult?.levelTotalQuestions) *
+                100
+              }
               className="mb-4 rounded-full h-3"
               style={{
                 background:
@@ -137,7 +147,8 @@ export default function ScoreCard({ lang }: { lang: string }) {
               round="100px"
             />
             <p className="text-sm text-[#A3A3A3]">
-              Completed 64 of 80 flash cards
+              Completed {quizResult?.levelCompletedQuestions} of{" "}
+              {quizResult?.levelTotalQuestions} flash cards
             </p>
           </CardContent>
         </Card>

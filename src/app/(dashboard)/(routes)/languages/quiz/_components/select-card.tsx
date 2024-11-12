@@ -6,12 +6,13 @@ import { FlashcardData } from "../../learn/_types";
 import { cn } from "@/lib/utils";
 
 type QuizCardProps = {
-  data: FlashcardData;
+  data: FlashcardData & { id: number };
   currentCard: number;
   totalCards: number;
   onNextCard: () => void;
   onPrevCard: () => void;
-  onAnswer: (isCorrect: boolean) => void;
+  onAnswer: (answer: string, isCorrect: boolean) => void;
+  resetQuiz: () => void;
 };
 
 export const SelectCard: React.FC<QuizCardProps> = ({
@@ -21,28 +22,33 @@ export const SelectCard: React.FC<QuizCardProps> = ({
   onNextCard,
   onPrevCard,
   onAnswer,
+  resetQuiz,
 }) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
   const [timeLeft, setTimeLeft] = useState(45);
+  const [timerEnded, setTimerEnded] = useState(false);
 
   useEffect(() => {
     setSelectedAnswer(null);
     setShowCorrectAnswer(false);
     setTimeLeft(45);
+    setTimerEnded(false);
   }, [data.question]);
 
   useEffect(() => {
     if (timeLeft > 0 && !showCorrectAnswer) {
       const timerId = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timerId);
+    } else if (timeLeft === 0) {
+      setTimerEnded(true);
     }
   }, [timeLeft, showCorrectAnswer]);
 
   const handleAnswerSelect = (answer: string) => {
     setSelectedAnswer(answer);
     const correct = answer === data.correctAnswer;
-    onAnswer(correct);
+    onAnswer(answer, correct);
   };
 
   const progressBar = Math.round((currentCard / totalCards) * 100).toFixed(0);
@@ -53,6 +59,14 @@ export const SelectCard: React.FC<QuizCardProps> = ({
     return `${mins.toString().padStart(2, "0")}:${secs
       .toString()
       .padStart(2, "0")}`;
+  };
+
+  const handleRetry = () => {
+    setTimeLeft(45);
+    setSelectedAnswer(null);
+    setShowCorrectAnswer(false);
+    setTimerEnded(false);
+    resetQuiz();
   };
 
   return (
@@ -104,7 +118,7 @@ export const SelectCard: React.FC<QuizCardProps> = ({
                     "bg-[#D4EDE1] border-[#4EB487]")
               )}
               onClick={() => handleAnswerSelect(option.text)}
-              disabled={selectedAnswer !== null}
+              disabled={showCorrectAnswer}
             >
               {option.text}
             </Button>
@@ -127,7 +141,15 @@ export const SelectCard: React.FC<QuizCardProps> = ({
             <ArrowLeft className="mr-2 h-4 w-4" />
             Previous
           </Button>
-          {showCorrectAnswer ? (
+          {timerEnded ? (
+            <Button
+              variant="outline"
+              onClick={handleRetry}
+              className="bg-[#E98451] text-white cursor-pointer"
+            >
+              Retry
+            </Button>
+          ) : showCorrectAnswer ? (
             <Button
               variant="outline"
               onClick={() => {

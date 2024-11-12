@@ -5,8 +5,15 @@ import { TouchBackend } from "react-dnd-touch-backend";
 import { AnimatePresence, motion } from "framer-motion";
 import { Flashcard } from "./flashcard";
 import { useEffect, useState } from "react";
-import { DB } from "../_types";
-import { useRouter } from "next/navigation";
+import { LanguageDB } from "../_types";
+import { saveLearningData } from "@/actions/language.actions";
+import { CompletionCard } from "./completion-card";
+
+type LearningSubmission = {
+  questionId: number;
+  answer: string;
+  isCorrect: boolean;
+};
 
 const DndProviderWithBackend = ({
   children,
@@ -25,28 +32,31 @@ const DndProviderWithBackend = ({
 };
 
 type FlashcardPageProps = {
-  content: DB[];
+  content: LanguageDB[];
   levelId: number;
   topicId: number;
   lang: string;
+  userId: string;
+  cardState: string;
 };
+
 export default function LearnBox({
   content,
   levelId,
   topicId,
   lang,
+  userId,
+  cardState,
 }: FlashcardPageProps) {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [flashcards, setFlashcards] = useState<DB[]>(content);
-  const router = useRouter();
-
-  useEffect(() => {
-    setFlashcards(content);
-  }, []);
+  const [learningSubmissions, setLearningSubmissions] = useState<
+    LearningSubmission[]
+  >([]);
+  const [isCompleted, setIsCompleted] = useState(false);
 
   const handleNextCard = () => {
-    if (currentCardIndex < flashcards.length - 1) {
+    if (currentCardIndex < content.length - 1) {
       setCurrentCardIndex(currentCardIndex + 1);
     } else {
       completeSet();
@@ -63,27 +73,42 @@ export default function LearnBox({
     if (isCorrect) {
       setCorrectAnswers(correctAnswers + 1);
     }
+    setLearningSubmissions([
+      ...learningSubmissions,
+      {
+        questionId: content[currentCardIndex].id,
+        answer:
+          content[currentCardIndex].options.find(
+            (option) => option.correct === "true"
+          )?.text || "",
+        isCorrect,
+      },
+    ]);
   };
 
-  const completeSet = () => {
-    // const percentageCorrect = (correctAnswers / flashcards.length) * 100;
-    // let progressIncrease = 0;
+  const resetQuiz = () => {
+    setCurrentCardIndex(0);
+    setCorrectAnswers(0);
+    setLearningSubmissions([]);
+  };
 
-    // if (percentageCorrect >= 90) {
-    //   progressIncrease = 20;
-    // } else if (percentageCorrect >= 70) {
-    //   progressIncrease = 15;
-    // } else if (percentageCorrect >= 50) {
-    //   progressIncrease = 10;
-    // } else {
-    //   progressIncrease = 5;
-    // }
-    localStorage.setItem(
-      "result",
-      JSON.stringify({ total: flashcards.length, correct: correctAnswers })
-    );
-
-    router.push("/languages/result?lang=" + lang);
+  const completeSet = async () => {
+    try {
+      const data = await saveLearningData({
+        userId,
+        total: content.length,
+        correct: correctAnswers,
+        submission: learningSubmissions,
+        language: lang,
+        topicId,
+        levelId,
+      });
+      if (data) {
+        setIsCompleted(true);
+      }
+    } catch (error) {
+      console.error("Error saving learning data:", error);
+    }
   };
 
   return (
@@ -91,7 +116,24 @@ export default function LearnBox({
       <DndProviderWithBackend>
         <div className="py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center">
           <AnimatePresence mode="wait">
-            {flashcards && flashcards[currentCardIndex] ? (
+            {isCompleted ? (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="w-full max-w-lg"
+              >
+                <CompletionCard
+                  lang={lang}
+                  topicId={topicId}
+                  levelId={levelId}
+                  correctAnswers={correctAnswers}
+                  totalCards={content.length}
+                  cardState={cardState}
+                />
+              </motion.div>
+            ) : content && content[currentCardIndex] ? (
               <motion.div
                 key={"currentCardIndex"}
                 initial={{ opacity: 0, y: 20 }}
@@ -103,28 +145,29 @@ export default function LearnBox({
                 <Flashcard
                   key={`flashcard-${currentCardIndex}`}
                   data={{
-                    question: flashcards[currentCardIndex].question,
-                    options: flashcards[currentCardIndex].options.map(
+                    question: content[currentCardIndex].question,
+                    options: content[currentCardIndex].options.map(
                       (option, index) => ({
                         id: index.toString(),
                         text: option.text,
                       })
                     ),
                     correctAnswer:
-                      flashcards[currentCardIndex].options.find(
+                      content[currentCardIndex].options.find(
                         (option) => option.correct === "true"
                       )?.text || "",
-                    explanation: flashcards[currentCardIndex].explanation,
+                    explanation: content[currentCardIndex].explanation,
                   }}
                   currentCard={currentCardIndex + 1}
-                  totalCards={flashcards.length}
+                  totalCards={content.length}
                   onNextCard={handleNextCard}
                   onPrevCard={handlePrevCard}
                   onAnswer={handleAnswer}
+                  resetQuiz={resetQuiz}
                 />
               </motion.div>
             ) : (
-              <p>No flashcards available</p>
+              <p>No content available</p>
             )}
           </AnimatePresence>
         </div>

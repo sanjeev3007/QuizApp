@@ -3,10 +3,17 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { DB } from "../../learn/_types";
+import { useState, useEffect } from "react";
+import { LanguageDB } from "../../learn/_types";
 import { SelectCard } from "./select-card";
 import { useRouter } from "next/navigation";
+import {
+  getUserCardState,
+  saveQuizData,
+  updateQuizData,
+} from "@/actions/language.actions";
+import { Loader2 } from "lucide-react"; // Import the loader icon
+import { useQuery } from "@tanstack/react-query";
 
 const DndProviderWithBackend = ({
   children,
@@ -24,11 +31,19 @@ const DndProviderWithBackend = ({
   return <DndProvider backend={Backend}>{children}</DndProvider>;
 };
 
+type QuizSubmission = {
+  questionId: number;
+  answer: string;
+  isCorrect: boolean;
+};
+
 type FlashcardPageProps = {
-  content: DB[];
+  content: LanguageDB[];
   levelId: number;
   topicId: number;
   lang: string;
+  userId: string;
+  cardState: string;
 };
 
 export default function QuizBox({
@@ -36,18 +51,41 @@ export default function QuizBox({
   levelId,
   topicId,
   lang,
+  userId,
+  cardState,
 }: FlashcardPageProps) {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [flashcards, setFlashcards] = useState<DB[]>([]);
+  const [quizSubmissions, setQuizSubmissions] = useState<QuizSubmission[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const state =
+    cardState === "1-5"
+      ? 1
+      : cardState === "6-10"
+      ? 2
+      : cardState === "11-15"
+      ? 3
+      : cardState === "16-20"
+      ? 4
+      : 0;
+  const { data: prevQuiz, isLoading: userPrevQuizLoading } = useQuery({
+    queryKey: ["user_card_state"],
+    queryFn: async () => {
+      return await getUserCardState({
+        userId: userId as string,
+        topicId,
+        levelId,
+        state,
+        lang,
+      });
+    },
+  });
+
   const router = useRouter();
 
-  useEffect(() => {
-    setFlashcards(content);
-  }, []);
-
   const handleNextCard = () => {
-    if (currentCardIndex < flashcards.length - 1) {
+    if (currentCardIndex < content.length - 1) {
       setCurrentCardIndex(currentCardIndex + 1);
     } else {
       completeSet();
@@ -60,32 +98,63 @@ export default function QuizBox({
     }
   };
 
-  const handleAnswer = (isCorrect: boolean) => {
+  const handleAnswer = (answer: string, isCorrect: boolean) => {
+    const submission: QuizSubmission = {
+      questionId: content[currentCardIndex].id,
+      answer,
+      isCorrect,
+    };
+    setQuizSubmissions([...quizSubmissions, submission]);
     if (isCorrect) {
       setCorrectAnswers(correctAnswers + 1);
     }
   };
 
-  const completeSet = () => {
-    // const percentageCorrect = (correctAnswers / flashcards.length) * 100;
-    // let progressIncrease = 0;
+  const resetQuiz = () => {
+    setCurrentCardIndex(0);
+    setCorrectAnswers(0);
+    setQuizSubmissions([]);
+  };
 
-    // if (percentageCorrect >= 90) {
-    //   progressIncrease = 20;
-    // } else if (percentageCorrect >= 70) {
-    //   progressIncrease = 15;
-    // } else if (percentageCorrect >= 50) {
-    //   progressIncrease = 10;
-    // } else {
-    //   progressIncrease = 5;
-    // }
-
-    localStorage.setItem(
-      "result",
-      JSON.stringify({ total: flashcards.length, correct: correctAnswers })
-    );
-
-    router.push("/languages/result?lang=" + lang);
+  const completeSet = async () => {
+    setIsLoading(true);
+    setIsCompleted(true);
+    try {
+      if (prevQuiz?.id) {
+        const data = await updateQuizData({
+          userId,
+          total: content.length,
+          correct: correctAnswers,
+          submission: quizSubmissions,
+          language: lang,
+          topicId,
+          levelId,
+          quizId: prevQuiz?.id,
+          state: state,
+        });
+        if (data) {
+          router.push("/languages/result?lang=" + lang + "&quiz=" + data.id);
+        }
+      } else {
+        const data = await saveQuizData({
+          userId,
+          total: content.length,
+          correct: correctAnswers,
+          submission: quizSubmissions,
+          language: lang,
+          topicId,
+          levelId,
+          state,
+        });
+        if (data) {
+          router.push("/languages/result?lang=" + lang + "&quiz=" + data.id);
+        }
+      }
+    } catch (error) {
+      console.error("Error saving quiz data:", error);
+      setIsLoading(false);
+      setIsCompleted(false);
+    }
   };
 
   return (
@@ -93,9 +162,21 @@ export default function QuizBox({
       <DndProviderWithBackend>
         <div className="py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center">
           <AnimatePresence mode="wait">
-            {content ? (
+            {isLoading && isCompleted ? (
               <motion.div
-                key={"currentCardIndex"}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex flex-col items-center justify-center"
+              >
+                <Loader2 className="h-8 w-8 animate-spin text-[#E98451]" />
+                <p className="mt-2 text-[#5B8989]">
+                  Saving your quiz results...
+                </p>
+              </motion.div>
+            ) : !isCompleted && content ? (
+              <motion.div
+                key={currentCardIndex}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -104,6 +185,7 @@ export default function QuizBox({
               >
                 <SelectCard
                   data={{
+                    id: content[currentCardIndex].id,
                     question: content[currentCardIndex].question,
                     options: content[currentCardIndex].options.map(
                       (option, index) => ({
@@ -122,11 +204,10 @@ export default function QuizBox({
                   onNextCard={handleNextCard}
                   onPrevCard={handlePrevCard}
                   onAnswer={handleAnswer}
+                  resetQuiz={resetQuiz}
                 />
               </motion.div>
-            ) : (
-              <p>No flashcards available</p>
-            )}
+            ) : null}
           </AnimatePresence>
         </div>
       </DndProviderWithBackend>

@@ -2,24 +2,17 @@
 import "../../subject-dashboard/components/subject-dashboard.css";
 import Activity from "@/components/activity/activity";
 import GlobalLeaderboard from "@/components/leaderboard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LanguageCard from "../components/language-card";
 import HeadingCard from "../components/heading-card";
 import TopicSlider from "../components/topic-slider";
-
-type TopicCardLayout = {
-  badge: string | null;
-  topicName: string;
-  totalScore: number;
-  totalQuestion: number;
-  subjectId: number;
-  subjectName: string | null;
-  topicId: number;
-  userId: string;
-  userGrade: string;
-};
-
-type TopicCardLayoutArr = TopicCardLayout[];
+import { useQuery } from "@tanstack/react-query";
+import {
+  getLanguageDashboard,
+  getStudentActivity,
+} from "@/lib/student-dashboard/apiClient";
+import type { LeaderboardResponse } from "@/lib/types/leaderboard";
+import { getCookie } from "cookies-next";
 
 type Props = {
   levels: {
@@ -29,20 +22,67 @@ type Props = {
     points: number;
   }[];
   lang: string;
+  langId: number;
 };
 
-const LanguageDashboard = ({ levels, lang }: Props) => {
-  const [leaderboardData, setLeaderboardData] = useState({
-    studentMeta: {},
-    topTenStudentList: [],
+const LanguageDashboard = ({ levels, lang, langId }: Props) => {
+  const userId = getCookie("userId");
+
+  const { data: dashboardData, isLoading: dashboardLoader } =
+    useQuery<LeaderboardResponse>({
+      queryKey: ["languageLeaderboard", userId, langId],
+      queryFn: () =>
+        getLanguageDashboard({
+          userId: userId || null,
+          lang: langId || null,
+        }),
+      enabled: !!userId && !!langId,
+    });
+
+  const { data: activityData, isLoading: activityLoader } = useQuery({
+    queryKey: ["studentActivity", userId, langId],
+    queryFn: () =>
+      getStudentActivity({
+        studentId: userId || null,
+        subjectId: langId || null,
+      }),
+    enabled: !!userId && !!langId,
   });
-  const [studentActivity, setStudentActivity] = useState([]);
-  const [streakData, setStreakData] = useState({});
-  const [studentData, setStudentData] = useState(null);
-  const [topicData, setTopicData] = useState<TopicCardLayoutArr>([]);
+
   const [avatar, setAvatar] = useState<string>("");
-  const [topicLoader, setTopicLoader] = useState<boolean>(false);
-  const [dashboardLoader, setDashboardLoader] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (activityData?.response) {
+      if (activityData.response.currentStudentMeta?.pic) {
+        setAvatar(activityData.response.currentStudentMeta.pic);
+        localStorage.setItem(
+          "user-avatar",
+          activityData.response.currentStudentMeta.pic
+        );
+      }
+    }
+  }, [activityData]);
+
+  const currentStudent = dashboardData?.leaderboard?.topTenStudentList?.find(
+    (row: any) => row.user_id === userId
+  );
+
+  const studentData = activityData?.response?.currentStudentMeta
+    ? {
+        ...activityData.response.currentStudentMeta,
+        rank: currentStudent?.rank,
+      }
+    : null;
+
+  const leaderboardData = {
+    studentMeta: {},
+    topTenStudentList:
+      dashboardData?.leaderboard?.topTenStudentList?.map((item) => ({
+        userid: item.user_id,
+        count: item.totalPoints,
+        rank: item.rank,
+      })) || [],
+  };
 
   return (
     <div className="w-full md:max-w-7xl mx-auto bg-[#FFF] pb-10 overflow-hidden !important">
@@ -50,15 +90,15 @@ const LanguageDashboard = ({ levels, lang }: Props) => {
         <div className="w-full flex justify-center flex-col">
           <HeadingCard lang={lang as string} />
           <LanguageCard lang={lang as string} />
-          <div className="flex lg:flex-row xs:flex-col justify-center gap-8 lg:mt-14 md:mt-6 xs:mt-12 mb-10">
+          <div className="flex lg:flex-row xs:flex-col justify-center gap-8 lg:mt-14 md:mt-6 xs:mt-12 mb-10 px-4">
             <Activity
               subject={lang}
-              studentActivity={studentActivity}
-              streakData={streakData}
+              studentActivity={activityData?.response?.activity || []}
+              streakData={activityData?.response?.streak || {}}
               studentData={studentData}
               avatar={avatar}
               setAvatar={setAvatar}
-              loading={dashboardLoader}
+              loading={dashboardLoader || activityLoader}
             />
             <GlobalLeaderboard
               leaderboardData={leaderboardData}
@@ -68,20 +108,8 @@ const LanguageDashboard = ({ levels, lang }: Props) => {
             />
           </div>
 
-          {(topicLoader || (topicData && topicData.length > 0)) && (
-            <div className="lg:text-4xl md:text-2xl xs:text-xl font-semibold leading-[38.73px] text-center lg:mt-10 md:mt-8 xs:mt-6">
-              <span className="gradient-title-2">Master</span>
-              <span className="text-[#5B8989]"> every topic</span>
-            </div>
-          )}
-          {(topicLoader || (topicData && topicData.length > 0)) && (
-            <div className="lg:text-4xl md:text-2xl xs:text-xl font-semibold leading-[38.73px] text-center lg:mt-4 md:mt-3 xs:mt-2">
-              <span className="text-[#5B8989]">Improve ratings with more </span>
-              <span className="gradient-title-3">practice</span>
-            </div>
-          )}
           <div id={"topics"} className="lg:mt-20 md:mt-12">
-            {levels && <TopicSlider levels={levels} />}
+            {levels && <TopicSlider levels={levels} langId={langId} />}
           </div>
         </div>
       </div>
