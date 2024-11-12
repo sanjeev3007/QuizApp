@@ -1,91 +1,60 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "./ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Progress } from "./ui/progress";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { motion, AnimatePresence } from "framer-motion";
 
-export default function QuickQuiz() {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [score, setScore] = useState(0);
-  const [showScore, setShowScore] = useState(false);
+export default function Component() {
+  const [isVisible, setIsVisible] = useState(true);
+  const [timeLeft, setTimeLeft] = useState(30);
 
-  const questions = [
-    {
-      questionText: "What is the capital of France?",
-      options: ["London", "Berlin", "Paris", "Madrid"],
-      correctAnswer: "Paris",
-    },
-    {
-      questionText: "Which planet is known as the Red Planet?",
-      options: ["Jupiter", "Mars", "Venus", "Saturn"],
-      correctAnswer: "Mars",
-    },
-    {
-      questionText: "What is 2 + 2?",
-      options: ["3", "4", "5", "6"],
-      correctAnswer: "4",
-    },
-  ];
-
-  const handleAnswerClick = (selectedAnswer: string) => {
-    if (selectedAnswer === questions[currentQuestion].correctAnswer) {
-      setScore(score + 1);
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      // setIsVisible(false);
+      return;
     }
 
-    const nextQuestion = currentQuestion + 1;
-    if (nextQuestion < questions.length) {
-      setCurrentQuestion(nextQuestion);
-    } else {
-      setShowScore(true);
-    }
-  };
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
 
-  const handleRestart = () => {
-    setCurrentQuestion(0);
-    setScore(0);
-    setShowScore(false);
-  };
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
   return (
-    <div className="w-full bg-[#f4f8f8] rounded-lg flex justify-center items-center p-8 mb-4">
-      <Card className="overflow-hidden w-full max-w-2xl">
-        <CardContent className="p-6">
-          {showScore ? (
-            <div className="text-center">
-              <h2 className="mb-4 text-2xl font-bold">
-                You scored {score} out of {questions.length}!
-              </h2>
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="w-full bg-gray-50 p-6 flex items-center justify-center mb-8"
+        >
+          <Card className="w-full max-w-md p-6">
+            <div className="flex flex-col items-center gap-4">
+              <h1 className="text-2xl font-bold text-[#5b8989]">
+                Ready for a Quiz?
+              </h1>
               <Button
-                onClick={handleRestart}
-                className="bg-orange-400 hover:bg-orange-500 dark:bg-orange-500 dark:hover:bg-orange-600"
+                size="lg"
+                className="bg-[#e98451] hover:bg-[#e98451]/80 text-white font-medium px-8 py-2 rounded-md transition-colors"
               >
-                Restart Quiz
+                Let&apos;s Start
               </Button>
-            </div>
-          ) : (
-            <div>
-              <h2 className="mb-6 text-center font-medium">
-                Question {currentQuestion + 1} of {questions.length}
-              </h2>
-              <p className="mb-4 text-lg">
-                Q. {questions[currentQuestion].questionText}
-              </p>
-              <div className="grid md:grid-cols-2 gap-4">
-                {questions[currentQuestion].options.map((option, index) => (
-                  <Button
-                    key={index}
-                    onClick={() => handleAnswerClick(option)}
-                    variant="outline"
-                    className="h-auto p-2 text-left text-base hover:bg-teal-50 dark:hover:bg-teal-900"
-                  >
-                    {option}
-                  </Button>
-                ))}
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">⏳</span>
+                <p className="font-medium text-gray-700">
+                  Time left:{" "}
+                  <span className="text-2xl font-bold text-[#e98451]">
+                    {timeLeft}
+                  </span>{" "}
+                  seconds
+                </p>
               </div>
             </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+          </Card>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
