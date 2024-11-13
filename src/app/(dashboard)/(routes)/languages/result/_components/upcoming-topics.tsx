@@ -21,7 +21,7 @@ export default function UpcomingTopics({
         {topics.map((topic) => (
           <Link
             key={topic.id}
-            href={`/languages/learn?langId=${langId}&topic=${topic.id}&level=${topic.level_id}&cards=1-5`}
+            href={`/languages/learn?lang=${langId}&topic=${topic.id}&level=${topic.level_id}&cards=1-5`}
           >
             <Card
               className="bg-[#F5F9FF] rounded-2xl hover:shadow-lg transition-shadow"

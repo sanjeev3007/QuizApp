@@ -55,15 +55,15 @@ const PageContent = () => {
       rank: null,
       answeredCount: null,
     },
-    hindi: {
-      subjectId: constants.SUBJECT_IDS.HINDI,
-      subjectName: "Hindi",
-      rank: null,
-      answeredCount: null,
-    },
     german: {
       subjectId: constants.SUBJECT_IDS.GERMAN,
       subjectName: "German",
+      rank: null,
+      answeredCount: null,
+    },
+    hindi: {
+      subjectId: constants.SUBJECT_IDS.HINDI,
+      subjectName: "Hindi",
       rank: null,
       answeredCount: null,
     },
@@ -90,7 +90,7 @@ const PageContent = () => {
   const [avatar, setAvatar] = useState<string>("");
   const [subjectWiseLoader, setSubjectWiseLoader] = useState<boolean>(false);
   const [dashboardLoader, setDashboardLoader] = useState<boolean>(false);
-  const languages = ["french", "spanish", "hindi", "german", "telugu"];
+  const languages = ["french", "spanish", "german", "hindi", "telugu"];
   const userId = getCookie("userId");
 
   useEffect(() => {

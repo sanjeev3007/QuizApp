@@ -15,6 +15,7 @@ export default async function LearnPage({
     from: parseInt(searchParams.cards.split("-")[0]),
     to: parseInt(searchParams.cards.split("-")[1]),
   });
+
   return (
     <div className="">
       <QuizBox

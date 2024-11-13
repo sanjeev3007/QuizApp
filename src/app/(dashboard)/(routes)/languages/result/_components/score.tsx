@@ -10,6 +10,7 @@ import { getCardIcon } from "../../_utils";
 
 export default function ScoreCard({
   quizResult,
+  lang,
 }: {
   lang: string;
   quizResult: LanguageQuizResult & {
@@ -42,7 +43,7 @@ export default function ScoreCard({
               <p className="text-[#6C9D9D] text-lg font-medium mb-2">
                 Keep learning and unlock levels
               </p>
-              <Link href={"/student-dashboard"}>
+              <Link href={`/languages?lang=${lang}`}>
                 <Button className="bg-[#EB9B3A] hover:bg-orange-500 text-white">
                   Continue Learning
                   <svg

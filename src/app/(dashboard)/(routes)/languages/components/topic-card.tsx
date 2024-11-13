@@ -92,11 +92,11 @@ export default function TopicCard({
             </h3>
           </div>
           <p className="text-sm text-[#A3A3A3] font-medium">
-            {cards} flash cards available
+            <span className="font-bold">{cards}</span> flash cards available
           </p>
           <div className="flex flex-col gap-2 pt-4">
             <div className="flex items-center gap-2">
-              {Array.from({ length: 4 }).map((_, index) => (
+              {Array.from({ length: Math.ceil(cards / 5) }).map((_, index) => (
                 <div
                   key={index}
                   className="relative flex items-center justify-center"
