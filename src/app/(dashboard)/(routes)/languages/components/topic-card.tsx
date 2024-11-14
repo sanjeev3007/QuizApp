@@ -8,6 +8,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Lock from "@/public/images/icons/lock-white.png";
 import { getCardIcon } from "../_utils";
 import { useState } from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type TopicCardProps = {
   lock: boolean;
@@ -97,36 +103,35 @@ export default function TopicCard({
           <div className="flex flex-col gap-2 pt-4">
             <div className="flex items-center gap-2">
               {Array.from({ length: Math.ceil(cards / 5) }).map((_, index) => (
-                <div
-                  key={index}
-                  className="relative flex items-center justify-center"
-                >
-                  <Button
-                    onClick={() =>
-                      hasCompletedAllStates &&
-                      setSelectedState(stateToRange(index + 1))
-                    }
-                    className={cn(
-                      "w-12 h-6 p-0 rounded-full hover:bg-[#F0A919] relative",
-                      hasCompletedAllStates
-                        ? "cursor-pointer hover:opacity-80"
-                        : "cursor-default",
-                      selectedState === stateToRange(index + 1)
-                        ? "bg-[#F0A919]"
-                        : "bg-[#f2c445]",
-                      index < topic?.languages_quiz.length
-                        ? "opacity-100"
-                        : "opacity-30"
-                    )}
-                    variant="ghost"
-                  >
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div
+                        onClick={() =>
+                          hasCompletedAllStates &&
+                          setSelectedState(stateToRange(index + 1))
+                        }
+                        className={cn(
+                          "w-full max-w-12 h-1.5 rounded-full transition-all duration-200",
+                          hasCompletedAllStates
+                            ? "cursor-pointer hover:opacity-80"
+                            : "cursor-default",
+                          selectedState === stateToRange(index + 1)
+                            ? "bg-[#F0A919]"
+                            : "bg-[#f2c445]",
+                          index < topic?.languages_quiz.length
+                            ? "opacity-100"
+                            : "opacity-30"
+                        )}
+                      />
+                    </TooltipTrigger>
                     {index < topic?.languages_quiz.length && (
-                      <span className="text-[10px] font-medium text-white">
+                      <TooltipContent className="bg-[#517B7B] text-white px-2 py-1 rounded text-xs">
                         {getStatePoints(index + 1)} pts
-                      </span>
+                      </TooltipContent>
                     )}
-                  </Button>
-                </div>
+                  </Tooltip>
+                </TooltipProvider>
               ))}
             </div>
           </div>
