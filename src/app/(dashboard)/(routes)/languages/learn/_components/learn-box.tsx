@@ -15,6 +15,12 @@ type LearningSubmission = {
   isCorrect: boolean;
 };
 
+type AnsweredQuestion = {
+  questionId: number;
+  answer: string;
+  isCorrect: boolean;
+};
+
 const DndProviderWithBackend = ({
   children,
 }: {
@@ -54,6 +60,9 @@ export default function LearnBox({
     LearningSubmission[]
   >([]);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [answeredQuestions, setAnsweredQuestions] = useState<
+    AnsweredQuestion[]
+  >([]);
 
   const handleNextCard = () => {
     if (currentCardIndex < content.length - 1) {
@@ -70,20 +79,25 @@ export default function LearnBox({
   };
 
   const handleAnswer = (isCorrect: boolean) => {
-    if (isCorrect) {
-      setCorrectAnswers(correctAnswers + 1);
-    }
-    setLearningSubmissions([
-      ...learningSubmissions,
-      {
-        questionId: content[currentCardIndex].id,
+    const currentQuestionId = content[currentCardIndex].id;
+
+    if (!answeredQuestions.some((q) => q.questionId === currentQuestionId)) {
+      if (isCorrect) {
+        setCorrectAnswers(correctAnswers + 1);
+      }
+
+      const newAnswer = {
+        questionId: currentQuestionId,
         answer:
           content[currentCardIndex].options.find(
             (option) => option.correct === "true"
           )?.text || "",
         isCorrect,
-      },
-    ]);
+      };
+
+      setAnsweredQuestions([...answeredQuestions, newAnswer]);
+      setLearningSubmissions([...learningSubmissions, newAnswer]);
+    }
   };
 
   const resetQuiz = () => {
@@ -164,6 +178,9 @@ export default function LearnBox({
                   onPrevCard={handlePrevCard}
                   onAnswer={handleAnswer}
                   resetQuiz={resetQuiz}
+                  previousAnswer={answeredQuestions.find(
+                    (q) => q.questionId === content[currentCardIndex].id
+                  )}
                 />
               </motion.div>
             ) : (

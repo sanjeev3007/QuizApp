@@ -13,6 +13,8 @@ type QuizCardProps = {
   onPrevCard: () => void;
   onAnswer: (answer: string, isCorrect: boolean) => void;
   resetQuiz: () => void;
+  isAnswered: boolean;
+  previousAnswer: string | undefined;
 };
 
 export const SelectCard: React.FC<QuizCardProps> = ({
@@ -23,6 +25,8 @@ export const SelectCard: React.FC<QuizCardProps> = ({
   onPrevCard,
   onAnswer,
   resetQuiz,
+  isAnswered,
+  previousAnswer,
 }) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
@@ -30,11 +34,16 @@ export const SelectCard: React.FC<QuizCardProps> = ({
   const [timerEnded, setTimerEnded] = useState(false);
 
   useEffect(() => {
-    setSelectedAnswer(null);
-    setShowCorrectAnswer(false);
+    if (isAnswered && previousAnswer) {
+      setSelectedAnswer(previousAnswer);
+      setShowCorrectAnswer(true);
+    } else {
+      setSelectedAnswer(null);
+      setShowCorrectAnswer(false);
+    }
     setTimeLeft(45);
     setTimerEnded(false);
-  }, [data.question]);
+  }, [data.question, isAnswered, previousAnswer]);
 
   useEffect(() => {
     if (timeLeft > 0 && !showCorrectAnswer) {
@@ -46,6 +55,7 @@ export const SelectCard: React.FC<QuizCardProps> = ({
   }, [timeLeft, showCorrectAnswer]);
 
   const handleAnswerSelect = (answer: string) => {
+    if (isAnswered) return; // Prevent changing answer if question was already answered
     setSelectedAnswer(answer);
     const correct = answer === data.correctAnswer;
     onAnswer(answer, correct);
@@ -118,24 +128,19 @@ export const SelectCard: React.FC<QuizCardProps> = ({
                     "bg-[#D4EDE1] border-[#4EB487]")
               )}
               onClick={() => handleAnswerSelect(option.text)}
-              disabled={showCorrectAnswer}
+              disabled={showCorrectAnswer || isAnswered}
             >
               {option.text}
             </Button>
           ))}
         </div>
-        <div
-          className={cn(
-            "flex justify-between items-center mt-6",
-            currentCard === 1 && "justify-center"
-          )}
-        >
+        <div className="flex justify-between items-center mt-6">
           <Button
             variant="ghost"
             onClick={onPrevCard}
             className={cn(
               "text-[#E98451] cursor-pointer",
-              currentCard === 1 && "hidden"
+              currentCard === 1 && "invisible"
             )}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -148,6 +153,15 @@ export const SelectCard: React.FC<QuizCardProps> = ({
               className="bg-[#E98451] text-white cursor-pointer"
             >
               Retry
+            </Button>
+          ) : isAnswered ? (
+            <Button
+              variant="outline"
+              onClick={onNextCard}
+              className="bg-[#E98451] text-white cursor-pointer"
+            >
+              Next
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           ) : showCorrectAnswer ? (
             <Button

@@ -166,12 +166,19 @@ export default function TopicCard({
               <Button
                 onClick={() =>
                   router.push(
-                    `/languages/learn?lang=${lang}&topic=${topic.id}&level=${levelId}&cards=${nextState}`
+                    `/languages/learn?lang=${lang}&topic=${
+                      topic.id
+                    }&level=${levelId}&cards=${
+                      hasCompletedAllStates ? selectedState : nextState
+                    }`
                   )
                 }
                 className="bg-[#F0A919] hover:bg-yellow-500 text-white w-full"
               >
-                Learn
+                Learn{" "}
+                {hasCompletedAllStates &&
+                  selectedState &&
+                  `(${getLevelText(selectedState)})`}
               </Button>
               <Button
                 onClick={() =>
