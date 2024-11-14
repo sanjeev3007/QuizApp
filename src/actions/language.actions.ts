@@ -333,8 +333,9 @@ export const fetchQuizResult = async (quizId: number) => {
 
   const { data: upcomingTopics } = await supabase
     .from("languages_topics")
-    .select("*")
+    .select("*, languages_db(*)")
     .eq("level_id", data?.level_id)
+    .eq("languages_db.language_id", data?.language_id)
     .order("id", { ascending: true })
     .gt("id", data?.languages_topics?.id)
     .limit(4);

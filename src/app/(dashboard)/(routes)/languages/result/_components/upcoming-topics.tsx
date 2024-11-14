@@ -12,6 +12,7 @@ export default function UpcomingTopics({
 }) {
   if (!topics?.length) return null;
 
+  console.log(topics);
   return (
     <div className="container mx-auto p-4 max-w-4xl">
       <h3 className="text-xl font-semibold text-[#517B7B] mb-4">
