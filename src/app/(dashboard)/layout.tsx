@@ -24,6 +24,43 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     }
   }, [pathname]);
 
+  const handleBackClick = () => {
+    if (pathname.includes("student-dashboard")) {
+      router.push("/");
+    } else if (pathname.includes("subject-dashboard")) {
+      router.push("/student-dashboard");
+    } else if (pathname.includes("gk-quiz")) {
+      router.push("/");
+    } else if (pathname.includes("/quiz/")) {
+      const subjectName = pathname.split("/")[2];
+      router.push(
+        `/subject-dashboard?subject=${
+          subjectName == "math" ? "mathematics" : subjectName
+        }`
+      );
+    } else if (pathname.includes("chat-bot/")) {
+      router.push("/chat-bot");
+    } else if (pathname.includes("chat-bot")) {
+      router.push("/");
+    } else if (
+      pathname.includes("languages/result") ||
+      pathname.includes("languages/quiz") ||
+      pathname.includes("languages/learn")
+    ) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const langParam = urlParams.get("lang");
+      if (langParam) {
+        router.push(`/languages?lang=${langParam}`);
+      } else {
+        router.push("/student-dashboard");
+      }
+    } else if (pathname.includes("languages")) {
+      router.push("/student-dashboard");
+    } else {
+      router.back();
+    }
+  };
+
   return (
     <div
       className={`${inter.variable} font-sans h-full w-full bg-[#FFF] z-100`}
@@ -31,32 +68,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       <div className="w-full border-b-2 flex items-center justify-between bg-[#FFF] py-4 sticky top-0">
         {showBackButton && (
           <button
-            onClick={() => {
-              if (pathname.includes("student-dashboard")) {
-                router.push("/");
-              } else if (pathname.includes("subject-dashboard")) {
-                router.push("/student-dashboard");
-              } else if (pathname.includes("gk-quiz")) {
-                router.push("/");
-              } else if (pathname.includes("/quiz/")) {
-                const subjectName = pathname.split("/")[2];
-                router.push(
-                  `/subject-dashboard?subject=${
-                    subjectName == "math" ? "mathematics" : subjectName
-                  }`
-                );
-              } else if (pathname.includes("chat-bot/")) {
-                router.push("/chat-bot");
-              } else if (pathname.includes("chat-bot")) {
-                router.push("/");
-              } else if (pathname.includes("languages/result")) {
-                router.push("/student-dashboard");
-              } else if (pathname.includes("languages")) {
-                router.push("/student-dashboard");
-              } else {
-                router.back();
-              }
-            }}
+            onClick={handleBackClick}
             className="absolute left-0 md:ml-6 xs:ml-5 lg:text-sm md:text-xs font-bold leading-tight 
             text-left text-[#569090] flex flex-row justify-center items-center lg:hover:bg-[#FFF] xs:hover:bg-[#f2f7f7] p-2 rounded-full"
           >

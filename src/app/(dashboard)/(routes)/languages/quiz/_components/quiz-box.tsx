@@ -104,10 +104,44 @@ export default function QuizBox({
       answer,
       isCorrect,
     };
-    setQuizSubmissions([...quizSubmissions, submission]);
-    if (isCorrect) {
-      setCorrectAnswers(correctAnswers + 1);
-    }
+
+    setQuizSubmissions((prevSubmissions) => {
+      // Check if there's already a submission for this question
+      const existingSubmissionIndex = prevSubmissions.findIndex(
+        (sub) => sub.questionId === submission.questionId
+      );
+
+      if (existingSubmissionIndex !== -1) {
+        // If submission exists, update it
+        const newSubmissions = [...prevSubmissions];
+        newSubmissions[existingSubmissionIndex] = submission;
+        return newSubmissions;
+      } else {
+        // If no submission exists, add new one
+        return [...prevSubmissions, submission];
+      }
+    });
+
+    // Update correct answers count
+    setCorrectAnswers((prev) => {
+      // Find if there was a previous submission for this question
+      const previousSubmission = quizSubmissions.find(
+        (sub) => sub.questionId === content[currentCardIndex].id
+      );
+
+      if (previousSubmission) {
+        // If there was a previous submission, adjust the count accordingly
+        if (previousSubmission.isCorrect && !isCorrect) {
+          return prev - 1; // Decrease if previous was correct and new is wrong
+        } else if (!previousSubmission.isCorrect && isCorrect) {
+          return prev + 1; // Increase if previous was wrong and new is correct
+        }
+        return prev; // No change if both correct or both wrong
+      } else {
+        // If this is a new submission, simply add 1 if correct
+        return isCorrect ? prev + 1 : prev;
+      }
+    });
   };
 
   const resetQuiz = () => {
