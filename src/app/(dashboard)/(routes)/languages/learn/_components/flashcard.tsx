@@ -13,7 +13,7 @@ type FlashcardProps = {
   totalCards: number;
   onNextCard: () => void;
   onPrevCard: () => void;
-  onAnswer: (isCorrect: boolean) => void;
+  onAnswer: (isCorrect: boolean, selectedAnswer: string) => void;
   resetQuiz: () => void;
   previousAnswer?: {
     answer: string;
@@ -46,8 +46,8 @@ export const Flashcard: React.FC<FlashcardProps> = ({
       setIsCorrect(null);
       setDroppedAnswer(null);
       setShowCorrectAnswer(false);
+      setTimeLeft(45);
     }
-    setTimeLeft(45);
     setTimerEnded(false);
   }, [data.question, currentCard, previousAnswer]);
 
@@ -61,17 +61,16 @@ export const Flashcard: React.FC<FlashcardProps> = ({
   }, [timeLeft]);
 
   const handleDrop = (item: AnswerOption) => {
-    if (previousAnswer) return;
+    if (previousAnswer || droppedAnswer) return;
 
     const correct = item.text === data.correctAnswer;
     setDroppedAnswer(item.text);
     setIsCorrect(correct);
     setShowCorrectAnswer(true);
-    onAnswer(correct);
+    onAnswer(correct, item.text);
   };
 
   const handleNext = () => {
-    setTimeLeft(0);
     onNextCard();
   };
 

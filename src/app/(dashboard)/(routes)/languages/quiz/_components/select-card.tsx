@@ -57,8 +57,6 @@ export const SelectCard: React.FC<QuizCardProps> = ({
   const handleAnswerSelect = (answer: string) => {
     if (isAnswered) return; // Prevent changing answer if question was already answered
     setSelectedAnswer(answer);
-    const correct = answer === data.correctAnswer;
-    onAnswer(answer, correct);
   };
 
   const progressBar = Math.round((currentCard / totalCards) * 100).toFixed(0);
@@ -118,14 +116,16 @@ export const SelectCard: React.FC<QuizCardProps> = ({
               variant={"outline"}
               className={cn(
                 "p-2 px-4 w-full disabled:opacity-100 bg-white border border-[#FDE3D9] text-[#5B8989] justify-start rounded-xl shadow-sm font-medium transition-all",
-                selectedAnswer === option.text && "bg-[#C9D2DA]",
-                (showCorrectAnswer &&
+                selectedAnswer === option.text &&
+                  !showCorrectAnswer &&
+                  "bg-[#C9D2DA]",
+                showCorrectAnswer &&
                   selectedAnswer === option.text &&
                   selectedAnswer !== data.correctAnswer &&
-                  "bg-[#FFE1D6] border-[#FFB35D]") ||
-                  (showCorrectAnswer &&
-                    option.text === data.correctAnswer &&
-                    "bg-[#D4EDE1] border-[#4EB487]")
+                  "bg-[#FFE1D6] border-[#FFB35D]",
+                showCorrectAnswer &&
+                  option.text === data.correctAnswer &&
+                  "bg-[#D4EDE1] border-[#4EB487]"
               )}
               onClick={() => handleAnswerSelect(option.text)}
               disabled={showCorrectAnswer || isAnswered}
@@ -179,7 +179,15 @@ export const SelectCard: React.FC<QuizCardProps> = ({
           ) : (
             <Button
               variant="outline"
-              onClick={() => setShowCorrectAnswer(true)}
+              onClick={() => {
+                setShowCorrectAnswer(true);
+                if (selectedAnswer) {
+                  onAnswer(
+                    selectedAnswer,
+                    selectedAnswer === data.correctAnswer
+                  );
+                }
+              }}
               disabled={selectedAnswer === null}
               className="bg-[#E98451] disabled:bg-[#C3B8AC] text-white cursor-pointer"
             >

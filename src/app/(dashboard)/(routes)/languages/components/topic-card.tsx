@@ -79,6 +79,22 @@ export default function TopicCard({
     return quiz?.points || 0;
   };
 
+  const getStateWithLowestPoints = () => {
+    if (!hasCompletedAllStates) return nextState;
+
+    let lowestPoints = Infinity;
+    let stateWithLowestPoints = "1-5";
+
+    topic.languages_quiz.forEach((quiz) => {
+      if (quiz.points < lowestPoints) {
+        lowestPoints = quiz.points;
+        stateWithLowestPoints = stateToRange(quiz.card_state);
+      }
+    });
+
+    return stateWithLowestPoints;
+  };
+
   return (
     <div className="px-2">
       <Card
@@ -169,7 +185,9 @@ export default function TopicCard({
                     `/languages/learn?lang=${lang}&topic=${
                       topic.id
                     }&level=${levelId}&cards=${
-                      hasCompletedAllStates ? selectedState : nextState
+                      hasCompletedAllStates
+                        ? selectedState || getStateWithLowestPoints()
+                        : nextState
                     }`
                   )
                 }
@@ -186,11 +204,12 @@ export default function TopicCard({
                     `/languages/quiz?lang=${lang}&topic=${
                       topic.id
                     }&level=${levelId}&cards=${
-                      hasCompletedAllStates ? selectedState : nextState
+                      hasCompletedAllStates
+                        ? selectedState || getStateWithLowestPoints()
+                        : nextState
                     }`
                   )
                 }
-                disabled={hasCompletedAllStates && !selectedState}
                 className="bg-[#E98451] hover:bg-orange-500 text-white w-full disabled:opacity-50"
               >
                 Practice{" "}

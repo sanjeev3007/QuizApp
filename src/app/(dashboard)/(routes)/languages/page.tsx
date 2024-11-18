@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import {
   getLanguageIdByName,
   getLanguageLevels,
+  getTotalQuestionsCount,
 } from "@/actions/language.actions";
 import LanguageDashboard from "./components/language-dashboard";
 
@@ -14,9 +15,10 @@ export default async function DashboardPage({
     redirect("/student-dashboard");
   }
 
-  const [levels, langInfo] = await Promise.all([
+  const [levels, langInfo, totalQuestions] = await Promise.all([
     getLanguageLevels(),
     getLanguageIdByName(searchParams.lang),
+    getTotalQuestionsCount(),
   ]);
 
   if (!levels || !langInfo) {
@@ -28,6 +30,7 @@ export default async function DashboardPage({
       levels={levels}
       lang={searchParams.lang}
       langId={langInfo.id}
+      totalQuestions={totalQuestions}
     />
   );
 }

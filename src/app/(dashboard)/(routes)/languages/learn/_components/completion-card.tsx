@@ -31,7 +31,7 @@ export const CompletionCard = ({
   const percentage = Math.round((correctAnswers / totalCards) * 100);
 
   return (
-    <Card className="w-full max-w-lg bg-[#faf9f9]">
+    <Card className="w-full max-w-lg bg-[#faf9f9] rounded-2xl">
       <CardContent className="p-6 flex flex-col items-center">
         <div className="mb-6">
           <Trophy className="h-16 w-16 text-[#E98451]" />

@@ -78,7 +78,7 @@ export default function LearnBox({
     }
   };
 
-  const handleAnswer = (isCorrect: boolean) => {
+  const handleAnswer = (isCorrect: boolean, selectedAnswer: string) => {
     const currentQuestionId = content[currentCardIndex].id;
 
     if (!answeredQuestions.some((q) => q.questionId === currentQuestionId)) {
@@ -88,10 +88,7 @@ export default function LearnBox({
 
       const newAnswer = {
         questionId: currentQuestionId,
-        answer:
-          content[currentCardIndex].options.find(
-            (option) => option.correct === "true"
-          )?.text || "",
+        answer: selectedAnswer,
         isCorrect,
       };
 
@@ -104,6 +101,7 @@ export default function LearnBox({
     setCurrentCardIndex(0);
     setCorrectAnswers(0);
     setLearningSubmissions([]);
+    setAnsweredQuestions([]);
   };
 
   const completeSet = async () => {
