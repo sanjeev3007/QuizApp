@@ -81,19 +81,34 @@ export default function LearnBox({
   const handleAnswer = (isCorrect: boolean, selectedAnswer: string) => {
     const currentQuestionId = content[currentCardIndex].id;
 
-    if (!answeredQuestions.some((q) => q.questionId === currentQuestionId)) {
-      if (isCorrect) {
-        setCorrectAnswers(correctAnswers + 1);
+    const filteredAnswers = answeredQuestions.filter(
+      (q) => q.questionId !== currentQuestionId
+    );
+
+    const newAnswer = {
+      questionId: currentQuestionId,
+      answer: selectedAnswer,
+      isCorrect,
+    };
+
+    setAnsweredQuestions([...filteredAnswers, newAnswer]);
+
+    const filteredSubmissions = learningSubmissions.filter(
+      (q) => q.questionId !== currentQuestionId
+    );
+    setLearningSubmissions([...filteredSubmissions, newAnswer]);
+
+    const previousAnswer = answeredQuestions.find(
+      (q) => q.questionId === currentQuestionId
+    );
+    if (previousAnswer) {
+      if (previousAnswer.isCorrect && !isCorrect) {
+        setCorrectAnswers((prev) => prev - 1);
+      } else if (!previousAnswer.isCorrect && isCorrect) {
+        setCorrectAnswers((prev) => prev + 1);
       }
-
-      const newAnswer = {
-        questionId: currentQuestionId,
-        answer: selectedAnswer,
-        isCorrect,
-      };
-
-      setAnsweredQuestions([...answeredQuestions, newAnswer]);
-      setLearningSubmissions([...learningSubmissions, newAnswer]);
+    } else if (isCorrect) {
+      setCorrectAnswers((prev) => prev + 1);
     }
   };
 

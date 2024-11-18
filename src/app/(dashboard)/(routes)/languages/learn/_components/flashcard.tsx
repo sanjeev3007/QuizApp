@@ -38,16 +38,16 @@ export const Flashcard: React.FC<FlashcardProps> = ({
   const [timerEnded, setTimerEnded] = useState(false);
 
   useEffect(() => {
-    if (previousAnswer) {
+    if (previousAnswer && previousAnswer.answer !== droppedAnswer) {
       setDroppedAnswer(previousAnswer.answer);
       setIsCorrect(previousAnswer.isCorrect);
       setShowCorrectAnswer(true);
-    } else {
+    } else if (!previousAnswer) {
       setIsCorrect(null);
       setDroppedAnswer(null);
       setShowCorrectAnswer(false);
-      setTimeLeft(45);
     }
+    setTimeLeft(45);
     setTimerEnded(false);
   }, [data.question, currentCard, previousAnswer]);
 
@@ -61,13 +61,13 @@ export const Flashcard: React.FC<FlashcardProps> = ({
   }, [timeLeft]);
 
   const handleDrop = (item: AnswerOption) => {
-    if (previousAnswer || droppedAnswer) return;
-
-    const correct = item.text === data.correctAnswer;
-    setDroppedAnswer(item.text);
-    setIsCorrect(correct);
-    setShowCorrectAnswer(true);
-    onAnswer(correct, item.text);
+    if (item.text !== droppedAnswer) {
+      const correct = item.text === data.correctAnswer;
+      setDroppedAnswer(item.text);
+      setIsCorrect(correct);
+      setShowCorrectAnswer(true);
+      onAnswer(correct, item.text);
+    }
   };
 
   const handleNext = () => {

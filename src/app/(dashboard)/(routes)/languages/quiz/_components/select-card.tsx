@@ -34,10 +34,10 @@ export const SelectCard: React.FC<QuizCardProps> = ({
   const [timerEnded, setTimerEnded] = useState(false);
 
   useEffect(() => {
-    if (isAnswered && previousAnswer) {
+    if (isAnswered && previousAnswer && previousAnswer !== selectedAnswer) {
       setSelectedAnswer(previousAnswer);
       setShowCorrectAnswer(true);
-    } else {
+    } else if (!isAnswered) {
       setSelectedAnswer(null);
       setShowCorrectAnswer(false);
     }
@@ -55,8 +55,12 @@ export const SelectCard: React.FC<QuizCardProps> = ({
   }, [timeLeft, showCorrectAnswer]);
 
   const handleAnswerSelect = (answer: string) => {
-    if (isAnswered) return; // Prevent changing answer if question was already answered
-    setSelectedAnswer(answer);
+    if (answer !== selectedAnswer) {
+      setSelectedAnswer(answer);
+      if (showCorrectAnswer) {
+        onAnswer(answer, answer === data.correctAnswer);
+      }
+    }
   };
 
   const progressBar = Math.round((currentCard / totalCards) * 100).toFixed(0);
