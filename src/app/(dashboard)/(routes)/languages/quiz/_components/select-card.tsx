@@ -13,6 +13,8 @@ type QuizCardProps = {
   onPrevCard: () => void;
   onAnswer: (answer: string, isCorrect: boolean) => void;
   resetQuiz: () => void;
+  isAnswered: boolean;
+  previousAnswer: string | undefined;
 };
 
 export const SelectCard: React.FC<QuizCardProps> = ({
@@ -23,6 +25,8 @@ export const SelectCard: React.FC<QuizCardProps> = ({
   onPrevCard,
   onAnswer,
   resetQuiz,
+  isAnswered,
+  previousAnswer,
 }) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
@@ -30,11 +34,16 @@ export const SelectCard: React.FC<QuizCardProps> = ({
   const [timerEnded, setTimerEnded] = useState(false);
 
   useEffect(() => {
-    setSelectedAnswer(null);
-    setShowCorrectAnswer(false);
+    if (isAnswered && previousAnswer && previousAnswer !== selectedAnswer) {
+      setSelectedAnswer(previousAnswer);
+      setShowCorrectAnswer(true);
+    } else if (!isAnswered) {
+      setSelectedAnswer(null);
+      setShowCorrectAnswer(false);
+    }
     setTimeLeft(45);
     setTimerEnded(false);
-  }, [data.question]);
+  }, [data.question, isAnswered, previousAnswer]);
 
   useEffect(() => {
     if (timeLeft > 0 && !showCorrectAnswer) {
@@ -46,9 +55,12 @@ export const SelectCard: React.FC<QuizCardProps> = ({
   }, [timeLeft, showCorrectAnswer]);
 
   const handleAnswerSelect = (answer: string) => {
-    setSelectedAnswer(answer);
-    const correct = answer === data.correctAnswer;
-    onAnswer(answer, correct);
+    if (answer !== selectedAnswer) {
+      setSelectedAnswer(answer);
+      if (showCorrectAnswer) {
+        onAnswer(answer, answer === data.correctAnswer);
+      }
+    }
   };
 
   const progressBar = Math.round((currentCard / totalCards) * 100).toFixed(0);
@@ -108,34 +120,31 @@ export const SelectCard: React.FC<QuizCardProps> = ({
               variant={"outline"}
               className={cn(
                 "p-2 px-4 w-full disabled:opacity-100 bg-white border border-[#FDE3D9] text-[#5B8989] justify-start rounded-xl shadow-sm font-medium transition-all",
-                selectedAnswer === option.text && "bg-[#C9D2DA]",
-                (showCorrectAnswer &&
+                selectedAnswer === option.text &&
+                  !showCorrectAnswer &&
+                  "bg-[#C9D2DA]",
+                showCorrectAnswer &&
                   selectedAnswer === option.text &&
                   selectedAnswer !== data.correctAnswer &&
-                  "bg-[#FFE1D6] border-[#FFB35D]") ||
-                  (showCorrectAnswer &&
-                    option.text === data.correctAnswer &&
-                    "bg-[#D4EDE1] border-[#4EB487]")
+                  "bg-[#FFE1D6] border-[#FFB35D]",
+                showCorrectAnswer &&
+                  option.text === data.correctAnswer &&
+                  "bg-[#D4EDE1] border-[#4EB487]"
               )}
               onClick={() => handleAnswerSelect(option.text)}
-              disabled={showCorrectAnswer}
+              disabled={showCorrectAnswer || isAnswered}
             >
               {option.text}
             </Button>
           ))}
         </div>
-        <div
-          className={cn(
-            "flex justify-between items-center mt-6",
-            currentCard === 1 && "justify-center"
-          )}
-        >
+        <div className="flex justify-between items-center mt-6">
           <Button
             variant="ghost"
             onClick={onPrevCard}
             className={cn(
               "text-[#E98451] cursor-pointer",
-              currentCard === 1 && "hidden"
+              currentCard === 1 && "invisible"
             )}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -148,6 +157,15 @@ export const SelectCard: React.FC<QuizCardProps> = ({
               className="bg-[#E98451] text-white cursor-pointer"
             >
               Retry
+            </Button>
+          ) : isAnswered ? (
+            <Button
+              variant="outline"
+              onClick={onNextCard}
+              className="bg-[#E98451] text-white cursor-pointer"
+            >
+              Next
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           ) : showCorrectAnswer ? (
             <Button
@@ -165,7 +183,15 @@ export const SelectCard: React.FC<QuizCardProps> = ({
           ) : (
             <Button
               variant="outline"
-              onClick={() => setShowCorrectAnswer(true)}
+              onClick={() => {
+                setShowCorrectAnswer(true);
+                if (selectedAnswer) {
+                  onAnswer(
+                    selectedAnswer,
+                    selectedAnswer === data.correctAnswer
+                  );
+                }
+              }}
               disabled={selectedAnswer === null}
               className="bg-[#E98451] disabled:bg-[#C3B8AC] text-white cursor-pointer"
             >

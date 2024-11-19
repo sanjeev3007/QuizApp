@@ -46,7 +46,7 @@ export default function TopicLevel({ level, data }: Props) {
 
   const totalPreviousLevelPoints =
     data
-      .filter((d) => d.level_id === level.level - 1)
+      ?.filter((d) => d.level_id === level.level - 1)
       .reduce((acc, topic) => acc + topic.languages_db.length, 0) *
     (level.level - 1);
 

@@ -60,6 +60,15 @@ export const getLanguageIdByName = async (name: string) => {
   return data;
 };
 
+export const getTotalQuestionsCount = async () => {
+  const supabase = createClient();
+  const { data } = await supabase
+    .from("languages_db")
+    .select("id, language_id");
+
+  return data || [];
+};
+
 export const getTopicContent = async ({
   language,
   topic,

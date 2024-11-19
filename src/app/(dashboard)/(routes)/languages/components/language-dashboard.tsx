@@ -23,9 +23,13 @@ type Props = {
   }[];
   lang: string;
   langId: number;
+  totalQuestions: {
+    id: number;
+    language_id: number;
+  }[];
 };
 
-const LanguageDashboard = ({ levels, lang, langId }: Props) => {
+const LanguageDashboard = ({ levels, lang, langId, totalQuestions }: Props) => {
   const userId = getCookie("userId");
 
   const { data: dashboardData, isLoading: dashboardLoader } =
@@ -89,7 +93,11 @@ const LanguageDashboard = ({ levels, lang, langId }: Props) => {
       <div className="font-sans w-full flex justify-center">
         <div className="w-full flex justify-center flex-col">
           <HeadingCard lang={lang as string} />
-          <LanguageCard lang={lang as string} />
+          <LanguageCard
+            lang={lang as string}
+            langId={langId}
+            totalQuestions={totalQuestions}
+          />
           <div className="flex lg:flex-row xs:flex-col justify-center gap-8 lg:mt-14 md:mt-6 xs:mt-12 mb-10 px-4">
             <Activity
               subject={lang}

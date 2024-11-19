@@ -13,8 +13,12 @@ type FlashcardProps = {
   totalCards: number;
   onNextCard: () => void;
   onPrevCard: () => void;
-  onAnswer: (isCorrect: boolean) => void;
+  onAnswer: (isCorrect: boolean, selectedAnswer: string) => void;
   resetQuiz: () => void;
+  previousAnswer?: {
+    answer: string;
+    isCorrect: boolean;
+  };
 };
 
 export const Flashcard: React.FC<FlashcardProps> = ({
@@ -25,6 +29,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({
   onPrevCard,
   onAnswer,
   resetQuiz,
+  previousAnswer,
 }) => {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [droppedAnswer, setDroppedAnswer] = useState<string | null>(null);
@@ -33,28 +38,40 @@ export const Flashcard: React.FC<FlashcardProps> = ({
   const [timerEnded, setTimerEnded] = useState(false);
 
   useEffect(() => {
-    setIsCorrect(null);
-    setDroppedAnswer(null);
-    setShowCorrectAnswer(false);
+    if (previousAnswer && previousAnswer.answer !== droppedAnswer) {
+      setDroppedAnswer(previousAnswer.answer);
+      setIsCorrect(previousAnswer.isCorrect);
+      setShowCorrectAnswer(true);
+    } else if (!previousAnswer) {
+      setIsCorrect(null);
+      setDroppedAnswer(null);
+      setShowCorrectAnswer(false);
+    }
     setTimeLeft(45);
     setTimerEnded(false);
-  }, [data.question, currentCard]);
+  }, [data.question, currentCard, previousAnswer]);
 
   useEffect(() => {
-    if (timeLeft > 0 && !showCorrectAnswer) {
+    if (timeLeft > 0) {
       const timerId = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timerId);
     } else if (timeLeft === 0) {
       setTimerEnded(true);
     }
-  }, [timeLeft, showCorrectAnswer]);
+  }, [timeLeft]);
 
   const handleDrop = (item: AnswerOption) => {
-    const correct = item.text === data.correctAnswer;
-    setDroppedAnswer(item.text);
-    setIsCorrect(correct);
-    setShowCorrectAnswer(true);
-    onAnswer(correct);
+    if (item.text !== droppedAnswer) {
+      const correct = item.text === data.correctAnswer;
+      setDroppedAnswer(item.text);
+      setIsCorrect(correct);
+      setShowCorrectAnswer(true);
+      onAnswer(correct, item.text);
+    }
+  };
+
+  const handleNext = () => {
+    onNextCard();
   };
 
   const progressBar = Math.round((currentCard / totalCards) * 100).toFixed(0);
@@ -157,7 +174,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({
           ) : (
             <Button
               variant="outline"
-              onClick={onNextCard}
+              onClick={handleNext}
               disabled={!droppedAnswer || !isCorrect}
               className="bg-[#E98451] disabled:bg-[#C3B8AC] disabled:opacity-100 text-white cursor-pointer"
             >

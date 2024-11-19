@@ -15,6 +15,12 @@ type LearningSubmission = {
   isCorrect: boolean;
 };
 
+type AnsweredQuestion = {
+  questionId: number;
+  answer: string;
+  isCorrect: boolean;
+};
+
 const DndProviderWithBackend = ({
   children,
 }: {
@@ -54,6 +60,9 @@ export default function LearnBox({
     LearningSubmission[]
   >([]);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [answeredQuestions, setAnsweredQuestions] = useState<
+    AnsweredQuestion[]
+  >([]);
 
   const handleNextCard = () => {
     if (currentCardIndex < content.length - 1) {
@@ -69,27 +78,45 @@ export default function LearnBox({
     }
   };
 
-  const handleAnswer = (isCorrect: boolean) => {
-    if (isCorrect) {
-      setCorrectAnswers(correctAnswers + 1);
+  const handleAnswer = (isCorrect: boolean, selectedAnswer: string) => {
+    const currentQuestionId = content[currentCardIndex].id;
+
+    const filteredAnswers = answeredQuestions.filter(
+      (q) => q.questionId !== currentQuestionId
+    );
+
+    const newAnswer = {
+      questionId: currentQuestionId,
+      answer: selectedAnswer,
+      isCorrect,
+    };
+
+    setAnsweredQuestions([...filteredAnswers, newAnswer]);
+
+    const filteredSubmissions = learningSubmissions.filter(
+      (q) => q.questionId !== currentQuestionId
+    );
+    setLearningSubmissions([...filteredSubmissions, newAnswer]);
+
+    const previousAnswer = answeredQuestions.find(
+      (q) => q.questionId === currentQuestionId
+    );
+    if (previousAnswer) {
+      if (previousAnswer.isCorrect && !isCorrect) {
+        setCorrectAnswers((prev) => prev - 1);
+      } else if (!previousAnswer.isCorrect && isCorrect) {
+        setCorrectAnswers((prev) => prev + 1);
+      }
+    } else if (isCorrect) {
+      setCorrectAnswers((prev) => prev + 1);
     }
-    setLearningSubmissions([
-      ...learningSubmissions,
-      {
-        questionId: content[currentCardIndex].id,
-        answer:
-          content[currentCardIndex].options.find(
-            (option) => option.correct === "true"
-          )?.text || "",
-        isCorrect,
-      },
-    ]);
   };
 
   const resetQuiz = () => {
     setCurrentCardIndex(0);
     setCorrectAnswers(0);
     setLearningSubmissions([]);
+    setAnsweredQuestions([]);
   };
 
   const completeSet = async () => {
@@ -164,6 +191,9 @@ export default function LearnBox({
                   onPrevCard={handlePrevCard}
                   onAnswer={handleAnswer}
                   resetQuiz={resetQuiz}
+                  previousAnswer={answeredQuestions.find(
+                    (q) => q.questionId === content[currentCardIndex].id
+                  )}
                 />
               </motion.div>
             ) : (
