@@ -171,9 +171,21 @@ export const updateQuizData = async ({
 }) => {
   const supabase = createClient();
 
-  // Calculate points based on level
+  // Get the existing quiz data first
+  const { data: existingQuiz } = await supabase
+    .from("languages_quiz")
+    .select("*")
+    .eq("id", quizId)
+    .single();
+
+  // Calculate points for the new attempt
   const pointsPerQuestion = levelId;
-  const points = correct * pointsPerQuestion;
+  const newPoints = correct * pointsPerQuestion;
+
+  // Only update if new points are higher than existing points
+  if (existingQuiz && newPoints <= existingQuiz.points) {
+    return existingQuiz;
+  }
 
   const { data, error } = await supabase
     .from("languages_quiz")
@@ -181,7 +193,7 @@ export const updateQuizData = async ({
       user_id: userId,
       total,
       correct,
-      points,
+      points: newPoints,
       submission,
       topic_id: topicId,
       level_id: levelId,
@@ -328,17 +340,24 @@ export const fetchQuizResult = async (quizId: number) => {
   const levelTotalQuestions = levelDB.data?.length || 0;
   const levelCompletedQuestions = await supabase
     .from("languages_quiz")
-    .select("submission")
+    .select("submission, correct")
     .eq("level_id", data?.level_id)
     .eq("language_id", data?.language_id)
     .eq("user_id", data?.user_id);
 
   const levelCompleted =
     levelCompletedQuestions.data?.reduce(
-      (acc: number, curr: { submission: any[] }) =>
-        acc + curr.submission.length,
+      (acc: number, curr: { submission: any[]; correct: number }) =>
+        acc + curr.correct,
       0
     ) || 0;
+
+  const levelPoints = levelCompleted * data?.level_id;
+
+  // Calculate total points for the current topic
+  const topicPoints =
+    quizDB?.reduce((acc: number, curr: LanguageQuiz) => acc + curr.points, 0) ||
+    0;
 
   const { data: upcomingTopics } = await supabase
     .from("languages_topics")
@@ -353,7 +372,9 @@ export const fetchQuizResult = async (quizId: number) => {
     completedQuestions,
     levelTotalQuestions,
     levelCompletedQuestions: levelCompleted,
-    upcomingTopics, // Include upcoming topics in the result
+    levelPoints,
+    topicPoints,
+    upcomingTopics,
     ...data,
   };
 };

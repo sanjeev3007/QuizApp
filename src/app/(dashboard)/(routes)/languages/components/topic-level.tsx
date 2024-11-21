@@ -1,10 +1,18 @@
 "use client";
 
-import Slider from "react-slick";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  useCarousel,
+} from "@/components/ui/carousel";
 import TopicCard from "./topic-card";
 import Lock from "@/public/images/icons/lock.svg";
 import Image from "next/image";
 import { LanguageDB, LanguageQuiz } from "../learn/_types";
+import { cn } from "@/lib/utils";
 
 type Props = {
   level: {
@@ -57,9 +65,11 @@ export default function TopicLevel({ level, data }: Props) {
     <div className="space-y-4" key={level.id}>
       <div className="flex flex-col gap-2 md:flex-row md:justify-between md:items-center px-4">
         <div className="flex items-center gap-2">
-          <div className="bg-[#E5F0F0] w-6 h-6 rounded-full grid place-items-center">
-            <Image src={Lock} alt="lock" width={12} height={12} />
-          </div>
+          {!isLevelUnlocked && (
+            <div className="bg-[#E5F0F0] w-6 h-6 rounded-full grid place-items-center">
+              <Image src={Lock} alt="lock" width={12} height={12} />
+            </div>
+          )}
           <h1 className="text-[#5B8989] font-semibold text-lg md:text-xl lg:text-2xl">
             {"Level " + level.level + " - "} {level.name}
           </h1>
@@ -79,87 +89,103 @@ export default function TopicLevel({ level, data }: Props) {
       </div>
       <div className="">
         {data && (
-          <Slider {...settings}>
-            {data
-              .filter((d) => d.level_id === level.level)
-              .map((item, index) => (
-                <TopicCard
-                  key={index}
-                  cards={
-                    item?.languages_db?.filter(
-                      (i: any) => i.level_id === level.level
-                    ).length
-                  }
-                  lock={!isLevelUnlocked}
-                  topic={item}
-                  levelId={level.id}
-                />
+          <Carousel
+            opts={{
+              align: "start",
+              loop: false,
+            }}
+            className="w-full relative hidden sm:flex"
+          >
+            <CarouselContent className="-ml-2">
+              {data
+                .filter((d) => d.level_id === level.level)
+                .map((item, index) => (
+                  <CarouselItem
+                    key={index}
+                    className="md:basis-1/2 lg:basis-1/2 xl:basis-1/3"
+                  >
+                    <TopicCard
+                      cards={
+                        item?.languages_db?.filter(
+                          (i: any) => i.level_id === level.level
+                        ).length
+                      }
+                      lock={!isLevelUnlocked}
+                      topic={item}
+                      levelId={level.id}
+                    />
+                  </CarouselItem>
+                ))}
+            </CarouselContent>
+            <CarouselPrevious
+              className={cn(
+                "h-full -left-10 rounded-none shadow-md bg-white hover:bg-gray-50 text-[#517B7B] hidden lg:flex"
+              )}
+            />
+            <CarouselNext
+              className={cn(
+                "h-full -right-10 rounded-none shadow-md bg-white hover:bg-gray-50 text-[#517B7B] hidden lg:flex"
+              )}
+            />
+          </Carousel>
+        )}
+        {data && (
+          <Carousel
+            opts={{
+              align: "start",
+              loop: false,
+            }}
+            className="w-full relative sm:hidden"
+          >
+            <CarouselContent className="-ml-2">
+              {chunk(
+                data.filter((d) => d.level_id === level.level),
+                2
+              ).map((group, slideIndex) => (
+                <CarouselItem
+                  key={slideIndex}
+                  className="pl-2 basis-full sm:basis-1/2 lg:basis-1/2 xl:basis-1/3"
+                >
+                  <div className="grid grid-rows-[auto_auto] gap-4">
+                    {group.map((item, index) => (
+                      <div key={item.id}>
+                        <TopicCard
+                          cards={
+                            item?.languages_db?.filter(
+                              (i: any) => i.level_id === level.level
+                            ).length
+                          }
+                          lock={!isLevelUnlocked}
+                          topic={item}
+                          levelId={level.id}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </CarouselItem>
               ))}
-          </Slider>
+            </CarouselContent>
+            <CarouselPrevious
+              className={cn(
+                "h-full -left-10 rounded-none shadow-md bg-white hover:bg-gray-50 text-[#517B7B] hidden sm:flex"
+              )}
+            />
+            <CarouselNext
+              className={cn(
+                "h-full -right-10 rounded-none shadow-md bg-white hover:bg-gray-50 text-[#517B7B] hidden sm:flex"
+              )}
+            />
+          </Carousel>
         )}
       </div>
     </div>
   );
 }
 
-const settings = {
-  dots: true,
-  infinite: false,
-  speed: 500,
-  slidesToShow: 3,
-  slidesToScroll: 2,
-  initialSlide: 0,
-  rows: 1,
-  nextArrow: (
-    <div className="carousel-buttons h-full flex items-center">
-      <div className="next-slick-arrow h-full flex shrink-0 items-center bg-white shadow-md hover:bg-gray-50">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          stroke="black"
-          height="24"
-          viewBox="0 -960 960 960"
-          width="24"
-          className="xs:w-[15px] xs:h-[15px] md:w-[24px] md:h-[24px]"
-        >
-          <path d="m242-200 200-280-200-280h98l200 280-200 280h-98Zm238 0 200-280-200-280h98l200 280-200 280h-98Z" />
-        </svg>
-      </div>
-    </div>
-  ),
-  prevArrow: (
-    <div className="carousel-buttons absolute -left-4 top-0 bottom-0 h-full flex items-center">
-      <div className="prev-slick-arrow h-full flex items-center bg-white shadow-md hover:bg-gray-50">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          stroke="black"
-          height="24"
-          viewBox="0 -960 960 960"
-          width="24"
-          className="xs:w-[15px] xs:h-[15px] md:w-[24px] md:h-[24px] rotate-180"
-        >
-          <path d="m242-200 200-280-200-280h98l200 280-200 280h-98Zm238 0 200-280-200-280h98l200 280-200 280h-98Z" />
-        </svg>
-      </div>
-    </div>
-  ),
-  responsive: [
-    {
-      breakpoint: 500,
-      settings: {
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        rows: 1,
-        dots: false,
-      },
-    },
-    {
-      breakpoint: 800,
-      settings: {
-        slidesToShow: 2,
-        slidesToScroll: 1,
-        rows: 1,
-        dots: false,
-      },
-    },
-  ],
-};
+function chunk<T>(array: T[], size: number): T[][] {
+  const chunked: T[][] = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunked.push(array.slice(i, i + size));
+  }
+  return chunked;
+}

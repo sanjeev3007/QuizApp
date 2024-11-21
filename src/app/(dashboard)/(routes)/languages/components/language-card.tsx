@@ -22,11 +22,11 @@ export default function LanguageCard({
 
   return (
     <div className="bg-[#F5F9FF] shadow-[0px_0px_8px_0px_#0053F429] p-8 rounded-xl max-w-xl w-full mx-auto my-10 flex items-center gap-8">
-      <div className="">
+      <div className="shrink-0">
         <Image
           src={LanguageImage}
           alt="Language Image"
-          className="w-[100px] h-[100px]"
+          className="md:w-[100px] md:h-[100px] w-[80px] h-[80px]"
         />
       </div>
       <div className="space-y-4">

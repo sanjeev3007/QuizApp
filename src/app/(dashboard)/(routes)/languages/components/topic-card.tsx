@@ -96,10 +96,10 @@ export default function TopicCard({
   };
 
   return (
-    <div className="px-2">
+    <div className="px-2 h-full">
       <Card
         className={cn(
-          "w-full shadow-none rounded-2xl min-h-[14.5rem] flex flex-col",
+          "w-full h-full shadow-none rounded-2xl min-h-[14.5rem] flex flex-col",
           lock ? "bg-[#FAFAFA]" : "bg-[#F5F9FF]"
         )}
         style={{
@@ -153,7 +153,7 @@ export default function TopicCard({
           </div>
         </CardContent>
         {lock ? (
-          <CardFooter className="flex justify-between p-6 gap-6">
+          <CardFooter className="flex justify-between p-6 gap-6 mt-auto">
             <Button
               disabled={lock}
               onClick={() => {}}

@@ -14,6 +14,7 @@ import {
 } from "@/actions/language.actions";
 import { Loader2 } from "lucide-react"; // Import the loader icon
 import { useQuery } from "@tanstack/react-query";
+import useQuizStore from "@/store/quiz-store";
 
 const DndProviderWithBackend = ({
   children,
@@ -69,7 +70,7 @@ export default function QuizBox({
       : cardState === "16-20"
       ? 4
       : 0;
-  const { data: prevQuiz, isLoading: userPrevQuizLoading } = useQuery({
+  const { data: prevQuiz } = useQuery({
     queryKey: ["user_card_state"],
     queryFn: async () => {
       return await getUserCardState({
@@ -86,6 +87,10 @@ export default function QuizBox({
 
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<number>>(
     new Set()
+  );
+
+  const setCurrentQuizScore = useQuizStore(
+    (state) => state.setCurrentQuizScore
   );
 
   const handleNextCard = () => {
@@ -152,7 +157,14 @@ export default function QuizBox({
   const completeSet = async () => {
     setIsLoading(true);
     setIsCompleted(true);
+
     try {
+      const currentScore = {
+        correct: correctAnswers,
+        total: content.length,
+      };
+      setCurrentQuizScore(currentScore);
+
       if (prevQuiz?.id) {
         const data = await updateQuizData({
           userId,
@@ -166,7 +178,8 @@ export default function QuizBox({
           state: state,
         });
         if (data) {
-          router.push("/languages/result?lang=" + lang + "&quiz=" + data.id);
+          // Use router.replace for smoother transition
+          router.replace(`/languages/result?lang=${lang}&quiz=${data.id}`);
         }
       } else {
         const data = await saveQuizData({
@@ -180,7 +193,7 @@ export default function QuizBox({
           state,
         });
         if (data) {
-          router.push("/languages/result?lang=" + lang + "&quiz=" + data.id);
+          router.replace(`/languages/result?lang=${lang}&quiz=${data.id}`);
         }
       }
     } catch (error) {

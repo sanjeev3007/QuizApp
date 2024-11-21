@@ -98,7 +98,7 @@ const LanguageDashboard = ({ levels, lang, langId, totalQuestions }: Props) => {
             langId={langId}
             totalQuestions={totalQuestions}
           />
-          <div className="justify-center items-center py-4 md:flex">
+          <div className="justify-center items-center py-4 hidden md:flex">
             <h1 className="text-[#5B8989] font-semibold text-xl md:text-2xl lg:text-3xl text-center">
               Practice{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#A387FF] via-[#F55472] to-[#F55472]">

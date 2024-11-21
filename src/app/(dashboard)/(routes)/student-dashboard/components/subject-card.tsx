@@ -21,6 +21,7 @@ const SubjectCard = ({
   subjectName,
   rank,
   answeredCount,
+  points,
   cardClassName,
   status,
   loading,
@@ -29,6 +30,7 @@ const SubjectCard = ({
   subjectName: string;
   rank: number | null;
   answeredCount: number | null;
+  points: string | null;
   cardClassName: keyof TagColors;
   status: boolean;
   loading: boolean;
@@ -40,11 +42,11 @@ const SubjectCard = ({
     science: "#40b59b",
     english: "#4096b5",
     coding: "#b58440",
-    french: "#eaeffe",
-    spanish: "#4096b5",
-    hindi: "#b58440",
-    german: "#40b59b",
-    telugu: "#4096b5",
+    french: "#405fb5",
+    spanish: "#b56740",
+    hindi: "#5d59c5",
+    german: "#47b540",
+    telugu: "#3b7da3",
   };
 
   const handleGetStarted = (subjectName: string) => {
@@ -104,6 +106,17 @@ const SubjectCard = ({
                         ? rank
                         : "-"}
                     </span>
+                  </span>
+                )}
+              </span>
+            )}
+            {points && status && (
+              <span
+                className={`flex flex-row p-[8px] gap-[8px] rounded-[6px] tags-${cardClassName} ml-4`}
+              >
+                {points && (
+                  <span className="lg:text-sm xs:text-[11px] font-medium leading-[16.94px] text-left mt-auto mb-auto">
+                    {points} points
                   </span>
                 )}
               </span>

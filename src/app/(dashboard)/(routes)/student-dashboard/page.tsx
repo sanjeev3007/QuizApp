@@ -17,6 +17,7 @@ interface SubjectInfo {
   subjectName: string;
   rank: number | null;
   answeredCount: number | null;
+  points: string | null;
 }
 
 interface SubjectData {
@@ -30,48 +31,56 @@ const PageContent = () => {
       subjectName: "Mathematics",
       rank: null,
       answeredCount: null,
+      points: null,
     },
     science: {
       subjectId: constants.SUBJECT_IDS.SCIENCE,
       subjectName: "Science",
       rank: null,
       answeredCount: null,
+      points: null,
     },
     english: {
       subjectId: constants.SUBJECT_IDS.ENGLISH,
       subjectName: "English",
       rank: null,
       answeredCount: null,
+      points: null,
     },
     french: {
       subjectId: constants.SUBJECT_IDS.FRENCH,
       subjectName: "French",
       rank: null,
       answeredCount: null,
+      points: null,
     },
     spanish: {
       subjectId: constants.SUBJECT_IDS.SPANISH,
       subjectName: "Spanish",
       rank: null,
       answeredCount: null,
+      points: null,
     },
     german: {
       subjectId: constants.SUBJECT_IDS.GERMAN,
       subjectName: "German",
       rank: null,
       answeredCount: null,
+      points: null,
     },
     hindi: {
       subjectId: constants.SUBJECT_IDS.HINDI,
       subjectName: "Hindi",
       rank: null,
       answeredCount: null,
+      points: null,
     },
     telugu: {
       subjectId: constants.SUBJECT_IDS.TELUGU,
       subjectName: "Telugu",
       rank: null,
       answeredCount: null,
+      points: null,
     },
     // coding: {
     //   subjectId: constants.SUBJECT_IDS.CODING,
@@ -108,10 +117,15 @@ const PageContent = () => {
           let updatedSubjectData: any = subjectData;
           data.response.forEach((subject: any) => {
             updatedSubjectData[subject.subjectName].rank = subject.rank;
-            updatedSubjectData[subject.subjectName].answeredCount = parseInt(
-              subject.count,
-              10
-            );
+            updatedSubjectData[subject.subjectName].answeredCount =
+              languages.includes(subject.subjectName)
+                ? parseInt(subject.attempted, 10)
+                : parseInt(subject.count, 10);
+            updatedSubjectData[subject.subjectName].points = languages.includes(
+              subject.subjectName
+            )
+              ? subject.count
+              : null;
           });
           setSubjectData(updatedSubjectData);
         } catch (err) {
@@ -198,6 +212,7 @@ const PageContent = () => {
                 cardClassName={subject as keyof TagColors}
                 loading={subjectWiseLoader}
                 isLanguage={languages.includes(subject)}
+                points={subjectData[subject].points}
               />
             ))}
           </div>
