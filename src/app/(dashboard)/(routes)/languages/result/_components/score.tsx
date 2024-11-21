@@ -10,6 +10,7 @@ import { getCardIcon } from "../../_utils";
 import { useState, useEffect } from "react";
 import useQuizStore from "@/store/quiz-store";
 import NoahStarImage from "@/public/images/icons/noah-lang-stars.svg";
+import NoahStarCompleteImage from "@/public/images/icons/noah-lang-stars-completed.svg";
 import { cn } from "@/lib/utils";
 import { ArrowRightIcon } from "lucide-react";
 
@@ -69,7 +70,9 @@ export default function ScoreCard({
           <div className="flex items-center gap-4">
             <Image
               src={
-                isLevelUnlocked || isAllLevelsCompleted
+                isAllLevelsCompleted
+                  ? NoahStarCompleteImage
+                  : isLevelUnlocked
                   ? NoahStarImage
                   : NoahImage
               }
