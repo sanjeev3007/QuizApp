@@ -47,6 +47,8 @@ type FlashcardPageProps = {
   cardState: string;
 };
 
+// TODO: Uncomment <QuickQuiz /> in HomePage.tsx to use this component
+
 export default function QuizBox({
   content,
   levelId,
