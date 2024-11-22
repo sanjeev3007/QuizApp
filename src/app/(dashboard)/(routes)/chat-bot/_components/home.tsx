@@ -3,6 +3,7 @@
 import React from "react";
 import { FormEvent, useEffect, useState } from "react";
 import noahSmallIcon from "@/assets/Images/noahSmallIcon.png";
+import botIcon from "@/assets/Images/noah_dp.svg";
 import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import ion_send_white from "@/assets/Images/ion_send_white.png";
@@ -128,14 +129,19 @@ const Home = ({ user_Id, recentChats }: Props) => {
   ];
 
   return (
-    <div className="flex flex-col justify-center content-center items-center">
-      <div className="flex justify-between content-center items-center">
-        <Image src={noahSmallIcon} alt="noah" className="h-[54px] w-[54px]" />
+    <div
+      className="flex flex-col justify-center content-center items-center"
+      style={{
+        marginTop: recentChats && recentChats.length > 0 ? "0" : "8rem",
+      }}
+    >
+      <div className="flex flex-col md:flex-row justify-between items-center">
+        <Image src={botIcon} alt="noah" className="h-[54px] w-[54px]" />
         <div className="ml-4 w-full text-2xl md:text-4xl text-[#2F4F4F] font-extrabold">
           Lets <span className="headerClrTxt">smash doubts</span> together!
         </div>
       </div>
-      <div className="text-[#5B8989] text-lg font-medium mt-6">
+      <div className="text-[#5B8989] text-base md:text-lg font-medium mt-6 text-center">
         What would you like to discuss about today?
       </div>
       <div className="w-full mt-8 md:max-w-3xl">

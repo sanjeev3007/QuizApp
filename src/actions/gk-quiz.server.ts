@@ -1,5 +1,4 @@
 "use server";
-
 import { createClient } from "@/lib/supabase/server";
 
 export const getNumberOfCompletedGKQuiz = async (userid: string) => {

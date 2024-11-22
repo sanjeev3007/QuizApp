@@ -114,7 +114,7 @@ export function InitialChatMessage({
   return (
     <div className="max-w-3xl w-full space-y-3">
       <div className="flex items-start gap-x-2">
-        <div className="bg-orange-300 w-10 h-10 rounded-full grid place-items-center">
+        <div className=" w-10 h-10 rounded-full grid place-items-center">
           <Image src={botIcon} alt="bot" className="stroke-white" />
         </div>
         <div className="flex-1 ">
@@ -216,7 +216,7 @@ export function EndChatMessage({
 
   return (
     <div className="max-w-3xl my-2 flex items-start w-full gap-x-2">
-      <div className="bg-orange-300 w-10 h-10 rounded-full grid place-items-center">
+      <div className=" w-10 h-10 rounded-full grid place-items-center">
         <Image src={botIcon} alt="bot" className="stroke-white" />
       </div>
       <div className="w-full">
@@ -280,7 +280,7 @@ export function TopicMessage({
   return (
     <div className="max-w-3xl w-full space-y-3 my-2">
       <div className="flex items-start gap-x-2">
-        <div className="bg-orange-300 w-10 h-10 rounded-full grid place-items-center">
+        <div className=" w-10 h-10 rounded-full grid place-items-center">
           <Image src={botIcon} alt="bot" className="stroke-white" />
         </div>
         <div className="flex-1 ">

@@ -6,6 +6,7 @@ import GlobalLeaderboard from "@/components/leaderboard";
 import NoahHeader from "./components/noah-says";
 import { getCookie } from "cookies-next";
 import {
+  getStudentActivity,
   getStudentDashboard,
   getStudentTopics,
 } from "@/lib/student-dashboard/apiClient";
@@ -15,8 +16,6 @@ import TopicCardCarousel from "./components/topic-card/topic-card-carousel";
 import saveGTMEvents from "@/lib/gtm";
 import TopicCard from "./components/topic-card/topic-card";
 import ClipLoader from "react-spinners/ClipLoader";
-import { getStudentActivity } from "@/lib/student-dashboard/apiClient";
-import { useQuery } from "@tanstack/react-query";
 
 type TopicCardLayout = {
   badge: string | null;
@@ -44,6 +43,7 @@ const PageContent = () => {
   const [avatar, setAvatar] = useState<string>("");
   const [topicLoader, setTopicLoader] = useState<boolean>(false);
   const [dashboardLoader, setDashboardLoader] = useState<boolean>(false);
+  const [mounted, setMounted] = useState<boolean>(false);
   const userId = getCookie("userId");
   const userGrade = getCookie("grade");
   const params = useSearchParams();
@@ -66,6 +66,10 @@ const PageContent = () => {
     subjectId = constants.SUBJECT_IDS.ENGLISH;
     quizPath = "english";
   }
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     saveGTMEvents({
@@ -148,6 +152,10 @@ const PageContent = () => {
     fetchData();
   }, []);
 
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <div className="w-full md:max-w-7xl mx-auto bg-[#FFF] pb-10 overflow-hidden !important">
       <div className="font-sans w-full flex justify-center">
@@ -216,7 +224,7 @@ const PageContent = () => {
               {topicData &&
                 topicData.map((item, index) => {
                   return (
-                    <div key={index}>
+                    <div key={index} className="topic-card-wrapper">
                       <TopicCard
                         topic={item.topicName}
                         badge={item.badge}

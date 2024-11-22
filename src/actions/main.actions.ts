@@ -1,17 +1,6 @@
 "use server";
 import { createClient } from "@/lib/supabase/server";
 
-type Subtopics = {
-  totalQuestion: number;
-  totalCorrectQuestion: number;
-  easy: number;
-  medium: number;
-  hard: number;
-  easyTotal: number;
-  mediumTotal: number;
-  hardTotal: number;
-};
-
 export const getQuizStats = async (quizId: string) => {
   const supabase = createClient();
   const { data, error } = await supabase

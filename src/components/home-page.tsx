@@ -45,9 +45,13 @@ const HomePage: React.FC<Props> = ({
       subtitle:
         "Learn through quizzes on different academic subjects tailored for you",
       description: (
-        <span>
+        <>
+        {numberOfCompletedQuiz > 0 && (
+          <span>
           <strong>{numberOfCompletedQuiz}</strong> questions completed
         </span>
+        )}
+        </>
       ),
     },
     {
@@ -55,8 +59,8 @@ const HomePage: React.FC<Props> = ({
       subtitle:
         "Test your general knowledge skills across various topics through quizzes",
       description:
-        (quizData && quizData?.numberOfCompletedQuiz == 0) ||
-        quizData?.numberOfCompletedQuiz ? (
+        quizData  &&
+        quizData?.numberOfCompletedQuiz  ? (
           <span>
             <strong>{quizData.numberOfCompletedQuiz}</strong> questions
             completed
@@ -70,7 +74,7 @@ const HomePage: React.FC<Props> = ({
       subtitle:
         "Chat with Noah real time to get any of your doubts resolved or discuss any topic",
       description:
-        totalDoubtChats == 0 || totalDoubtChats ? (
+         totalDoubtChats ? (
           <span>
             <strong>{totalDoubtChats}</strong> chats completed
           </span>
@@ -182,7 +186,9 @@ const HomePage: React.FC<Props> = ({
                 <div className="lg:m-6 md:m-2 lg:p-0 xs:p-4 h-5/6 relative">
                   <div className="cardTitle">{card.title}</div>
                   <div className="cardSubTitle">{card.subtitle}</div>
-                  <div className="cardDescription">{card.description}</div>
+                  {getCookie("userRole") !== "guest" && (
+                    <div className="cardDescription">{card.description}</div>
+                  )}
                   <div className="btnContainer">
                     <button
                       className="getStartedBtn"

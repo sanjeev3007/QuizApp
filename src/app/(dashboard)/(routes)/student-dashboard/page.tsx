@@ -6,9 +6,9 @@ import GlobalLeaderboard from "@/components/leaderboard";
 import { useEffect, useState } from "react";
 import { getCookie } from "cookies-next";
 import {
+  getStudentActivity,
   getStudentDashboard,
   getSubjectWise,
-  getStudentActivity,
 } from "@/lib/student-dashboard/apiClient";
 import constants from "../../../../constants/constants";
 
@@ -101,6 +101,11 @@ const PageContent = () => {
   const [dashboardLoader, setDashboardLoader] = useState<boolean>(false);
   const languages = ["french", "spanish", "german", "hindi", "telugu"];
   const userId = getCookie("userId");
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!userId) {
@@ -185,6 +190,9 @@ const PageContent = () => {
   }, []);
 
   const subjects = Object.keys(subjectData);
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div className={`font-sans`}>

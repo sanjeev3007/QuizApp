@@ -246,7 +246,7 @@ const NoahHeader = ({
       <div className="noah-subject-wrap">
         <div className="noah-subject-quiz">
           <div className="noah-subject-text">
-            Noah curates quizzes to help you learn better
+            Noah creates quizzes to help you learn better
           </div>
           <button
             className="resume-quizz-btn"
