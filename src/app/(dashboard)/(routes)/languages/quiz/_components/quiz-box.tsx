@@ -154,6 +154,9 @@ export default function QuizBox({
     setCurrentCardIndex(0);
     setCorrectAnswers(0);
     setQuizSubmissions([]);
+    setAnsweredQuestions(new Set());
+    setIsCompleted(false);
+    setIsLoading(false);
   };
 
   const completeSet = async () => {

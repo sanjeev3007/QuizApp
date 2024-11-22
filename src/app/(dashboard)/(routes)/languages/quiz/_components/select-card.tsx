@@ -132,7 +132,7 @@ export const SelectCard: React.FC<QuizCardProps> = ({
                   "bg-[#D4EDE1] border-[#4EB487]"
               )}
               onClick={() => handleAnswerSelect(option.text)}
-              disabled={showCorrectAnswer || isAnswered}
+              disabled={(showCorrectAnswer || isAnswered) && !timerEnded}
             >
               {option.text}
             </Button>
