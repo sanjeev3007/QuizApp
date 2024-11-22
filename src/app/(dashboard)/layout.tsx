@@ -75,6 +75,20 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 router.push("/chat-bot");
               } else if (pathname.includes("chat-bot")) {
                 router.push("/");
+              } else if (
+                pathname.includes("languages/result") ||
+                pathname.includes("languages/quiz") ||
+                pathname.includes("languages/learn")
+              ) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const langParam = urlParams.get("lang");
+                if (langParam) {
+                  router.push(`/languages?lang=${langParam}`);
+                } else {
+                  router.push("/student-dashboard");
+                }
+              } else if (pathname.includes("languages")) {
+                router.push("/student-dashboard");
               } else {
                 router.back();
               }

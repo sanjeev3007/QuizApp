@@ -21,7 +21,7 @@ export const getNumberOfCompletedGKQuiz = async (userid: string) => {
     console.error(error);
   }
   let numberOfCompletedQuiz = 0;
-  allQuizes?.forEach((quiz) => {
+  allQuizes?.forEach((quiz: any) => {
     numberOfCompletedQuiz += quiz.submissions?.length || 0;
   });
 

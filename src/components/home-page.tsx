@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { createGKQuiz, getGKQuestions } from "@/actions/gk-quiz";
 import { getCookie } from "cookies-next";
 import saveGTMEvents from "@/lib/gtm";
+import QuickQuiz from "./quick-quiz";
 
 type Props = {
   userId: string;
@@ -176,6 +177,7 @@ const HomePage: React.FC<Props> = ({
             />
           </div>
         </div>
+        {/* <QuickQuiz /> */}
         <div className="cardContainer">
           <div className="cardHeading">What do you want to do today?</div>
           <div className="cardsWrapper">

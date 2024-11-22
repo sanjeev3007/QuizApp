@@ -5,27 +5,36 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import ClipLoader from "react-spinners/ClipLoader";
 
-type TagColors = {
+export type TagColors = {
   math: string;
   science: string;
   english: string;
   coding: string;
+  french: string;
+  spanish: string;
+  hindi: string;
+  german: string;
+  telugu: string;
 };
 
 const SubjectCard = ({
   subjectName,
   rank,
   answeredCount,
+  points,
   cardClassName,
   status,
   loading,
+  isLanguage,
 }: {
   subjectName: string;
   rank: number | null;
   answeredCount: number | null;
+  points: string | null;
   cardClassName: keyof TagColors;
   status: boolean;
   loading: boolean;
+  isLanguage?: boolean;
 }) => {
   const router = useRouter();
   const tagColors = {
@@ -33,6 +42,11 @@ const SubjectCard = ({
     science: "#40b59b",
     english: "#4096b5",
     coding: "#b58440",
+    french: "#405fb5",
+    spanish: "#b56740",
+    hindi: "#5d59c5",
+    german: "#47b540",
+    telugu: "#3b7da3",
   };
 
   const handleGetStarted = (subjectName: string) => {
@@ -56,7 +70,7 @@ const SubjectCard = ({
 
   return (
     <div
-      className={`rounded-[16px] xs:w-[343px] md:w-[340px] lg:w-[548px] shadow-[0px_2px_8px_0px_#00000029] card-${cardClassName} md:m-5 xs:mt-5 xs:ml-auto xs:mr-auto`}
+      className={`rounded-[16px] xs:w-[343px] md:w-full lg:w-full shadow-[0px_2px_8px_0px_#00000029] card-${cardClassName} md:m-0 xs:ml-auto xs:mr-auto`}
     >
       <div className="flex justify-between flex-row">
         <div className="flex justify-center flex-col">
@@ -94,6 +108,17 @@ const SubjectCard = ({
                         ? rank
                         : "-"}
                     </span>
+                  </span>
+                )}
+              </span>
+            )}
+            {points && status && (
+              <span
+                className={`flex flex-row p-[8px] gap-[8px] rounded-[6px] tags-${cardClassName} ml-4`}
+              >
+                {points && (
+                  <span className="lg:text-sm xs:text-[11px] font-medium leading-[16.94px] text-left mt-auto mb-auto">
+                    {points} points
                   </span>
                 )}
               </span>
