@@ -64,7 +64,11 @@ const SubjectCard = ({
         label3: null,
         label4: null,
       });
-      router.push(`/subject-dashboard?subject=${subjectName}`);
+      if (isLanguage) {
+        router.push(`/languages?lang=${subjectName}`);
+      } else {
+        router.push(`/subject-dashboard?subject=${subjectName}`);
+      }
     }
   };
 
