@@ -29,7 +29,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    console.log(pathname, "patname");
     if (pathname !== "/") {
       setShowBackButton(true);
     } else {
@@ -51,7 +50,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       className={`${inter.variable} font-sans h-full w-full bg-[#FFF] z-100`}
     >
       <div
-        className={`w-full border-b-2 flex items-center justify-between bg-[#FFF] py-4 sticky top-0 ${
+        className={`w-full border-b-2 flex items-center justify-between bg-[#FFF] py-4 sticky top-0 z-[100] ${
           isWebView && "h-14"
         }`}
       >
