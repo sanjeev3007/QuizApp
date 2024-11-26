@@ -48,6 +48,7 @@ const PageContent = () => {
   const userGrade = getCookie("grade");
   const params = useSearchParams();
   const subject = params.get("subject");
+  console.log("Subject: " + subject);
 
   let sub = "";
   let subjectId: any = null;
@@ -76,7 +77,7 @@ const PageContent = () => {
       eventAction: "subject_opened",
       label: userId ? "student" : "guest",
       label1: userId || null,
-      label2: quizPath,
+      label2: subject=="mathematics" ? "math" :subject?.toLocaleLowerCase()||"",
       label3: null,
       label4: null,
     });

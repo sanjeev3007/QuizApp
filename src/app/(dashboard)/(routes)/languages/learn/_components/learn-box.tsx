@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { LanguageDB } from "../_types";
 import { saveLearningData } from "@/actions/language.actions";
 import { CompletionCard } from "./completion-card";
+import saveGTMEvents from "@/lib/gtm";
 
 type LearningSubmission = {
   questionId: number;
@@ -137,6 +138,21 @@ export default function LearnBox({
       console.error("Error saving learning data:", error);
     }
   };
+  console.log("Completed",userId)
+  useEffect(() => {
+    if (isCompleted) {
+      const userType = userId ? "student" : "guest";
+  
+      saveGTMEvents({
+        eventAction: "learn_completed",
+        label: userType,          
+        label1: userId||null,        
+        label2: lang,            
+        label3: topicId.toString()||null,        
+        label4: null,
+      });
+    }
+  }, [isCompleted]);
 
   return (
     <div className="">

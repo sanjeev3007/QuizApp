@@ -38,10 +38,12 @@ export default async function LearnPage({
       from,
       to,
     });
+    console.log(content);
 
     if (!content) {
       redirect("/languages");
     }
+    console.log(searchParams);
 
     return (
       <div className="container mx-auto px-4">
