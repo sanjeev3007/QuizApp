@@ -107,16 +107,13 @@ const LanguageDashboard = ({ levels, lang, langId, totalQuestions }: Props) => {
               to get better at learning
             </h1>
           </div>
-          <div className="flex flex-col justify-center items-center py-4 md:hidden">
+          <div className="flex flex-col justify-center items-center py-4 md:hidden max-w-md mx-auto">
             <h1 className="text-[#5B8989] font-semibold text-xl md:text-2xl lg:text-3xl text-center">
               Practice{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#A387FF] via-[#F55472] to-[#F55472]">
                 Daily
               </span>{" "}
-              and track your activity.
-            </h1>
-            <h1 className="text-[#5B8989] font-semibold text-xl md:text-2xl lg:text-3xl text-center">
-              Consistency can be{" "}
+              and track your activity. Consistency can be{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E561CB] from-[61.4%] to-[#FDA521] to-[96.83%]">
                 magical.
               </span>
