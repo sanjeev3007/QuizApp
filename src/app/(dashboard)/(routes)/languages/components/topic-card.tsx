@@ -116,6 +116,25 @@ export default function TopicCard({
       }`
     );
   };
+  const handleClickForQuiz = () => {
+    console.log("learn button clicked");
+    saveGTMEvents({
+      eventAction: "test_language_opened",
+      label: userId?"Student":"Guest",
+      label1: userId?.toString()||null,
+      label2: lang,
+      label3: topic.name||null,
+      label4: null,
+    });
+    router.push(
+      `/languages/learn?lang=${lang}&topic=${topic.id}&level=${levelId}&cards=${
+        hasCompletedAllStates
+          ? selectedState || getStateWithLowestPoints()
+          : nextState
+      }`
+    );
+  };
+  
   
 
   return (
@@ -223,7 +242,7 @@ export default function TopicCard({
                   `(${getLevelText(selectedState)})`}
               </Button>
               <Button
-                onClick={handleClick
+                onClick={handleClickForQuiz
                   // () =>
                   // router.push(
                   //   `/languages/quiz?lang=${lang}&topic=${
