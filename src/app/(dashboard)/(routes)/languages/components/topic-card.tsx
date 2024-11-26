@@ -98,8 +98,6 @@ export default function TopicCard({
   };
   const userId = getCookie("userId");
   const handleLearnButtonClick = () => {
-    console.log("learn button clicked");
-    console.log("handleLearnButtonClick", topic.name);
     saveGTMEvents({
       eventAction: "learn_language_opened",
       label: userId?"Student":"Guest",
@@ -127,7 +125,7 @@ export default function TopicCard({
       label4: null,
     });
     router.push(
-      `/languages/learn?lang=${lang}&topic=${topic.id}&level=${levelId}&cards=${
+      `/languages/quiz?lang=${lang}&topic=${topic.id}&level=${levelId}&cards=${
         hasCompletedAllStates
           ? selectedState || getStateWithLowestPoints()
           : nextState
