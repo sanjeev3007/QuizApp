@@ -48,6 +48,7 @@ export default function ScoreCard({
       label3:quizResult?.languages_topics?.name as string || null ,
       label4: null,
     });
+    console.log(userId,lang,quizResult?.languages_topics?.name as string )
   }, [currentQuizScore, quizResult]);
 
   // Calculate if level is unlocked (85% or more)

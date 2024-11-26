@@ -1,5 +1,6 @@
+// 'use client'
 import { redirect } from "next/navigation";
-import { getTopicContent } from "@/actions/language.actions";
+import { getLanguageTopics, getTopicContent } from "@/actions/language.actions";
 import LearnBox from "./_components/learn-box";
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
@@ -8,7 +9,7 @@ import { Suspense } from "react";
 export default async function LearnPage({
   searchParams,
 }: {
-  searchParams: { lang: string; topic: number; level: number; cards: string };
+  searchParams: { lang: string; topic: number; level: number; cards: string; topicName: string};
 }) {
   if (
     !searchParams.lang ||
@@ -18,7 +19,6 @@ export default async function LearnPage({
   ) {
     redirect("/languages");
   }
-
   try {
     const userId = getCookie("userId", { cookies });
     if (!userId) {
@@ -38,17 +38,16 @@ export default async function LearnPage({
       from,
       to,
     });
-    console.log(content);
 
     if (!content) {
       redirect("/languages");
     }
-    console.log(searchParams);
 
     return (
       <div className="container mx-auto px-4">
         <LearnBox
           content={content}
+          topicName={searchParams.topicName}
           levelId={searchParams.level}
           topicId={searchParams.topic}
           lang={searchParams.lang}

@@ -98,6 +98,7 @@ export default function TopicCard({
   };
   const userId = getCookie("userId");
   const handleLearnButtonClick = () => {
+    console.log('handleClickForQuiz',userId,topic.name,lang);
     saveGTMEvents({
       eventAction: "learn_language_opened",
       label: userId?"Student":"Guest",
@@ -111,11 +112,11 @@ export default function TopicCard({
         hasCompletedAllStates
           ? selectedState || getStateWithLowestPoints()
           : nextState
-      }`
+      }&topicName=${topic.name}`
     );
   };
   const handleClickForQuiz = () => {
-    console.log("learn button clicked");
+    console.log('handleClickForQuiz',userId,topic.name,lang);
     saveGTMEvents({
       eventAction: "test_language_opened",
       label: userId?"Student":"Guest",

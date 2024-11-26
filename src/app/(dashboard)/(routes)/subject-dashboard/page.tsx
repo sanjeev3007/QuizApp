@@ -48,7 +48,7 @@ const PageContent = () => {
   const userGrade = getCookie("grade");
   const params = useSearchParams();
   const subject = params.get("subject");
-  console.log("Subject: " + subject);
+  
 
   let sub = "";
   let subjectId: any = null;
