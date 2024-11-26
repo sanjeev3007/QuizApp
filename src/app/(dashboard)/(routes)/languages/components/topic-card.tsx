@@ -220,18 +220,7 @@ export default function TopicCard({
             )}
             <div className="flex justify-between w-full gap-6">
               <Button
-                onClick={handleLearnButtonClick
-                  // () =>
-                  // router.push(
-                  //   `/languages/learn?lang=${lang}&topic=${
-                  //     topic.id
-                  //   }&level=${levelId}&cards=${
-                  //     hasCompletedAllStates
-                  //       ? selectedState || getStateWithLowestPoints()
-                  //       : nextState
-                  //   }`
-                  // )
-                }
+                onClick={handleLearnButtonClick}
                 className="bg-[#F0A919] hover:bg-yellow-500 text-white w-full"
               >
                 Learn{" "}
@@ -240,18 +229,7 @@ export default function TopicCard({
                   `(${getLevelText(selectedState)})`}
               </Button>
               <Button
-                onClick={handleClickForQuiz
-                  // () =>
-                  // router.push(
-                  //   `/languages/quiz?lang=${lang}&topic=${
-                  //     topic.id
-                  //   }&level=${levelId}&cards=${
-                  //     hasCompletedAllStates
-                  //       ? selectedState || getStateWithLowestPoints()
-                  //       : nextState
-                  //   }`
-                  // )
-                }
+                onClick={handleClickForQuiz}
                 className="bg-[#E98451] hover:bg-orange-500 text-white w-full disabled:opacity-50"
               >
                 Practice{" "}
