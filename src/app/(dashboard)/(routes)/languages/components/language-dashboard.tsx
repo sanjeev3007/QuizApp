@@ -79,7 +79,7 @@ const LanguageDashboard = ({ levels, lang, langId, totalQuestions }: Props) => {
     : null;
 
   const leaderboardData = {
-    studentMeta: {},
+    studentMeta: dashboardData?.leaderboard?.studentMeta,
     topTenStudentList:
       dashboardData?.leaderboard?.topTenStudentList?.map((item) => ({
         userid: item.user_id,
