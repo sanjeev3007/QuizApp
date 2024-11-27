@@ -361,7 +361,7 @@ const generateRandomTopic = async ({
 
   const allTopics = Array.from(
     new Set(
-      data?.map((topic) => {
+      data?.map((topic: any) => {
         return { id: topic.id, topic: topic.topic_name };
       })
     )
@@ -369,7 +369,7 @@ const generateRandomTopic = async ({
 
   const randomTopic = allTopics[Math.floor(Math.random() * allTopics.length)];
 
-  return randomTopic;
+  return randomTopic as { id: number; topic: string };
 };
 
 // update quiz stats to complete
@@ -421,7 +421,7 @@ export const fetchCorrectSubmissions = async ({
     return [];
   }
 
-  const formattedData = data.map((quiz) => {
+  const formattedData = data.map((quiz: any) => {
     return quiz.questionid;
   });
 
@@ -624,4 +624,25 @@ export async function getTopicNameFromDB({
   }
 
   return data?.topic_name;
+}
+
+// Add this function to the existing file
+
+export async function getUserQuizHistory(userId: string, subjectId: number) {
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from("quiz")
+    .select("complete, created_at, questions, submissions")
+    .eq("userid", userId)
+    .eq("subject_id", subjectId)
+    .order("created_at", { ascending: false })
+    .limit(5);
+
+  if (error) {
+    console.error("Error fetching user quiz history:", error);
+    return null;
+  }
+
+  return data;
 }

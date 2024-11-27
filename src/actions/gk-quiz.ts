@@ -46,16 +46,16 @@ const generateRandomTopics = async () => {
     console.log(error);
   }
 
-  const allTopics = Array.from(new Set(data?.map((topic) => topic.topic)));
+  const allTopics = Array.from(new Set(data?.map((topic: any) => topic.topic)));
 
   const randomTopics = [] as string[];
   for (let i = 0; i < 3; i++) {
     const randomTopic = allTopics[Math.floor(Math.random() * allTopics.length)];
-    if (randomTopics.includes(randomTopic)) {
+    if (randomTopics.includes(randomTopic as string)) {
       i--;
       continue;
     }
-    randomTopics.push(randomTopic);
+    randomTopics.push(randomTopic as string);
   }
 
   return randomTopics;
@@ -78,7 +78,7 @@ export const fetchCorrectSubmissions = async (
     return [];
   }
 
-  const formattedData = data.map((quiz) => {
+  const formattedData = data.map((quiz: any) => {
     return quiz.questionid;
   });
 

@@ -44,12 +44,11 @@ const PageContent = () => {
   const [topicLoader, setTopicLoader] = useState<boolean>(false);
   const [dashboardLoader, setDashboardLoader] = useState<boolean>(false);
   const [mounted, setMounted] = useState<boolean>(false);
-
-  const params = useSearchParams();
-  const subject = params.get("subject");
-
   const userId = getCookie("userId");
   const userGrade = getCookie("grade");
+  const params = useSearchParams();
+  const subject = params.get("subject");
+  
 
   let sub = "";
   let subjectId: any = null;
@@ -68,7 +67,7 @@ const PageContent = () => {
     subjectId = constants.SUBJECT_IDS.ENGLISH;
     quizPath = "english";
   }
-
+  
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -168,7 +167,7 @@ const PageContent = () => {
           </div>
           <NoahHeader
             subjectId={subjectId}
-            subjectName={subject}
+            subjectName={sub}
             quizPath={quizPath}
           />
           <div className="flex lg:flex-row xs:flex-col justify-center gap-8 lg:mt-14 md:mt-6 xs:mt-12 mb-10">

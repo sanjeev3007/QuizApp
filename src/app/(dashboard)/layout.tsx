@@ -29,7 +29,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    console.log(pathname, "patname");
     if (pathname !== "/") {
       setShowBackButton(true);
     } else {
@@ -51,7 +50,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       className={`${inter.variable} font-sans h-full w-full bg-[#FFF] z-100`}
     >
       <div
-        className={`w-full border-b-2 flex items-center justify-between bg-[#FFF] py-4 sticky top-0 ${
+        className={`w-full border-b-2 flex items-center justify-between bg-[#FFF] py-4 sticky top-0 z-[100] ${
           isWebView && "h-14"
         }`}
       >
@@ -75,6 +74,20 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 router.push("/chat-bot");
               } else if (pathname.includes("chat-bot")) {
                 router.push("/");
+              } else if (
+                pathname.includes("languages/result") ||
+                pathname.includes("languages/quiz") ||
+                pathname.includes("languages/learn")
+              ) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const langParam = urlParams.get("lang");
+                if (langParam) {
+                  router.push(`/languages?lang=${langParam}`);
+                } else {
+                  router.push("/student-dashboard");
+                }
+              } else if (pathname.includes("languages")) {
+                router.push("/student-dashboard");
               } else {
                 router.back();
               }

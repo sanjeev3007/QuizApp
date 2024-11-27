@@ -350,7 +350,7 @@ export const getNumberOfSubmittedAnswers = async (userid: string) => {
     return 0;
   }
   let numberOfCompletedQuiz = 0;
-  allQuizes?.forEach((quiz) => {
+  allQuizes?.forEach((quiz: any) => {
     if (quiz.submissions?.length > 0) {
       numberOfCompletedQuiz += quiz.submissions.length;
     }

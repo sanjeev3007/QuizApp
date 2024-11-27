@@ -13,8 +13,7 @@ type StoreChats = {
 };
 
 export const storeChat = async ({ messages, chat_id }: StoreChats) => {
-  const user_id =
-    getCookie("userId", { cookies }) || process.env.NEXT_PUBLIC_DEMO_USER_ID!;
+  const user_id = getCookie("userId", { cookies });
   const supabase = createClient();
 
   const title = messages[0].content.substring(0, 100);
