@@ -67,7 +67,7 @@ const PageContent = () => {
     subjectId = constants.SUBJECT_IDS.ENGLISH;
     quizPath = "english";
   }
-
+  
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -77,7 +77,7 @@ const PageContent = () => {
       eventAction: "subject_opened",
       label: userId ? "student" : "guest",
       label1: userId || null,
-      label2: subject=="mathematics" ? "math" :subject?.toLocaleLowerCase()||"",
+      label2: quizPath,
       label3: null,
       label4: null,
     });

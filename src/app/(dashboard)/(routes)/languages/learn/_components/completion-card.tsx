@@ -26,8 +26,6 @@ export const CompletionCard = ({
 }: CompletionCardProps) => {
   const router = useRouter();
   const userId = getCookie("userId");
-  console.log("UserId",userId);
-  console.log("Language",lang)
   const handleTakeQuiz = () => {
     
     saveGTMEvents({

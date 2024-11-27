@@ -142,7 +142,6 @@ export default function LearnBox({
   useEffect(() => {
     if (isCompleted) {
       const userType = userId ? "student" : "guest";
-      console.log("Learning completed",userId,lang,topicName)
       saveGTMEvents({
         eventAction: "learn_completed",
         label: userType,          
