@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { LanguageDB } from "../_types";
 import { saveLearningData } from "@/actions/language.actions";
 import { CompletionCard } from "./completion-card";
+import saveGTMEvents from "@/lib/gtm";
 
 type LearningSubmission = {
   questionId: number;
@@ -38,6 +39,7 @@ const DndProviderWithBackend = ({
 };
 
 type FlashcardPageProps = {
+  topicName: string;
   content: LanguageDB[];
   levelId: number;
   topicId: number;
@@ -47,6 +49,7 @@ type FlashcardPageProps = {
 };
 
 export default function LearnBox({
+  topicName,
   content,
   levelId,
   topicId,
@@ -63,7 +66,6 @@ export default function LearnBox({
   const [answeredQuestions, setAnsweredQuestions] = useState<
     AnsweredQuestion[]
   >([]);
-
   const handleNextCard = () => {
     if (currentCardIndex < content.length - 1) {
       setCurrentCardIndex(currentCardIndex + 1);
@@ -137,6 +139,21 @@ export default function LearnBox({
       console.error("Error saving learning data:", error);
     }
   };
+  useEffect(() => {
+    if (isCompleted) {
+      const userType = userId ? "student" : "guest";
+      console.log("Learning completed",userId,lang,topicName)
+      saveGTMEvents({
+        eventAction: "learn_completed",
+        label: userType,          
+        label1: userId||null,        
+        label2: lang,            
+        label3: topicName||null,        
+        label4: null,
+      });
+     
+    }
+  }, [isCompleted]);
 
   return (
     <div className="">
