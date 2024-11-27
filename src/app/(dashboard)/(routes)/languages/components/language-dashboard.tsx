@@ -13,6 +13,7 @@ import {
 } from "@/lib/student-dashboard/apiClient";
 import type { LeaderboardResponse } from "@/lib/types/leaderboard";
 import { getCookie } from "cookies-next";
+import saveGTMEvents from "@/lib/gtm";
 
 type Props = {
   levels: {
@@ -87,7 +88,14 @@ const LanguageDashboard = ({ levels, lang, langId, totalQuestions }: Props) => {
         rank: item.rank,
       })) || [],
   };
-
+  saveGTMEvents({
+    eventAction: "subject_opened",
+    label: userId ? "student" : "guest",
+    label1: userId || null,
+    label2: lang,
+    label3: null,
+    label4: null,
+  });
   return (
     <div className="w-full md:max-w-7xl mx-auto bg-[#FFF] pb-10 overflow-hidden !important px-4">
       <div className="font-sans w-full flex justify-center">
