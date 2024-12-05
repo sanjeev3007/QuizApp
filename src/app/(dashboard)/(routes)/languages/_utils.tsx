@@ -3,17 +3,17 @@ import { Icons } from "./_icons";
 export const getCardIcon = (topic: string) => {
   switch (topic) {
     case "Animals and Nature":
-      return "🐶";
+      return Icons.laughingdog;
     case "Body Parts":
-      return "👃";
+      return Icons.bodyparts;
     case "Everyday Objects":
-      return "🛍️";
+      return Icons.everyday;
     case "Family Members":
-      return "👪";
+      return Icons.familymembers;
     case "Food and Drinks":
       return Icons.burger;
     case "Colors and Shapes":
-      return "🌈";
+      return Icons.rainbow;
     case "Greetings and Introductions":
       return Icons.greetings;
     case "School and Classroom":
@@ -21,26 +21,26 @@ export const getCardIcon = (topic: string) => {
     case "Numbers and Time":
       return Icons.numbers;
     case "Shopping and Money":
-      return "💰";
+      return Icons.shopping;
     case "Weather and Seasons":
-      return "🌤️";
+      return Icons.weather;
     case "Hobbies and Activities":
-      return "🎮";
+      return Icons.hobbies;
     case "Holidays and Celebrations":
-      return "🎉";
+      return Icons.hollydays;
     case "Making Friends":
       return Icons.makefriends;
     case "Music and Arts":
-      return "🎸";
+      return Icons.music;
     case "Travel and Transportation":
-      return "🚗";
+      return Icons.travel;
     case "At the Restaurant":
-      return "🍴";
+      return Icons.restaurant;
     case "Sports and Games":
-      return "🏊";
+      return Icons.swimming;
     case "Colors":
-      return "🌈";
+      return Icons.rainbow;
     case "Shapes":
-      return "🔶";
+      return Icons.shapes;
   }
 };
